@@ -25,7 +25,7 @@ fn main() {
 
         while p.CLOCK.events_lfclkstarted.read().bits() == 0 {}
 
-        /* And den set it back to 0 again, just because ?!? */
+        /* And then set it back to 0 again, just because ?!? */
         p.CLOCK.events_lfclkstarted.write(|w| unsafe { w.bits(0) });
 
         p.GPIO.pin_cnf[24].write(|w| w.pull().pullup().dir().output());

@@ -17,7 +17,7 @@ impl<'a> core::fmt::Write for UART0Buffer<'a> {
             /* Wait until the UART is clear to send */
             while uart0.events_txdrdy.read().bits() == 0 {}
 
-            /* And den set it back to 0 again, just because ?!? */
+            /* And then set it back to 0 again, just because ?!? */
             uart0.events_txdrdy.write(|w| unsafe { w.bits(0) });
         }
         uart0.tasks_stoptx.write(|w| unsafe { w.bits(1) });
