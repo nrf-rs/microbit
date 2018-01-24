@@ -5,6 +5,8 @@
 #![feature(const_fn)]
 #![allow(non_camel_case_types)]
 
+pub extern crate nrf51_hal as hal;
+
 extern crate cortex_m;
 extern crate cortex_m_rt;
 extern crate bare_metal;
