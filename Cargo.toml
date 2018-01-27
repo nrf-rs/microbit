@@ -10,11 +10,11 @@ keywords = [
     "template",
 ]
 name = "microbit"
-version = "0.2.0"
+version = "0.2.1"
 
 [dependencies]
 bare-metal = "0.1.1"
-cortex-m = "0.4.2"
+cortex-m = "0.4.3"
 numtoa = "0.0.7"
 static-ref = "0.2.1"
 vcell = "0.1.0"
