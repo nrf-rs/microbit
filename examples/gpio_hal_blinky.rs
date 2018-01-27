@@ -4,7 +4,6 @@
 
 use microbit::hal::delay::Delay;
 use microbit::hal::prelude::*;
-use microbit::hal::gpio::*;
 
 extern crate cortex_m;
 extern crate microbit;

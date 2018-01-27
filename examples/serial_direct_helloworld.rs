@@ -5,7 +5,6 @@
 extern crate cortex_m;
 extern crate microbit;
 
-
 fn main() {
     if let Some(p) = microbit::Peripherals::take() {
         p.GPIO.pin_cnf[24].write(|w| w.pull().pullup().dir().output());

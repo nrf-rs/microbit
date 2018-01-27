@@ -6,7 +6,6 @@ extern crate cortex_m;
 extern crate microbit;
 use core::str;
 
-
 fn main() {
     if let Some(p) = microbit::Peripherals::take() {
         /* Configure RX and TX pins accordingly */
