@@ -14,8 +14,6 @@ extern crate vcell;
 
 extern crate nrf51;
 
-pub mod peripherals;
-
 pub use nrf51::*;
 pub use nrf51::interrupt::*;
 pub use cortex_m_rt::*;
