@@ -10,7 +10,7 @@ keywords = [
     "template",
 ]
 name = "microbit"
-version = "0.3.0"
+version = "0.3.1"
 
 [dependencies]
 bare-metal = "0.1.1"

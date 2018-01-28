@@ -19,8 +19,10 @@ pub use nrf51::interrupt::*;
 pub use cortex_m_rt::*;
 
 use hal::serial::*;
+use hal::i2c::*;
 use hal::gpio::gpio::Parts;
 
+// FIXME: Rewrite as macro to prevent problems consuming parts of gpio:wq
 pub fn serial_port(
     gpio: Parts,
     uart: nrf51::UART0,
