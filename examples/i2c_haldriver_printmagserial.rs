@@ -1,0 +1,124 @@
+#![feature(used)]
+#![feature(const_fn)]
+#![no_std]
+
+#[macro_use(block)]
+extern crate nb;
+
+extern crate cortex_m;
+use cortex_m::peripheral::Peripherals;
+use cortex_m::interrupt::Mutex;
+use core::ops::DerefMut;
+
+#[macro_use]
+extern crate microbit;
+
+extern crate mag3110;
+use mag3110::{DataRate, Mag3110, Oversampling};
+
+use microbit::hal::prelude::*;
+use microbit::hal::serial;
+use microbit::hal::i2c;
+use microbit::hal::i2c::I2c;
+use microbit::hal::serial::BAUD115200;
+
+use core::cell::RefCell;
+use core::fmt::Write;
+
+use microbit::TWI1;
+
+static GPIO: Mutex<RefCell<Option<microbit::GPIOTE>>> = Mutex::new(RefCell::new(None));
+static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
+static MAG3110: Mutex<RefCell<Option<Mag3110<I2c<TWI1>>>>> = Mutex::new(RefCell::new(None));
+
+fn main() {
+    if let (Some(p), Some(mut cp)) = (microbit::Peripherals::take(), Peripherals::take()) {
+        cortex_m::interrupt::free(move |cs| {
+            /* Enable external GPIO interrupts */
+            cp.NVIC.enable(microbit::Interrupt::GPIOTE);
+            cp.NVIC.clear_pending(microbit::Interrupt::GPIOTE);
+
+            /* Set up pin 29 to act as external interrupt from the magnetometer */
+            p.GPIOTE.config[0]
+                .write(|w| unsafe { w.mode().event().psel().bits(29).polarity().lo_to_hi() });
+            p.GPIOTE.intenset.write(|w| w.in0().set_bit());
+            p.GPIOTE.events_in[0].write(|w| unsafe { w.bits(0) });
+            *GPIO.borrow(cs).borrow_mut() = Some(p.GPIOTE);
+
+            /* Split GPIO pins */
+            let gpio = p.GPIO.split();
+
+            /* Configure RX and TX pins accordingly */
+            let tx = gpio.pin24.into_push_pull_output().downgrade();
+            let rx = gpio.pin25.into_floating_input().downgrade();
+
+            /* Set up serial port using the prepared pins */
+            let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
+
+            let _ = write!(
+                TxBuffer(&mut tx),
+                "\n\rWelcome to the magnetometer reader!\n\r"
+            );
+            *TX.borrow(cs).borrow_mut() = Some(tx);
+
+            /* Configure SCL and SDA pins accordingly */
+            let scl = gpio.pin0.into_open_drain_input().downgrade();
+            let sda = gpio.pin30.into_open_drain_input().downgrade();
+
+            /* Set up I2C */
+            let i2c = i2c::I2c::i2c1(p.TWI1, sda, scl);
+
+            /* Set up MAG3110 magnetometer on the I2C bus */
+            let mut mag3110 = Mag3110::new(i2c).ok().unwrap();
+
+            /* Slow reading down a bit */
+            let _ = mag3110.set_sampling_mode(DataRate::HZ20, Oversampling::OV128);
+
+            /* Read a value so we know we can be sure to receive interrupts */
+            let _ = mag3110.mag().ok().unwrap();
+            *MAG3110.borrow(cs).borrow_mut() = Some(mag3110);
+        });
+    }
+}
+
+/* Define an exception, i.e. function to call when exception occurs. Here if we receive an internal
+ * interrupt from the magnetometer, the printmag function will be called */
+interrupt!(GPIOTE, printmag);
+fn printmag() {
+    /* Enter critical section */
+    cortex_m::interrupt::free(|cs| {
+        if let (Some(gpiote), &mut Some(ref mut mag3110), &mut Some(ref mut tx)) = (
+            GPIO.borrow(cs).borrow().as_ref(),
+            MAG3110.borrow(cs).borrow_mut().deref_mut(),
+            TX.borrow(cs).borrow_mut().deref_mut(),
+        ) {
+            let (x, y, z) = mag3110.mag().ok().unwrap();
+            let temp = mag3110.temp().ok().unwrap();
+
+            /* Print read values on the serial console */
+            let _ = write!(
+                TxBuffer(tx),
+                "x: {}, y: {}, z: {}, temp: {}\n\r",
+                x,
+                y,
+                z,
+                temp
+            );
+
+            /* Clear event */
+            gpiote.events_in[0].write(|w| unsafe { w.bits(0) });
+        }
+    });
+}
+
+struct TxBuffer<'a>(&'a mut serial::Tx<microbit::UART0>);
+
+impl<'a> core::fmt::Write for TxBuffer<'a> {
+    fn write_str(&mut self, s: &str) -> core::fmt::Result {
+        let _ = s.as_bytes()
+            .into_iter()
+            .map(|c| block!(self.0.write(*c)))
+            .last();
+        Ok(())
+    }
+}
