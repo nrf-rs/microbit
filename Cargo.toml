@@ -10,7 +10,7 @@ keywords = [
     "template",
 ]
 name = "microbit"
-version = "0.3.3"
+version = "0.3.4"
 
 [dependencies]
 bare-metal = "0.1.1"
@@ -25,6 +25,9 @@ volatile-register = "0.2.0"
 features = ["abort-on-panic"]
 version = "0.3.12"
 
+[dependencies.mag3110]
+git = "https://github.com/therealprof/mag3110"
+
 [dependencies.nrf51]
 features = ["rt"]
 git = "https://github.com/therealprof/nrf51"
@@ -33,8 +36,9 @@ git = "https://github.com/therealprof/nrf51"
 features = ["rt"]
 git = "https://github.com/therealprof/nrf51-hal"
 
-[dependencies.mag3110]
-git = "https://github.com/therealprof/mag3110"
+[dependencies.rand]
+default-features = false
+version = "0.4.2"
 
 [features]
 default = ["rt"]
