@@ -41,11 +41,15 @@ fn main() {
             "\n\rWelcome to the random number printer!\n\r"
         );
 
-        p.RTC0.prescaler.write(|w| unsafe { w.bits(4095) });
+        p.RTC0.prescaler.write(|w| unsafe { w.bits(1) });
         p.RTC0.evtenset.write(|w| w.tick().set_bit());
         p.RTC0.intenset.write(|w| w.tick().set_bit());
         p.RTC0.tasks_start.write(|w| unsafe { w.bits(1) });
 
+        /* Enable error correction for better values */
+        p.RNG.config.write(|w| w.dercen().enabled());
+
+        /* Enable random number generation */
         p.RNG.tasks_start.write(|w| unsafe { w.bits(1) });
 
         cortex_m::interrupt::free(move |cs| {
@@ -70,7 +74,15 @@ fn printrng() {
     cortex_m::interrupt::free(|cs| {
         if let Some(rtc) = RTC.borrow(cs).borrow().as_ref() {
             let count = if let Some(rng) = RNG.borrow(cs).borrow().as_ref() {
-                rng.value.read().bits()
+                /* Let's wait until we have a new random value */
+                while rng.events_valrdy.read().bits() == 0 {}
+
+                let num = rng.value.read().bits();
+
+                /* Clear event for next random number value */
+                rng.events_valrdy.write(|w| unsafe { w.bits(0) });
+
+                num
             } else {
                 0
             };
