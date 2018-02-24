@@ -1,20 +1,26 @@
 [package]
 authors = ["Daniel Egger <daniel@eggers-club.de>"]
 categories = [
+    "hardware-support",
     "embedded",
     "no-std",
 ]
+description = "Board support crate for the BBC Micro:bit"
+documentation = "https://docs.rs/microbit"
 keywords = [
     "arm",
     "cortex-m",
-    "template",
+    "nrf51",
 ]
+license = "0BSD"
 name = "microbit"
-version = "0.3.4"
+repository = "https://github.com/therealprof/microbit"
+version = "0.4.0"
 
 [dependencies]
 bare-metal = "0.1.1"
 cortex-m = "0.4.3"
+mag3110 = "0.1.1"
 nb = "0.1.1"
 numtoa = "0.0.7"
 static-ref = "0.2.1"
@@ -23,18 +29,15 @@ volatile-register = "0.2.0"
 
 [dependencies.cortex-m-rt]
 features = ["abort-on-panic"]
-version = "0.3.12"
-
-[dependencies.mag3110]
-git = "https://github.com/therealprof/mag3110"
+version = "0.3.13"
 
 [dependencies.nrf51]
 features = ["rt"]
-git = "https://github.com/therealprof/nrf51"
+version = "0.4.0"
 
 [dependencies.nrf51-hal]
 features = ["rt"]
-git = "https://github.com/therealprof/nrf51-hal"
+version = "0.4.0"
 
 [dependencies.rand]
 default-features = false
