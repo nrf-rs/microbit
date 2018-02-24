@@ -21,8 +21,6 @@ use microbit::hal::serial::BAUD115200;
 use core::cell::RefCell;
 use core::fmt::Write;
 
-use microbit::hal::hal::blocking::i2c::{Write as I2CWrite, WriteRead};
-
 static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(None));
 static I2C: Mutex<RefCell<Option<i2c::I2c<microbit::TWI1>>>> = Mutex::new(RefCell::new(None));
 static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
