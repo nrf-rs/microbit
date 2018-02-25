@@ -15,7 +15,7 @@ keywords = [
 license = "0BSD"
 name = "microbit"
 repository = "https://github.com/therealprof/microbit"
-version = "0.4.0"
+version = "0.4.1"
 
 [dependencies]
 cortex-m = "0.4.3"
