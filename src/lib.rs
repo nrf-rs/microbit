@@ -7,7 +7,6 @@
 
 pub extern crate nrf51_hal as hal;
 
-extern crate bare_metal;
 extern crate cortex_m;
 extern crate cortex_m_rt;
 extern crate vcell;
