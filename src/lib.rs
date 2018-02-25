@@ -7,11 +7,15 @@
 
 pub extern crate nrf51_hal as hal;
 
-extern crate cortex_m;
+pub extern crate nb;
+pub extern crate cortex_m;
+
 extern crate cortex_m_rt;
 extern crate vcell;
 
 extern crate nrf51;
+
+pub use nb::*;
 
 pub use nrf51::*;
 pub use nrf51::interrupt::*;

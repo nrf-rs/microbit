@@ -2,7 +2,6 @@
 #![feature(const_fn)]
 #![no_std]
 
-extern crate cortex_m;
 extern crate microbit;
 
 fn main() {

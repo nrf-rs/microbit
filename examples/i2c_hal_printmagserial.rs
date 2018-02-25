@@ -2,24 +2,21 @@
 #![feature(const_fn)]
 #![no_std]
 
-#[macro_use(block)]
-extern crate nb;
-
-extern crate cortex_m;
-use cortex_m::peripheral::Peripherals;
-use cortex_m::interrupt::Mutex;
-use core::ops::DerefMut;
-
 #[macro_use]
 extern crate microbit;
 
+use microbit::cortex_m;
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::i2c;
 use microbit::hal::serial::BAUD115200;
 
+use cortex_m::peripheral::Peripherals;
+use cortex_m::interrupt::Mutex;
+
 use core::cell::RefCell;
 use core::fmt::Write;
+use core::ops::DerefMut;
 
 static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(None));
 static I2C: Mutex<RefCell<Option<i2c::I2c<microbit::TWI1>>>> = Mutex::new(RefCell::new(None));

@@ -2,11 +2,10 @@
 #![feature(const_fn)]
 #![no_std]
 
+extern crate microbit;
+
 use microbit::hal::delay::Delay;
 use microbit::hal::prelude::*;
-
-extern crate cortex_m;
-extern crate microbit;
 
 fn main() {
     if let Some(p) = microbit::Peripherals::take() {

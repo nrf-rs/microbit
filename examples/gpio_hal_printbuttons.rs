@@ -2,23 +2,20 @@
 #![feature(const_fn)]
 #![no_std]
 
-#[macro_use(block)]
-extern crate nb;
-
-extern crate cortex_m;
-use cortex_m::peripheral::Peripherals;
-use cortex_m::interrupt::Mutex;
-use core::ops::DerefMut;
-
 #[macro_use]
 extern crate microbit;
 
+use microbit::cortex_m;
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
 
+use cortex_m::peripheral::Peripherals;
+use cortex_m::interrupt::Mutex;
+
 use core::cell::RefCell;
 use core::fmt::Write;
+use core::ops::DerefMut;
 
 static GPIO: Mutex<RefCell<Option<microbit::GPIOTE>>> = Mutex::new(RefCell::new(None));
 static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));

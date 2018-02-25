@@ -2,10 +2,7 @@
 #![feature(const_fn)]
 #![no_std]
 
-#[macro_use(block)]
-extern crate nb;
-
-extern crate cortex_m;
+#[macro_use]
 extern crate microbit;
 
 use microbit::hal::prelude::*;

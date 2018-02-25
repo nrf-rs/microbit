@@ -2,8 +2,8 @@
 #![feature(const_fn)]
 #![no_std]
 
-extern crate cortex_m;
 extern crate microbit;
+use microbit::*;
 
 fn main() {
     if let Some(p) = microbit::Peripherals::take() {

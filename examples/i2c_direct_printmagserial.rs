@@ -2,14 +2,14 @@
 #![feature(const_fn)]
 #![no_std]
 
-extern crate cortex_m;
-use cortex_m::peripheral::Peripherals;
-use cortex_m::interrupt::Mutex;
-
 #[macro_use]
 extern crate microbit;
 
 use microbit::UART0;
+use microbit::cortex_m;
+
+use cortex_m::peripheral::Peripherals;
+use cortex_m::interrupt::Mutex;
 
 use core::cell::RefCell;
 use core::fmt::Write;

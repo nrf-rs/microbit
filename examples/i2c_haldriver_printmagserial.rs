@@ -2,30 +2,26 @@
 #![feature(const_fn)]
 #![no_std]
 
-#[macro_use(block)]
-extern crate nb;
-
-extern crate cortex_m;
-use cortex_m::peripheral::Peripherals;
-use cortex_m::interrupt::Mutex;
-use core::ops::DerefMut;
-
 #[macro_use]
 extern crate microbit;
 
-extern crate mag3110;
-use mag3110::{DataRate, Mag3110, Oversampling};
-
+use microbit::cortex_m;
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::i2c;
 use microbit::hal::i2c::I2c;
 use microbit::hal::serial::BAUD115200;
+use microbit::TWI1;
+
+use cortex_m::peripheral::Peripherals;
+use cortex_m::interrupt::Mutex;
+
+extern crate mag3110;
+use mag3110::{DataRate, Mag3110, Oversampling};
 
 use core::cell::RefCell;
 use core::fmt::Write;
-
-use microbit::TWI1;
+use core::ops::DerefMut;
 
 static GPIO: Mutex<RefCell<Option<microbit::GPIOTE>>> = Mutex::new(RefCell::new(None));
 static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));

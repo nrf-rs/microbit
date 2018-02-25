@@ -3,23 +3,20 @@
 #![no_std]
 #![feature(unsize)]
 
-#[macro_use(block)]
-extern crate nb;
-
-extern crate cortex_m;
-use cortex_m::peripheral::Peripherals;
-use cortex_m::interrupt::Mutex;
-
 #[macro_use]
 extern crate microbit;
 
-extern crate rand;
-use rand::SeedableRng;
-
+use microbit::cortex_m;
 use microbit::hal::prelude::*;
 use microbit::hal::rng;
 use microbit::hal::serial::BAUD115200;
 use microbit::hal::serial;
+
+use cortex_m::peripheral::Peripherals;
+use cortex_m::interrupt::Mutex;
+
+extern crate rand;
+use rand::SeedableRng;
 
 use core::cell::RefCell;
 use core::fmt::Write;
