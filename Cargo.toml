@@ -36,7 +36,7 @@ version = "0.4.0"
 
 [dependencies.nrf51-hal]
 features = ["rt"]
-version = "0.4.1"
+version = "0.4.3"
 
 [dependencies.rand]
 default-features = false
