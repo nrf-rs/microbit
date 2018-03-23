@@ -56,7 +56,7 @@ fn main() {
             let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
 
             let _ = write!(
-                TxBuffer(&mut tx),
+                tx,
                 "\n\rWelcome to the buttons demo. Press buttons A and/or B for some action.\n\r",
             );
             *TX.borrow(cs).borrow_mut() = Some(tx);
@@ -80,13 +80,13 @@ fn printbuttons() {
 
             /* Print buttons to the serial console */
             let _ = write!(
-                TxBuffer(tx),
+                tx,
                 "Button pressed {}\n\r",
                 match (buttonapressed, buttonbpressed) {
+                    (false, false) => "",
                     (true, false) => "A",
                     (false, true) => "B",
                     (true, true) => "A + B",
-                    _ => "A + B",
                 }
             );
 
@@ -95,16 +95,4 @@ fn printbuttons() {
             gpiote.events_in[1].write(|w| unsafe { w.bits(0) });
         }
     });
-}
-
-struct TxBuffer<'a>(&'a mut serial::Tx<microbit::UART0>);
-
-impl<'a> core::fmt::Write for TxBuffer<'a> {
-    fn write_str(&mut self, s: &str) -> core::fmt::Result {
-        let _ = s.as_bytes()
-            .into_iter()
-            .map(|c| block!(self.0.write(*c)))
-            .last();
-        Ok(())
-    }
 }

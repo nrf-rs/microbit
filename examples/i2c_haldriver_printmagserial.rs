@@ -51,10 +51,7 @@ fn main() {
             /* Set up serial port using the prepared pins */
             let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
 
-            let _ = write!(
-                TxBuffer(&mut tx),
-                "\n\rWelcome to the magnetometer reader!\n\r"
-            );
+            let _ = write!(&mut tx, "\n\rWelcome to the magnetometer reader!\n\r");
             *TX.borrow(cs).borrow_mut() = Some(tx);
 
             /* Configure SCL and SDA pins accordingly */
@@ -92,29 +89,10 @@ fn printmag() {
             let temp = mag3110.temp().ok().unwrap();
 
             /* Print read values on the serial console */
-            let _ = write!(
-                TxBuffer(tx),
-                "x: {}, y: {}, z: {}, temp: {}\n\r",
-                x,
-                y,
-                z,
-                temp
-            );
+            let _ = write!(tx, "x: {}, y: {}, z: {}, temp: {}\n\r", x, y, z, temp);
 
             /* Clear event */
             gpiote.events_in[0].write(|w| unsafe { w.bits(0) });
         }
     });
-}
-
-struct TxBuffer<'a>(&'a mut serial::Tx<microbit::UART0>);
-
-impl<'a> core::fmt::Write for TxBuffer<'a> {
-    fn write_str(&mut self, s: &str) -> core::fmt::Result {
-        let _ = s.as_bytes()
-            .into_iter()
-            .map(|c| block!(self.0.write(*c)))
-            .last();
-        Ok(())
-    }
 }

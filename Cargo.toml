@@ -15,7 +15,7 @@ keywords = [
 license = "0BSD"
 name = "microbit"
 repository = "https://github.com/therealprof/microbit"
-version = "0.4.1"
+version = "0.4.2"
 
 [dependencies]
 cortex-m = "0.4.3"
@@ -36,7 +36,7 @@ version = "0.4.0"
 
 [dependencies.nrf51-hal]
 features = ["rt"]
-version = "0.4.3"
+version = "0.4.4"
 
 [dependencies.rand]
 default-features = false

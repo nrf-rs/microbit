@@ -57,10 +57,7 @@ fn main() {
             /* Set up serial port using the prepared pins */
             let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
 
-            let _ = write!(
-                TxBuffer(&mut tx),
-                "\n\rWelcome to the magnetometer reader!\n\r"
-            );
+            let _ = write!(&mut tx, "\n\rWelcome to the magnetometer reader!\n\r");
 
             *RTC.borrow(cs).borrow_mut() = Some(p.RTC0);
             *I2C.borrow(cs).borrow_mut() = Some(i2c);
@@ -97,23 +94,11 @@ fn printmag() {
                 );
 
                 /* Print read values on the serial console */
-                let _ = write!(TxBuffer(tx), "x: {}, y: {}, z: {}\n\r", x, y, z);
+                let _ = write!(tx, "x: {}, y: {}, z: {}\n\r", x, y, z);
             }
 
             /* Clear timer event */
             rtc.events_tick.write(|w| unsafe { w.bits(0) });
         }
     });
-}
-
-struct TxBuffer<'a>(&'a mut serial::Tx<microbit::UART0>);
-
-impl<'a> core::fmt::Write for TxBuffer<'a> {
-    fn write_str(&mut self, s: &str) -> core::fmt::Result {
-        let _ = s.as_bytes()
-            .into_iter()
-            .map(|c| block!(self.0.write(*c)))
-            .last();
-        Ok(())
-    }
 }

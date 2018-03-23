@@ -46,16 +46,13 @@ fn main() {
             /* Set up serial port using the prepared pins */
             let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
 
-            let _ = write!(
-                TxBuffer(&mut tx),
-                "\n\rWelcome to the random number printer!\n\r"
-            );
+            let _ = write!(tx, "\n\rWelcome to the random number printer!\n\r");
 
             /* Use hardware RNG to initialise PRNG */
             let mut rng = rng::Rng::new(p.RNG);
 
             let mut seed: [u32; 8] = [0; 8];
-            for e in seed.iter_mut() {
+            for e in &mut seed.iter_mut() {
                 let mut u8buf = [0; 4];
 
                 /* Read 4 bytes of data from hardware RNG */
@@ -98,20 +95,8 @@ fn printrng() {
             TX.borrow(cs).borrow_mut().deref_mut(),
         ) {
             use rand::Rng;
-            let _ = write!(TxBuffer(tx), "{}\n\r", rng.gen::<u32>());
+            let _ = write!(tx, "{}\n\r", rng.gen::<u32>());
             rtc.events_tick.write(|w| unsafe { w.bits(0) });
         }
     });
-}
-
-struct TxBuffer<'a>(&'a mut serial::Tx<microbit::UART0>);
-
-impl<'a> core::fmt::Write for TxBuffer<'a> {
-    fn write_str(&mut self, s: &str) -> core::fmt::Result {
-        let _ = s.as_bytes()
-            .into_iter()
-            .map(|c| block!(self.0.write(*c)))
-            .last();
-        Ok(())
-    }
 }
