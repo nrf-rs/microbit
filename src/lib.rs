@@ -13,16 +13,15 @@ pub extern crate nb;
 extern crate cortex_m_rt;
 extern crate vcell;
 
-extern crate nrf51;
-
 pub use nb::*;
 
-pub use nrf51::*;
-pub use nrf51::interrupt::*;
 pub use cortex_m_rt::*;
+pub use hal::nrf51;
+pub use nrf51::interrupt::*;
+pub use nrf51::*;
 
-use hal::serial::*;
 use hal::gpio::gpio::Parts;
+use hal::serial::*;
 
 // FIXME: Rewrite as macro to prevent problems consuming parts of gpio
 pub fn serial_port(

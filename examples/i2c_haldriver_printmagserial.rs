@@ -2,19 +2,21 @@
 #![feature(const_fn)]
 #![no_std]
 
+extern crate panic_abort;
+
 #[macro_use]
 extern crate microbit;
 
 use microbit::cortex_m;
-use microbit::hal::prelude::*;
-use microbit::hal::serial;
 use microbit::hal::i2c;
 use microbit::hal::i2c::I2c;
+use microbit::hal::prelude::*;
+use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
 use microbit::TWI1;
 
-use cortex_m::peripheral::Peripherals;
 use cortex_m::interrupt::Mutex;
+use cortex_m::peripheral::Peripherals;
 
 extern crate mag3110;
 use mag3110::{DataRate, Mag3110, Oversampling};

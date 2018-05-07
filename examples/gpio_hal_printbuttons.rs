@@ -2,6 +2,8 @@
 #![feature(const_fn)]
 #![no_std]
 
+extern crate panic_abort;
+
 #[macro_use]
 extern crate microbit;
 
@@ -10,8 +12,8 @@ use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
 
-use cortex_m::peripheral::Peripherals;
 use cortex_m::interrupt::Mutex;
+use cortex_m::peripheral::Peripherals;
 
 use core::cell::RefCell;
 use core::fmt::Write;

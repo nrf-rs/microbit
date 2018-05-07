@@ -3,6 +3,7 @@
 #![no_std]
 
 extern crate microbit;
+extern crate panic_abort;
 
 use microbit::hal::prelude::*;
 

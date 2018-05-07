@@ -2,12 +2,14 @@
 #![feature(const_fn)]
 #![no_std]
 
+extern crate panic_abort;
+
 #[macro_use]
 extern crate microbit;
 
-use microbit::cortex_m;
-use cortex_m::peripheral::Peripherals;
 use cortex_m::interrupt::Mutex;
+use cortex_m::peripheral::Peripherals;
+use microbit::cortex_m;
 use microbit::UART0;
 
 use core::cell::RefCell;

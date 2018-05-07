@@ -2,6 +2,8 @@
 #![feature(const_fn)]
 #![no_std]
 
+extern crate panic_abort;
+
 #[macro_use]
 extern crate microbit;
 

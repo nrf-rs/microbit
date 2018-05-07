@@ -3,17 +3,19 @@
 #![no_std]
 #![feature(unsize)]
 
+extern crate panic_abort;
+
 #[macro_use]
 extern crate microbit;
 
 use microbit::cortex_m;
 use microbit::hal::prelude::*;
 use microbit::hal::rng;
-use microbit::hal::serial::BAUD115200;
 use microbit::hal::serial;
+use microbit::hal::serial::BAUD115200;
 
-use cortex_m::peripheral::Peripherals;
 use cortex_m::interrupt::Mutex;
+use cortex_m::peripheral::Peripherals;
 
 extern crate rand;
 use rand::SeedableRng;

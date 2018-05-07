@@ -3,6 +3,7 @@
 #![no_std]
 
 extern crate microbit;
+extern crate panic_abort;
 
 fn main() {
     if let Some(p) = microbit::Peripherals::take() {
