@@ -1,6 +1,10 @@
-#![feature(used)]
-#![feature(const_fn)]
+#![no_main]
 #![no_std]
+
+#[macro_use(entry, exception)]
+extern crate cortex_m_rt;
+
+use cortex_m_rt::ExceptionFrame;
 
 extern crate panic_abort;
 
@@ -22,7 +26,18 @@ use core::ops::DerefMut;
 static GPIO: Mutex<RefCell<Option<microbit::GPIOTE>>> = Mutex::new(RefCell::new(None));
 static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
 
-fn main() {
+exception!(*, default_handler);
+
+fn default_handler(_irqn: i16) {}
+
+exception!(HardFault, hard_fault);
+
+fn hard_fault(_ef: &ExceptionFrame) -> ! {
+    loop {}
+}
+entry!(main);
+
+fn main() -> ! {
     if let (Some(p), Some(mut cp)) = (microbit::Peripherals::take(), Peripherals::take()) {
         cortex_m::interrupt::free(move |cs| {
             /* Enable external GPIO interrupts */
@@ -64,6 +79,8 @@ fn main() {
             *TX.borrow(cs).borrow_mut() = Some(tx);
         });
     }
+
+    loop {}
 }
 
 /* Define an exception, i.e. function to call when exception occurs. Here if we receive an

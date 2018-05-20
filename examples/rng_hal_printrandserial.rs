@@ -1,7 +1,10 @@
-#![feature(used)]
-#![feature(const_fn)]
+#![no_main]
 #![no_std]
-#![feature(unsize)]
+
+#[macro_use(entry, exception)]
+extern crate cortex_m_rt;
+
+use cortex_m_rt::ExceptionFrame;
 
 extern crate panic_abort;
 
@@ -28,10 +31,21 @@ static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(Non
 static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
 static RNG: Mutex<RefCell<Option<rand::ChaChaRng>>> = Mutex::new(RefCell::new(None));
 
-fn main() {
+exception!(*, default_handler);
+
+fn default_handler(_irqn: i16) {}
+
+exception!(HardFault, hard_fault);
+
+fn hard_fault(_ef: &ExceptionFrame) -> ! {
+    loop {}
+}
+entry!(main);
+
+fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
         cortex_m::interrupt::free(move |cs| {
-            p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(4095) });
+            p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
 
             while p.CLOCK.events_lfclkstarted.read().bits() == 0 {}
 
@@ -61,8 +75,10 @@ fn main() {
                 rng.read(&mut u8buf).ok();
 
                 /* Fill value into u32 seed array for PRNG */
-                *e = u32::from(u8buf[0]) << 24 | u32::from(u8buf[1]) << 16
-                    | u32::from(u8buf[2]) << 8 | u32::from(u8buf[3]);
+                *e = u32::from(u8buf[0]) << 24
+                    | u32::from(u8buf[1]) << 16
+                    | u32::from(u8buf[2]) << 8
+                    | u32::from(u8buf[3]);
             }
 
             let rng = rand::ChaChaRng::from_seed(&seed);
@@ -82,6 +98,8 @@ fn main() {
             }
         });
     }
+
+    loop {}
 }
 
 /* Define an exception, i.e. function to call when exception occurs. Here if our SysTick timer

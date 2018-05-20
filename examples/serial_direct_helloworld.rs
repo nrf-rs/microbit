@@ -1,11 +1,27 @@
-#![feature(used)]
-#![feature(const_fn)]
+#![no_main]
 #![no_std]
 
-extern crate microbit;
+#[macro_use(entry, exception)]
+extern crate cortex_m_rt;
+
+use cortex_m_rt::ExceptionFrame;
+
 extern crate panic_abort;
 
-fn main() {
+extern crate microbit;
+
+exception!(*, default_handler);
+
+fn default_handler(_irqn: i16) {}
+
+exception!(HardFault, hard_fault);
+
+fn hard_fault(_ef: &ExceptionFrame) -> ! {
+    loop {}
+}
+entry!(main);
+
+fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
         p.GPIO.pin_cnf[24].write(|w| w.pull().pullup().dir().output());
         p.GPIO.pin_cnf[25].write(|w| w.pull().disabled().dir().input());
@@ -18,6 +34,8 @@ fn main() {
 
         let _ = write_uart0(&p.UART0, "Hello World!\n");
     }
+
+    loop {}
 }
 
 fn write_uart0(uart0: &microbit::UART0, s: &str) -> core::fmt::Result {

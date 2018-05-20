@@ -1,6 +1,10 @@
-#![feature(used)]
-#![feature(const_fn)]
+#![no_main]
 #![no_std]
+
+#[macro_use(entry, exception)]
+extern crate cortex_m_rt;
+
+use cortex_m_rt::ExceptionFrame;
 
 extern crate panic_abort;
 
@@ -20,7 +24,18 @@ static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(Non
 static UART: Mutex<RefCell<Option<microbit::UART0>>> = Mutex::new(RefCell::new(None));
 static TWI: Mutex<RefCell<Option<microbit::TWI1>>> = Mutex::new(RefCell::new(None));
 
-fn main() {
+exception!(*, default_handler);
+
+fn default_handler(_irqn: i16) {}
+
+exception!(HardFault, hard_fault);
+
+fn hard_fault(_ef: &ExceptionFrame) -> ! {
+    loop {}
+}
+entry!(main);
+
+fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
         p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
 
@@ -99,6 +114,8 @@ fn main() {
             p.NVIC.clear_pending(microbit::Interrupt::RTC0);
         }
     }
+
+    loop {}
 }
 
 /* Define an exception, i.e. function to call when exception occurs. Here if our SysTick timer
@@ -159,6 +176,8 @@ fn printmag() {
             rtc.events_tick.write(|w| unsafe { w.bits(0) });
         }
     });
+
+    loop {}
 }
 
 pub struct UART0Buffer<'a>(pub &'a UART0);
