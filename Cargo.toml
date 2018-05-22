@@ -27,6 +27,7 @@ panic-abort = "0.1.1"
 static-ref = "0.2.1"
 vcell = "0.1.0"
 volatile-register = "0.2.0"
+dcf77 = "0.1.0"
 
 [dependencies.nrf51-hal]
 features = ["rt"]
