@@ -1,14 +1,10 @@
 #![no_main]
 #![no_std]
 
-#[macro_use(entry, exception)]
 extern crate cortex_m_rt;
-
 use cortex_m_rt::ExceptionFrame;
 
-extern crate panic_abort;
-
-#[macro_use]
+#[macro_use(entry, exception, interrupt)]
 extern crate microbit;
 
 use microbit::cortex_m;
@@ -27,6 +23,8 @@ use core::ops::DerefMut;
 static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(None));
 static I2C: Mutex<RefCell<Option<i2c::I2c<microbit::TWI1>>>> = Mutex::new(RefCell::new(None));
 static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
+
+extern crate panic_abort;
 
 exception!(*, default_handler);
 

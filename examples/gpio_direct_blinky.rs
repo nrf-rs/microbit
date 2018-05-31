@@ -1,14 +1,14 @@
 #![no_main]
 #![no_std]
 
-#[macro_use(entry, exception)]
 extern crate cortex_m_rt;
-
 use cortex_m_rt::ExceptionFrame;
 
+#[macro_use(entry, exception)]
 extern crate microbit;
-extern crate panic_abort;
 use microbit::*;
+
+extern crate panic_abort;
 
 exception!(*, default_handler);
 
