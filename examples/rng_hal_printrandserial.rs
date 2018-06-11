@@ -65,21 +65,12 @@ fn main() -> ! {
             /* Use hardware RNG to initialise PRNG */
             let mut rng = rng::Rng::new(p.RNG);
 
-            let mut seed: [u32; 8] = [0; 8];
-            for e in &mut seed.iter_mut() {
-                let mut u8buf = [0; 4];
+            let mut seed: [u8; 32] = [0; 32];
 
-                /* Read 4 bytes of data from hardware RNG */
-                rng.read(&mut u8buf).ok();
+            /* Read 4 bytes of data from hardware RNG */
+            rng.read(&mut seed).ok();
 
-                /* Fill value into u32 seed array for PRNG */
-                *e = u32::from(u8buf[0]) << 24
-                    | u32::from(u8buf[1]) << 16
-                    | u32::from(u8buf[2]) << 8
-                    | u32::from(u8buf[3]);
-            }
-
-            let rng = rand::ChaChaRng::from_seed(&seed);
+            let rng = rand::ChaChaRng::from_seed(seed);
             *RNG.borrow(cs).borrow_mut() = Some(rng);
 
             p.RTC0.prescaler.write(|w| unsafe { w.bits(1) });

@@ -20,14 +20,14 @@ version = "0.5.1"
 [dependencies]
 cortex-m = "0.5.2"
 cortex-m-rt = "0.5.1"
+dcf77 = "0.1.0"
 mag3110 = "0.1.2"
 nb = "0.1.1"
 numtoa = "0.0.7"
-panic-abort = "0.1.1"
+panic-abort = "0.2.0"
 static-ref = "0.2.1"
 vcell = "0.1.0"
 volatile-register = "0.2.0"
-dcf77 = "0.1.0"
 
 [dependencies.nrf51-hal]
 features = ["rt"]
@@ -35,7 +35,7 @@ version = "0.5.0"
 
 [dependencies.rand]
 default-features = false
-version = "0.4.2"
+version = "0.5.1"
 
 [features]
 default = ["rt"]
