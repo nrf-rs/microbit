@@ -10,6 +10,7 @@ interface, so all that one needs to get going with progamming this device is:
 * A computer (macOS and Linux work perfectly, Windows should work but was not tested)
 * A bit of open source software
 
+Some very preliminary examples of using this crate can be found [here](https://www.eggers-club.de/blog/2018/05/31/rust-on-the-microbit-101-part-1)  
 More information about how to use this coming soon...
 
 [BBC micro:bit]: https://microbit.org
