@@ -23,6 +23,8 @@ pub use nrf51::*;
 use hal::gpio::gpio::Parts;
 use hal::serial::*;
 
+pub mod led;
+
 // FIXME: Rewrite as macro to prevent problems consuming parts of gpio
 pub fn serial_port(
     gpio: Parts,
