@@ -3,9 +3,9 @@
 
 #[macro_use(entry, exception)]
 extern crate microbit;
-extern crate panic_abort;
 extern crate cortex_m_rt as rt;
 extern crate cortex_m_semihosting as sh;
+extern crate panic_abort;
 
 use core::fmt::Write;
 
@@ -18,15 +18,14 @@ use microbit::hal::serial::BAUD115200;
 
 use microbit::led;
 
-
 exception!(HardFault, hard_fault);
- 
+
 fn hard_fault(ef: &ExceptionFrame) -> ! {
     panic!("{:#?}", ef);
 }
- 
+
 exception!(*, default_handler);
- 
+
 fn default_handler(irqn: i16) {
     panic!("Unhandled exception (IRQn = {})", irqn);
 }
@@ -55,7 +54,9 @@ fn main() -> ! {
         let tx = gpio.pin24.into_push_pull_output().downgrade();
         let rx = gpio.pin25.into_floating_input().downgrade();
 
-        let mut leds = led::Display::new(row1, row2, row3, col1, col2, col3, col4, col5, col6, col7, col8, col9);
+        let mut leds = led::Display::new(
+            row1, row2, row3, col1, col2, col3, col4, col5, col6, col7, col8, col9,
+        );
 
         let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
 
@@ -96,4 +97,6 @@ fn main() -> ! {
             delay.delay_ms(250_u32);
         }
     }
+
+    loop {}
 }

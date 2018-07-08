@@ -1,19 +1,19 @@
 //! On-board user LEDs
 
-use hal::prelude::*;
-use hal::gpio::gpio::{PIN};
-use hal::gpio::{Output, PushPull};
 use hal::delay::Delay;
+use hal::gpio::gpio::PIN;
+use hal::gpio::{Output, PushPull};
+use hal::prelude::*;
 
 type LED = PIN<Output<PushPull>>;
 
 const DEFAULT_DELAY_MS: u32 = 2;
 const LED_LAYOUT: [[(usize, usize); 5]; 5] = [
-    [(0,0), (1,3), (0,1), (1,4), (0,2)],
-    [(2,3), (2,4), (2,5), (2,6), (2,7)],
-    [(1,1), (0,8), (1,2), (2,8), (1,0)],
-    [(0,7), (0,6), (0,5), (0,4), (0,3)],
-    [(2,2), (1,6), (2,0), (1,5), (2,1)],
+    [(0, 0), (1, 3), (0, 1), (1, 4), (0, 2)],
+    [(2, 3), (2, 4), (2, 5), (2, 6), (2, 7)],
+    [(1, 1), (0, 8), (1, 2), (2, 8), (1, 0)],
+    [(0, 7), (0, 6), (0, 5), (0, 4), (0, 3)],
+    [(2, 2), (1, 6), (2, 0), (1, 5), (2, 1)],
 ];
 
 /// Array of all the LEDs in the 5x5 display on the board
@@ -26,18 +26,19 @@ pub struct Display {
 impl Display {
     /// Initializes all the user LEDs
     pub fn new(
-            row1: LED,
-            row2: LED,
-            row3: LED,
-            col1: LED,
-            col2: LED,
-            col3: LED,
-            col4: LED,
-            col5: LED,
-            col6: LED,
-            col7: LED,
-            col8: LED,
-            col9: LED) -> Self {
+        row1: LED,
+        row2: LED,
+        row3: LED,
+        col1: LED,
+        col2: LED,
+        col3: LED,
+        col4: LED,
+        col5: LED,
+        col6: LED,
+        col7: LED,
+        col8: LED,
+        col9: LED,
+    ) -> Self {
         let mut retval = Display {
             delay_ms: DEFAULT_DELAY_MS,
             rows: [row1, row2, row3],
@@ -73,7 +74,7 @@ impl Display {
         let mut led_matrix: [[u8; 9]; 3] = [[0; 9]; 3];
         for (led_display_row, layout_row) in led_display.iter().zip(LED_LAYOUT.iter()) {
             for (led_display_val, layout_loc) in led_display_row.iter().zip(layout_row) {
-                led_matrix[layout_loc.0][layout_loc.1] = *led_display_val; 
+                led_matrix[layout_loc.0][layout_loc.1] = *led_display_val;
             }
         }
         return led_matrix;

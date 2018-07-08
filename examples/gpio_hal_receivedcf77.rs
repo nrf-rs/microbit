@@ -5,7 +5,7 @@ extern crate cortex_m_rt;
 use cortex_m_rt::ExceptionFrame;
 
 extern crate dcf77;
-use dcf77::{SimpleDCF77Decoder, DCF77Time};
+use dcf77::{DCF77Time, SimpleDCF77Decoder};
 
 #[macro_use(entry, exception, interrupt)]
 extern crate microbit;
