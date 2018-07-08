@@ -1,9 +1,5 @@
 //! On-board user LEDs
 
-#![deny(unsafe_code)]
-
-// use core::ops;
-
 use hal::prelude::*;
 use hal::gpio::gpio::{PIN};
 use hal::gpio::{Output, PushPull};
