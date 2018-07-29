@@ -89,11 +89,31 @@ fn main() -> ! {
             [0, 1, 1, 1, 0],
         ];
 
+        let bright_image1 = [
+            [0, 2, 4, 6, 8],
+            [2, 4, 6, 8, 10],
+            [4, 6, 8, 10, 12],
+            [6, 8, 10, 12, 14],
+            [8, 10, 12, 14, 16],
+        ];
+
+        let bright_image2 = [
+            [8, 4, 3, 2, 1],
+            [13, 8, 4, 3, 2],
+            [14, 13, 8, 4, 3],
+            [15, 15, 13, 8, 4],
+            [16, 15, 14, 13, 8],
+        ];
+
         loop {
             write!(tx, "I <3 Rust on the micro:bit!\n\r");
             leds.display(&mut delay, letter_I, 1000);
             leds.display(&mut delay, heart, 1000);
             leds.display(&mut delay, letter_U, 1000);
+            leds.clear();
+            delay.delay_ms(250_u32);
+            leds.display_bright(&mut delay, bright_image1, 1000);
+            leds.display_bright(&mut delay, bright_image2, 1000);
             leds.clear();
             delay.delay_ms(250_u32);
         }

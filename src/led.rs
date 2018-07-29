@@ -8,7 +8,12 @@ use hal::prelude::*;
 
 type LED = PIN<Output<PushPull>>;
 
-const DEFAULT_DELAY_MS: u32 = 2;
+
+const BRIGHTNESS_BITS: u32 = 4;
+// const BRIGHTNESS_MAX: u32 = 16; // 2^4
+const BRIGHTNESS_DELAY_US: u32 = 8;
+// const ROW_DELAY_MS: u32 = 2;
+// const IAMGE_DELAY_MS: u32 = 3*ROW_DELAY_MS;
 const LED_LAYOUT: [[(usize, usize); 5]; 5] = [
     [(0, 0), (1, 3), (0, 1), (1, 4), (0, 2)],
     [(2, 3), (2, 4), (2, 5), (2, 6), (2, 7)],
@@ -19,7 +24,7 @@ const LED_LAYOUT: [[(usize, usize); 5]; 5] = [
 
 /// Array of all the LEDs in the 5x5 display on the board
 pub struct Display {
-    delay_ms: u32,
+    delay_us: u32,
     rows: [LED; 3],
     cols: [LED; 9],
 }
@@ -41,7 +46,7 @@ impl Display {
         row3: PIN15<Output<PushPull>>,
     ) -> Self {
         let mut retval = Display {
-            delay_ms: DEFAULT_DELAY_MS,
+            delay_us: BRIGHTNESS_DELAY_US,
             rows: [row1.downgrade(), row2.downgrade(), row3.downgrade()],
             cols: [
                 col1.downgrade(), col2.downgrade(), col3.downgrade(),
@@ -66,12 +71,12 @@ impl Display {
 
     /// Set delay, time spent on each matrix row, in ms
     pub fn set_delay_ms(&mut self, delay_ms: u32) {
-        self.delay_ms = delay_ms;
+        self.delay_us = delay_ms * 1000;
     }
 
     /// Set refresh rate, time for matrix scan
     pub fn set_refresh_rate(&mut self, freq_hz: u32) {
-        self.delay_ms = 1000 / freq_hz / 3;
+        self.delay_us = 1_000_000 / freq_hz / 3;
     }
 
     /// Convert 5x5 display image to 3x9 matrix image
@@ -86,29 +91,64 @@ impl Display {
     }
 
     /// Display 5x5 display image for a given duration
-    pub fn display(&mut self, delay: &mut Delay, led_display: [[u8; 5]; 5], duration_ms: u32) {
+    pub fn display(
+        &mut self,
+        delay: &mut Delay,
+        led_display: [[u8; 5]; 5],
+        duration_ms: u32
+    ) {
         let led_matrix = Display::display2matrix(led_display);
-        self.display_pre(delay, led_matrix, duration_ms);
+        self.display_precalculated(delay, led_matrix, duration_ms, 0);
+    }
+
+    /// Display 5x5 display image for a given duration
+    pub fn display_bright(
+        &mut self,
+        delay: &mut Delay,
+        led_display: [[u8; 5]; 5],
+        duration_ms: u32,
+    ) {
+        let min_trailing = led_display.iter().flatten().map(|x| x.trailing_zeros()).min().unwrap();
+        let precision_bits = BRIGHTNESS_BITS - min_trailing;
+        let led_matrix = Display::display2matrix(led_display);
+        self.display_precalculated(delay, led_matrix, duration_ms, precision_bits);
     }
 
     /// Display 3x9 matrix image for a given duration
-    pub fn display_pre(&mut self, delay: &mut Delay, led_matrix: [[u8; 9]; 3], duration_ms: u32) {
+    pub fn display_precalculated(
+        &mut self,
+        delay: &mut Delay,
+        led_matrix: [[u8; 9]; 3],
+        duration_ms: u32,
+        brightness_bits: u32,
+    ) {
+        // Number of brightness level loops
+        let brightness_loops = 2_u32.pow(brightness_bits);
+        // How much each loop is worth
+        let brightness_factor = 2_u32.pow(BRIGHTNESS_BITS-brightness_bits);
+        // Calculates how long to block for
+        // e.g. If the duration_ms is 500ms (half a second)
+        //      and self.delay_ms is 2ms (about 2ms per scan row),
+        //      each refresh takes 3rows×2ms, so we need 500ms / (3×2ms) loops.
         // TODO: something more intelligent with timers
-        let loops = duration_ms / (self.rows.len() as u32 * self.delay_ms);
+        let loops = (1000 * duration_ms) / 
+                    (self.rows.len() as u32 * brightness_loops * self.delay_us);
         for _ in 0..loops {
-            for (row_line, led_matrix_row) in self.rows.iter_mut().zip(led_matrix.iter()) {
-                row_line.set_high();
-                for (col_line, led_matrix_val) in self.cols.iter_mut().zip(led_matrix_row.iter()) {
-                    // TODO : use value to set brightness
-                    if *led_matrix_val > 0 {
-                        col_line.set_low();
+            for brightness_loop in 0..brightness_loops {
+                let brightness_threshold: u8 = (brightness_factor * brightness_loop) as u8;
+                for (row_line, led_matrix_row) in self.rows.iter_mut().zip(led_matrix.iter()) {
+                    row_line.set_high();
+                    for (col_line, led_matrix_val) in self.cols.iter_mut().zip(led_matrix_row.iter()) {
+                        if *led_matrix_val > brightness_threshold {
+                            col_line.set_low();
+                        }
                     }
+                    delay.delay_us(brightness_loops * self.delay_us);
+                    for col_line in &mut self.cols {
+                        col_line.set_high();
+                    }
+                    row_line.set_low();
                 }
-                delay.delay_ms(self.delay_ms);
-                for col_line in &mut self.cols {
-                    col_line.set_high();
-                }
-                row_line.set_low();
             }
         }
     }
