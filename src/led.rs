@@ -2,6 +2,7 @@
 
 use hal::delay::Delay;
 use hal::gpio::gpio::PIN;
+use hal::gpio::gpio::{PIN4, PIN5, PIN6, PIN7, PIN8, PIN9, PIN10, PIN11, PIN12, PIN13, PIN14, PIN15};
 use hal::gpio::{Output, PushPull};
 use hal::prelude::*;
 
@@ -26,35 +27,39 @@ pub struct Display {
 impl Display {
     /// Initializes all the user LEDs
     pub fn new(
-        row1: LED,
-        row2: LED,
-        row3: LED,
-        col1: LED,
-        col2: LED,
-        col3: LED,
-        col4: LED,
-        col5: LED,
-        col6: LED,
-        col7: LED,
-        col8: LED,
-        col9: LED,
+        col1: PIN4<Output<PushPull>>,
+        col2: PIN5<Output<PushPull>>,
+        col3: PIN6<Output<PushPull>>,
+        col4: PIN7<Output<PushPull>>,
+        col5: PIN8<Output<PushPull>>,
+        col6: PIN9<Output<PushPull>>,
+        col7: PIN10<Output<PushPull>>,
+        col8: PIN11<Output<PushPull>>,
+        col9: PIN12<Output<PushPull>>,
+        row1: PIN13<Output<PushPull>>,
+        row2: PIN14<Output<PushPull>>,
+        row3: PIN15<Output<PushPull>>,
     ) -> Self {
         let mut retval = Display {
             delay_ms: DEFAULT_DELAY_MS,
-            rows: [row1, row2, row3],
-            cols: [col1, col2, col3, col4, col5, col6, col7, col8, col9],
+            rows: [row1.downgrade(), row2.downgrade(), row3.downgrade()],
+            cols: [
+                col1.downgrade(), col2.downgrade(), col3.downgrade(),
+                col4.downgrade(), col5.downgrade(), col6.downgrade(),
+                col7.downgrade(), col8.downgrade(), col9.downgrade()
+            ],
         };
         // This is needed to reduce flickering on reset
         retval.clear();
-        return retval;
+        retval
     }
 
     /// Clear display
     pub fn clear(&mut self) {
-        for row in self.rows.iter_mut() {
+        for row in &mut self.rows {
             row.set_low();
         }
-        for col in self.cols.iter_mut() {
+        for col in &mut self.cols {
             col.set_high();
         }
     }
@@ -77,7 +82,7 @@ impl Display {
                 led_matrix[layout_loc.0][layout_loc.1] = *led_display_val;
             }
         }
-        return led_matrix;
+        led_matrix
     }
 
     /// Display 5x5 display image for a given duration
@@ -100,7 +105,7 @@ impl Display {
                     }
                 }
                 delay.delay_ms(self.delay_ms);
-                for col_line in self.cols.iter_mut() {
+                for col_line in &mut self.cols {
                     col_line.set_high();
                 }
                 row_line.set_low();
