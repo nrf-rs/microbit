@@ -7,7 +7,7 @@ contains has everything and a kitchensink built-in, even a capable debugging
 interface, so all that one needs to get going with progamming this device is:
 
 * A BBC micro:bit board
-* A computer (macOS and Linux work perfectly, Windows should work but was not tested)
+* A computer (macOS and Linux work perfectly, [Windows tested as well](http://flames-of-code.netlify.com/blog/rust-microbit-windows/))
 * A bit of open source software
 
 Some very preliminary examples of using this crate can be found [here in this repo][examples] or [here on my blog][myblog].  
