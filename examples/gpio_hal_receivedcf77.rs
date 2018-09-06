@@ -113,13 +113,13 @@ fn printrng() {
 
                 let dcftime = DCF77Time(raw_data);
                 if let Ok((year, month, day, _)) = dcftime.date() {
-                    let _ = write!(tx, "\n\r{:4}-{:02}-{:02} ", year, month, day);
+                    let _ = write!(tx, "\n\r{:4}-{:02}-{:02} ", year as usize, month as usize, day as usize);
                 } else {
                     let _ = tx.write_str("\n\rXXXX:XX:XX");
                 }
 
                 if let Ok(hours) = dcftime.hours() {
-                    let _ = write!(tx, "{:02}", hours);
+                    let _ = write!(tx, "{:02}", hours as usize);
                 } else {
                     let _ = tx.write_str("XX");
                 }
@@ -127,14 +127,14 @@ fn printrng() {
                 let _ = tx.write_str(":");
 
                 if let Ok(minutes) = dcftime.minutes() {
-                    let _ = write!(tx, "{:02}", minutes);
+                    let _ = write!(tx, "{:02}", minutes as usize);
                 } else {
                     let _ = tx.write_str("XX");
                 }
 
                 let _ = tx.write_str(":");
 
-                let _ = write!(tx, "{:02}\n\r", dcf.seconds());
+                let _ = write!(tx, "{:02}\n\r", dcf.seconds() as usize);
             }
             rtc.events_tick.write(|w| unsafe { w.bits(0) });
         }
