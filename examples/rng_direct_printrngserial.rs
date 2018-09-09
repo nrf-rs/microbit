@@ -2,9 +2,9 @@
 #![no_std]
 
 extern crate cortex_m_rt;
-use cortex_m_rt::ExceptionFrame;
+extern crate panic_abort;
 
-#[macro_use(entry, exception, interrupt)]
+#[macro_use]
 extern crate microbit;
 
 use cortex_m::interrupt::Mutex;
@@ -14,24 +14,13 @@ use microbit::UART0;
 
 use core::cell::RefCell;
 use core::fmt::Write;
+use cortex_m_rt::entry;
 
 static RNG: Mutex<RefCell<Option<microbit::RNG>>> = Mutex::new(RefCell::new(None));
 static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(None));
 static UART: Mutex<RefCell<Option<microbit::UART0>>> = Mutex::new(RefCell::new(None));
 
-extern crate panic_abort;
-
-exception!(*, default_handler);
-
-fn default_handler(_irqn: i16) {}
-
-exception!(HardFault, hard_fault);
-
-fn hard_fault(_ef: &ExceptionFrame) -> ! {
-    loop {}
-}
-entry!(main);
-
+#[entry]
 fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
         p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });

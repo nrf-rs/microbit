@@ -2,9 +2,9 @@
 #![no_std]
 
 extern crate cortex_m_rt;
-use cortex_m_rt::ExceptionFrame;
+extern crate panic_abort;
 
-#[macro_use(entry, exception, interrupt)]
+#[macro_use]
 extern crate microbit;
 
 use microbit::cortex_m;
@@ -14,6 +14,7 @@ use microbit::hal::serial::BAUD115200;
 
 use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::Peripherals;
+use cortex_m_rt::entry;
 
 use core::cell::RefCell;
 use core::fmt::Write;
@@ -22,19 +23,7 @@ use core::ops::DerefMut;
 static GPIO: Mutex<RefCell<Option<microbit::GPIOTE>>> = Mutex::new(RefCell::new(None));
 static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
 
-extern crate panic_abort;
-
-exception!(*, default_handler);
-
-fn default_handler(_irqn: i16) {}
-
-exception!(HardFault, hard_fault);
-
-fn hard_fault(_ef: &ExceptionFrame) -> ! {
-    loop {}
-}
-entry!(main);
-
+#[entry]
 fn main() -> ! {
     if let (Some(p), Some(mut cp)) = (microbit::Peripherals::take(), Peripherals::take()) {
         cortex_m::interrupt::free(move |cs| {

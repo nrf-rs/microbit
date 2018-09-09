@@ -2,10 +2,9 @@
 #![no_std]
 
 extern crate cortex_m_rt;
-use cortex_m_rt::ExceptionFrame;
-
-#[macro_use(entry, exception, interrupt)]
+#[macro_use]
 extern crate microbit;
+extern crate panic_abort;
 
 use microbit::cortex_m;
 use microbit::hal::prelude::*;
@@ -15,6 +14,7 @@ use microbit::hal::serial::BAUD115200;
 
 use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::Peripherals;
+use cortex_m_rt::entry;
 
 extern crate rand;
 use rand::SeedableRng;
@@ -27,19 +27,7 @@ static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(Non
 static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
 static RNG: Mutex<RefCell<Option<rand::ChaChaRng>>> = Mutex::new(RefCell::new(None));
 
-extern crate panic_abort;
-
-exception!(*, default_handler);
-
-fn default_handler(_irqn: i16) {}
-
-exception!(HardFault, hard_fault);
-
-fn hard_fault(_ef: &ExceptionFrame) -> ! {
-    loop {}
-}
-entry!(main);
-
+#[entry]
 fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
         cortex_m::interrupt::free(move |cs| {
@@ -94,7 +82,6 @@ fn main() -> ! {
 /* Define an exception, i.e. function to call when exception occurs. Here if our SysTick timer
  * trips the hello_world function will be called */
 interrupt!(RTC0, printrng);
-
 fn printrng() {
     /* Enter critical section */
     cortex_m::interrupt::free(|cs| {

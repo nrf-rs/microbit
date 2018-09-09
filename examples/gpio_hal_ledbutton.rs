@@ -2,25 +2,13 @@
 #![no_std]
 
 extern crate cortex_m_rt;
-use cortex_m_rt::ExceptionFrame;
-
-#[macro_use(entry, exception)]
 extern crate microbit;
-use microbit::hal::prelude::*;
-
 extern crate panic_abort;
 
-exception!(*, default_handler);
+use cortex_m_rt::entry;
+use microbit::hal::prelude::*;
 
-fn default_handler(_irqn: i16) {}
-
-exception!(HardFault, hard_fault);
-
-fn hard_fault(_ef: &ExceptionFrame) -> ! {
-    loop {}
-}
-entry!(main);
-
+#[entry]
 fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
         /* Split GPIO pins */

@@ -1,15 +1,13 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt as rt;
-extern crate panic_abort;
-
-#[macro_use(entry, exception)]
+extern crate cortex_m_rt;
 extern crate microbit;
+extern crate panic_abort;
 
 use core::fmt::Write;
 
-use rt::ExceptionFrame;
+use cortex_m_rt::entry;
 
 use microbit::hal::delay::Delay;
 use microbit::hal::prelude::*;
@@ -18,19 +16,7 @@ use microbit::hal::serial::BAUD115200;
 
 use microbit::led;
 
-exception!(HardFault, hard_fault);
-
-fn hard_fault(ef: &ExceptionFrame) -> ! {
-    panic!("{:#?}", ef);
-}
-
-exception!(*, default_handler);
-
-fn default_handler(irqn: i16) {
-    panic!("Unhandled exception (IRQn = {})", irqn);
-}
-
-entry!(main);
+#[entry]
 fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
         let mut gpio = p.GPIO.split();
@@ -50,10 +36,7 @@ fn main() -> ! {
         let col8 = gpio.pin11.into_push_pull_output();
         let col9 = gpio.pin12.into_push_pull_output();
         let mut leds = led::Display::new(
-            col1, col2, col3,
-            col4, col5, col6,
-            col7, col8, col9,
-            row1, row2, row3,
+            col1, col2, col3, col4, col5, col6, col7, col8, col9, row1, row2, row3,
         );
 
         // Configure RX and TX pins accordingly

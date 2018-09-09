@@ -2,7 +2,9 @@
 
 use hal::delay::Delay;
 use hal::gpio::gpio::PIN;
-use hal::gpio::gpio::{PIN4, PIN5, PIN6, PIN7, PIN8, PIN9, PIN10, PIN11, PIN12, PIN13, PIN14, PIN15};
+use hal::gpio::gpio::{
+    PIN10, PIN11, PIN12, PIN13, PIN14, PIN15, PIN4, PIN5, PIN6, PIN7, PIN8, PIN9,
+};
 use hal::gpio::{Output, PushPull};
 use hal::prelude::*;
 
@@ -44,9 +46,15 @@ impl Display {
             delay_ms: DEFAULT_DELAY_MS,
             rows: [row1.downgrade(), row2.downgrade(), row3.downgrade()],
             cols: [
-                col1.downgrade(), col2.downgrade(), col3.downgrade(),
-                col4.downgrade(), col5.downgrade(), col6.downgrade(),
-                col7.downgrade(), col8.downgrade(), col9.downgrade()
+                col1.downgrade(),
+                col2.downgrade(),
+                col3.downgrade(),
+                col4.downgrade(),
+                col5.downgrade(),
+                col6.downgrade(),
+                col7.downgrade(),
+                col8.downgrade(),
+                col9.downgrade(),
             ],
         };
         // This is needed to reduce flickering on reset
