@@ -1,7 +1,4 @@
 #![no_std]
-#![cfg_attr(feature = "rt", feature(global_asm))]
-#![cfg_attr(feature = "rt", feature(used))]
-#![feature(const_fn)]
 #![allow(non_camel_case_types)]
 
 pub extern crate nrf51_hal as hal;
@@ -15,6 +12,7 @@ pub use nb::*;
 
 pub use cortex_m_rt::*;
 pub use hal::nrf51;
+pub use nrf51::interrupt;
 pub use nrf51::interrupt::*;
 pub use nrf51::*;
 

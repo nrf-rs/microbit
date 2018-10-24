@@ -2,9 +2,10 @@
 #![no_std]
 
 extern crate cortex_m_rt;
-extern crate panic_abort;
-#[macro_use]
 extern crate microbit;
+extern crate panic_abort;
+
+use microbit::hal::nrf51::*;
 
 use microbit::cortex_m;
 use microbit::UART0;
