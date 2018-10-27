@@ -29,7 +29,7 @@ fn main() -> ! {
         cortex_m::interrupt::free(move |cs| {
             /* Enable external GPIO interrupts */
             cp.NVIC.enable(microbit::Interrupt::GPIOTE);
-            cp.NVIC.clear_pending(microbit::Interrupt::GPIOTE);
+            microbit::NVIC::unpend(microbit::Interrupt::GPIOTE);
 
             /* Split GPIO pins */
             let gpio = p.GPIO.split();

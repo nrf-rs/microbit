@@ -71,7 +71,7 @@ fn main() -> ! {
             *DCF.borrow(cs).borrow_mut() = Some(SimpleDCF77Decoder::new());
 
             cp.NVIC.enable(microbit::Interrupt::RTC0);
-            cp.NVIC.clear_pending(microbit::Interrupt::RTC0);
+            microbit::NVIC::unpend(microbit::Interrupt::RTC0);
         });
     }
 

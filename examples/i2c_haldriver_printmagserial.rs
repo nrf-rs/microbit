@@ -36,7 +36,7 @@ fn main() -> ! {
         cortex_m::interrupt::free(move |cs| {
             /* Enable external GPIO interrupts */
             cp.NVIC.enable(microbit::Interrupt::GPIOTE);
-            cp.NVIC.clear_pending(microbit::Interrupt::GPIOTE);
+            microbit::NVIC::unpend(microbit::Interrupt::GPIOTE);
 
             /* Set up pin 29 to act as external interrupt from the magnetometer */
             p.GPIOTE.config[0]

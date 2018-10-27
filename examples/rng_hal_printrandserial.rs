@@ -71,7 +71,7 @@ fn main() -> ! {
 
             if let Some(mut p) = Peripherals::take() {
                 p.NVIC.enable(microbit::Interrupt::RTC0);
-                p.NVIC.clear_pending(microbit::Interrupt::RTC0);
+                microbit::NVIC::unpend(microbit::Interrupt::RTC0);
             }
         });
     }
