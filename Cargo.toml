@@ -14,6 +14,7 @@ keywords = [
 ]
 license = "0BSD"
 name = "microbit"
+readme = "README.md"
 repository = "https://github.com/therealprof/microbit"
 version = "0.6.1"
 
