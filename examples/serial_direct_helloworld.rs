@@ -22,7 +22,9 @@ fn main() -> ! {
         let _ = write_uart0(&p.UART0, "Hello World!\n");
     }
 
-    loop {}
+    loop {
+        continue;
+    }
 }
 
 fn write_uart0(uart0: &microbit::UART0, s: &str) -> core::fmt::Result {

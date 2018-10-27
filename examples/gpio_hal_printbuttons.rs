@@ -67,7 +67,9 @@ fn main() -> ! {
         });
     }
 
-    loop {}
+    loop {
+        continue;
+    }
 }
 
 /* Define an exception, i.e. function to call when exception occurs. Here if we receive an

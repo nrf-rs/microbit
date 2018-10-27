@@ -49,7 +49,9 @@ fn main() -> ! {
         }
     }
 
-    loop {}
+    loop {
+        continue;
+    }
 }
 
 fn write_uart0(uart0: &microbit::UART0, s: &str) -> core::fmt::Result {
