@@ -1,19 +1,19 @@
 #![no_main]
 #![no_std]
 
+extern crate cortex_m;
 extern crate cortex_m_rt;
-extern crate panic_abort;
+extern crate panic_halt;
 
-#[macro_use]
 extern crate microbit;
 
 extern crate dcf77;
 
 use dcf77::{DCF77Time, SimpleDCF77Decoder};
 
-use microbit::cortex_m;
 use microbit::hal::gpio::gpio::PIN16;
 use microbit::hal::gpio::{Floating, Input};
+use microbit::hal::nrf51::interrupt;
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
@@ -80,11 +80,10 @@ fn main() -> ! {
     }
 }
 
-/* Define an exception, i.e. function to call when exception occurs. Here if our SysTick timer
- * trips the hello_world function will be called */
-interrupt!(RTC0, printrng);
-
-fn printrng() {
+/* Define an interrupt handler, i.e. function to call when interrupt occurs. Here if our timer
+ * trips the process_dcf77 function will be called */
+interrupt!(RTC0, process_dcf77);
+fn process_dcf77() {
     /* Enter critical section */
     cortex_m::interrupt::free(|cs| {
         if let (Some(rtc), &mut Some(ref mut tx), &mut Some(ref mut pin), &mut Some(ref mut dcf)) = (

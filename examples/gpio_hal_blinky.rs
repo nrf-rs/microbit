@@ -3,7 +3,7 @@
 
 extern crate cortex_m_rt;
 extern crate microbit;
-extern crate panic_abort;
+extern crate panic_halt;
 
 use microbit::hal::delay::Delay;
 use microbit::hal::prelude::*;

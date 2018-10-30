@@ -4,7 +4,7 @@
 extern crate cortex_m_rt;
 #[macro_use]
 extern crate microbit;
-extern crate panic_abort;
+extern crate panic_halt;
 
 use microbit::cortex_m;
 use microbit::hal::prelude::*;

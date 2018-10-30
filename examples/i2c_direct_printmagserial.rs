@@ -2,8 +2,8 @@
 #![no_std]
 
 extern crate cortex_m_rt;
+extern crate panic_halt;
 extern crate microbit;
-extern crate panic_abort;
 
 use microbit::hal::nrf51::*;
 
