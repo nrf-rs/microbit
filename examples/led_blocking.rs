@@ -9,10 +9,11 @@ use core::fmt::Write;
 
 use cortex_m_rt::entry;
 
-use microbit::hal::delay::Delay;
+use microbit::hal::timer::{Timer, Generic};
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
+use microbit::nrf51::TIMER0;
 
 use microbit::led;
 
@@ -20,7 +21,7 @@ use microbit::led;
 fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
         let mut gpio = p.GPIO.split();
-        let mut delay = Delay::new(p.TIMER0);
+        let mut delay = Timer::<Generic, TIMER0>::new(p.TIMER0, 4).into_delay();
 
         // Display
         let row1 = gpio.pin13.into_push_pull_output();

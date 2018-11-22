@@ -5,7 +5,7 @@ extern crate cortex_m_rt;
 extern crate microbit;
 extern crate panic_halt;
 
-use microbit::hal::delay::Delay;
+use microbit::hal::delay::{Timer, Generic, TIMER0};
 use microbit::hal::prelude::*;
 
 use cortex_m_rt::entry;
@@ -14,7 +14,7 @@ use cortex_m_rt::entry;
 fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
         let mut gpio = p.GPIO.split();
-        let mut delay = Delay::new(p.TIMER0);
+        let mut delay = Timer::<Generic, TIMER0>::new(p.TIMER0, 4).into_delay();
         let mut led = gpio.pin13.into_push_pull_output();
         let _ = gpio.pin4.into_push_pull_output();
 
