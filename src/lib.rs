@@ -1,32 +1,23 @@
 #![no_std]
 #![allow(non_camel_case_types)]
 
-pub extern crate nrf51_hal as hal;
-
-pub extern crate cortex_m;
-pub extern crate nb;
-
-extern crate cortex_m_rt;
+pub use nrf51_hal as hal;
 
 pub use nb::*;
 
-pub use cortex_m_rt::*;
-pub use hal::nrf51;
-pub use nrf51::interrupt;
-pub use nrf51::interrupt::*;
-pub use nrf51::*;
+pub use crate::hal::nrf51::*;
 
-use hal::gpio::gpio::Parts;
-use hal::serial::*;
+use crate::hal::gpio::gpio::Parts;
+use crate::hal::serial::*;
 
 pub mod led;
 
 // FIXME: Rewrite as macro to prevent problems consuming parts of gpio
 pub fn serial_port(
     gpio: Parts,
-    uart: nrf51::UART0,
+    uart: hal::nrf51::UART0,
     speed: BAUDRATEW,
-) -> (Tx<nrf51::UART0>, Rx<nrf51::UART0>) {
+) -> (Tx<hal::nrf51::UART0>, Rx<hal::nrf51::UART0>) {
     /* Configure RX and TX pins accordingly */
     let tx = gpio.pin24.into_push_pull_output().downgrade();
     let rx = gpio.pin25.into_floating_input().downgrade();

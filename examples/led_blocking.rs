@@ -1,9 +1,7 @@
 #![no_std]
 #![no_main]
 
-extern crate cortex_m_rt;
-extern crate microbit;
-extern crate panic_halt;
+use panic_halt;
 
 use core::fmt::Write;
 
@@ -19,7 +17,7 @@ use microbit::led;
 #[entry]
 fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
-        let mut gpio = p.GPIO.split();
+        let gpio = p.GPIO.split();
         let mut delay = Delay::new(p.TIMER0);
 
         // Display
@@ -73,7 +71,7 @@ fn main() -> ! {
         ];
 
         loop {
-            write!(tx, "I <3 Rust on the micro:bit!\n\r");
+            write!(tx, "I <3 Rust on the micro:bit!\n\r").ok();
             leds.display(&mut delay, letter_I, 1000);
             leds.display(&mut delay, heart, 1000);
             leds.display(&mut delay, letter_U, 1000);

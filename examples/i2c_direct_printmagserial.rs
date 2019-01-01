@@ -1,14 +1,10 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m_rt;
-extern crate panic_halt;
-extern crate microbit;
+use panic_halt;
 
 use microbit::hal::nrf51::*;
-
-use microbit::cortex_m;
-use microbit::UART0;
+use microbit::hal::nrf51::{interrupt, UART0};
 
 use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::Peripherals;
@@ -17,9 +13,9 @@ use core::cell::RefCell;
 use core::fmt::Write;
 use cortex_m_rt::entry;
 
-static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(None));
-static UART: Mutex<RefCell<Option<microbit::UART0>>> = Mutex::new(RefCell::new(None));
-static TWI: Mutex<RefCell<Option<microbit::TWI1>>> = Mutex::new(RefCell::new(None));
+static RTC: Mutex<RefCell<Option<RTC0>>> = Mutex::new(RefCell::new(None));
+static UART: Mutex<RefCell<Option<UART0>>> = Mutex::new(RefCell::new(None));
+static TWI: Mutex<RefCell<Option<TWI1>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
@@ -107,10 +103,10 @@ fn main() -> ! {
     }
 }
 
-/* Define an exception, i.e. function to call when exception occurs. Here if our SysTick timer
- * trips the printmag function will be called */
-interrupt!(RTC0, printmag);
-fn printmag() {
+// Define an interrupt handler, i.e. function to call when exception occurs. Here if our timer
+// trips, we'll read data from the accelerometer
+#[interrupt]
+fn RTC0() {
     /* Enter critical section */
     cortex_m::interrupt::free(|cs| {
         if let (Some(rtc), Some(twi)) = (

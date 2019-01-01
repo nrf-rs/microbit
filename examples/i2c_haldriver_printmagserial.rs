@@ -1,33 +1,29 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m_rt;
-extern crate panic_halt;
+use panic_halt;
 
-#[macro_use]
-extern crate microbit;
-
-use microbit::cortex_m;
+use cortex_m;
 use microbit::hal::i2c;
 use microbit::hal::i2c::I2c;
+use microbit::hal::nrf51::{interrupt, GPIOTE, UART0};
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
 use microbit::TWI1;
 
-use cortex_m::interrupt::Mutex;
-use cortex_m::peripheral::Peripherals;
+use crate::cortex_m::interrupt::Mutex;
+use crate::cortex_m::peripheral::Peripherals;
 use cortex_m_rt::entry;
 
-extern crate mag3110;
 use mag3110::{DataRate, Mag3110, Oversampling};
 
 use core::cell::RefCell;
 use core::fmt::Write;
 use core::ops::DerefMut;
 
-static GPIO: Mutex<RefCell<Option<microbit::GPIOTE>>> = Mutex::new(RefCell::new(None));
-static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
+static GPIO: Mutex<RefCell<Option<GPIOTE>>> = Mutex::new(RefCell::new(None));
+static TX: Mutex<RefCell<Option<serial::Tx<UART0>>>> = Mutex::new(RefCell::new(None));
 static MAG3110: Mutex<RefCell<Option<Mag3110<I2c<TWI1>>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
@@ -82,10 +78,10 @@ fn main() -> ! {
     }
 }
 
-/* Define an exception, i.e. function to call when exception occurs. Here if we receive an internal
- * interrupt from the magnetometer, the printmag function will be called */
-interrupt!(GPIOTE, printmag);
-fn printmag() {
+// Define an interrupt handler, i.e. function to call when interrupt occurs. Here if we receive an
+// internal interrupt from the magnetometer, we'll print out the readings
+#[interrupt]
+fn GPIOTE() {
     /* Enter critical section */
     cortex_m::interrupt::free(|cs| {
         if let (Some(gpiote), &mut Some(ref mut mag3110), &mut Some(ref mut tx)) = (

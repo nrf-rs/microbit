@@ -1,13 +1,9 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m_rt;
-extern crate panic_halt;
+use panic_halt;
 
-#[macro_use]
-extern crate microbit;
-
-use microbit::cortex_m;
+use microbit::hal::nrf51::{interrupt, GPIOTE, UART0};
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
@@ -20,8 +16,8 @@ use core::cell::RefCell;
 use core::fmt::Write;
 use core::ops::DerefMut;
 
-static GPIO: Mutex<RefCell<Option<microbit::GPIOTE>>> = Mutex::new(RefCell::new(None));
-static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
+static GPIO: Mutex<RefCell<Option<GPIOTE>>> = Mutex::new(RefCell::new(None));
+static TX: Mutex<RefCell<Option<serial::Tx<UART0>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
@@ -72,11 +68,10 @@ fn main() -> ! {
     }
 }
 
-/* Define an exception, i.e. function to call when exception occurs. Here if we receive an
- * interrupt from a button press, the printbuttons function will be called */
-interrupt!(GPIOTE, printbuttons);
-
-fn printbuttons() {
+// Define an interrupt, i.e. function to call when exception occurs. Here if we receive an
+// interrupt from a button press, the function will be called
+#[interrupt]
+fn GPIOTE() {
     /* Enter critical section */
     cortex_m::interrupt::free(|cs| {
         if let (Some(gpiote), &mut Some(ref mut tx)) = (

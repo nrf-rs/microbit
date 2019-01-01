@@ -1,12 +1,12 @@
 //! On-board user LEDs
 
-use hal::delay::Delay;
-use hal::gpio::gpio::PIN;
-use hal::gpio::gpio::{
+use crate::hal::delay::Delay;
+use crate::hal::gpio::gpio::PIN;
+use crate::hal::gpio::gpio::{
     PIN10, PIN11, PIN12, PIN13, PIN14, PIN15, PIN4, PIN5, PIN6, PIN7, PIN8, PIN9,
 };
-use hal::gpio::{Output, PushPull};
-use hal::prelude::*;
+use crate::hal::gpio::{Output, PushPull};
+use crate::hal::prelude::*;
 
 type LED = PIN<Output<PushPull>>;
 

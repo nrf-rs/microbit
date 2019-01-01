@@ -1,24 +1,19 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m_rt;
-extern crate panic_halt;
-
-#[macro_use]
-extern crate microbit;
+use panic_halt;
 
 use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::Peripherals;
-use microbit::cortex_m;
-use microbit::UART0;
+use microbit::hal::nrf51::{interrupt, RNG, RTC0, UART0};
 
 use core::cell::RefCell;
 use core::fmt::Write;
 use cortex_m_rt::entry;
 
-static RNG: Mutex<RefCell<Option<microbit::RNG>>> = Mutex::new(RefCell::new(None));
-static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(None));
-static UART: Mutex<RefCell<Option<microbit::UART0>>> = Mutex::new(RefCell::new(None));
+static RNG: Mutex<RefCell<Option<RNG>>> = Mutex::new(RefCell::new(None));
+static RTC: Mutex<RefCell<Option<RTC0>>> = Mutex::new(RefCell::new(None));
+static UART: Mutex<RefCell<Option<UART0>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
@@ -72,11 +67,10 @@ fn main() -> ! {
     }
 }
 
-/* Define an exception, i.e. function to call when exception occurs. Here if our SysTick timer
- * trips the hello_world function will be called */
-interrupt!(RTC0, printrng);
-
-fn printrng() {
+// Define an exception, i.e. function to call when exception occurs. Here if our timer
+// trips, we'll print some random number to the serial port
+#[interrupt]
+fn RTC0() {
     /* Enter critical section */
     cortex_m::interrupt::free(|cs| {
         if let Some(rtc) = RTC.borrow(cs).borrow().as_ref() {

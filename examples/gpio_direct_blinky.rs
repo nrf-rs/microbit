@@ -1,12 +1,9 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m_rt;
-extern crate microbit;
-extern crate panic_halt;
+use panic_halt;
 
 use cortex_m_rt::entry;
-use microbit::*;
 
 #[entry]
 fn main() -> ! {

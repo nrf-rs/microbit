@@ -1,9 +1,7 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m_rt;
-extern crate microbit;
-extern crate panic_halt;
+use panic_halt;
 
 use core::str;
 use cortex_m_rt::entry;
@@ -54,7 +52,7 @@ fn main() -> ! {
     }
 }
 
-fn write_uart0(uart0: &microbit::UART0, s: &str) -> core::fmt::Result {
+fn write_uart0(uart0: &microbit::hal::nrf51::UART0, s: &str) -> core::fmt::Result {
     /* Start UART sender */
     uart0.tasks_starttx.write(|w| unsafe { w.bits(1) });
 

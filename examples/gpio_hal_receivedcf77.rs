@@ -1,19 +1,13 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m;
-extern crate cortex_m_rt;
-extern crate panic_halt;
-
-extern crate microbit;
-
-extern crate dcf77;
+use panic_halt;
 
 use dcf77::{DCF77Time, SimpleDCF77Decoder};
 
 use microbit::hal::gpio::gpio::PIN16;
 use microbit::hal::gpio::{Floating, Input};
-use microbit::hal::nrf51::interrupt;
+use microbit::hal::nrf51::{interrupt, RTC0, UART0};
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
@@ -29,8 +23,8 @@ use core::ops::DerefMut;
 
 static DCF: Mutex<RefCell<Option<SimpleDCF77Decoder>>> = Mutex::new(RefCell::new(None));
 static DCFPIN: Mutex<RefCell<Option<PIN16<Input<Floating>>>>> = Mutex::new(RefCell::new(None));
-static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(None));
-static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
+static RTC: Mutex<RefCell<Option<RTC0>>> = Mutex::new(RefCell::new(None));
+static TX: Mutex<RefCell<Option<serial::Tx<UART0>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
@@ -80,10 +74,10 @@ fn main() -> ! {
     }
 }
 
-/* Define an interrupt handler, i.e. function to call when interrupt occurs. Here if our timer
- * trips the process_dcf77 function will be called */
-interrupt!(RTC0, process_dcf77);
-fn process_dcf77() {
+// Define an interrupt handler, i.e. function to call when interrupt occurs. Here if our timer
+// trips, we'll process data from the DC77 module
+#[interrupt]
+fn RTC0() {
     /* Enter critical section */
     cortex_m::interrupt::free(|cs| {
         if let (Some(rtc), &mut Some(ref mut tx), &mut Some(ref mut pin), &mut Some(ref mut dcf)) = (

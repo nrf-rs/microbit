@@ -1,12 +1,10 @@
 #![no_main]
 #![no_std]
 
-extern crate cortex_m_rt;
-#[macro_use]
-extern crate microbit;
-extern crate panic_halt;
+use panic_halt;
 
-use microbit::cortex_m;
+use cortex_m;
+use microbit::hal::nrf51::{interrupt, RTC0, UART0};
 use microbit::hal::prelude::*;
 use microbit::hal::rng;
 use microbit::hal::serial;
@@ -16,16 +14,16 @@ use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::Peripherals;
 use cortex_m_rt::entry;
 
-extern crate rand;
 use rand::SeedableRng;
+use rand_chacha::ChaChaRng;
 
 use core::cell::RefCell;
 use core::fmt::Write;
 use core::ops::DerefMut;
 
-static RTC: Mutex<RefCell<Option<microbit::RTC0>>> = Mutex::new(RefCell::new(None));
-static TX: Mutex<RefCell<Option<serial::Tx<microbit::UART0>>>> = Mutex::new(RefCell::new(None));
-static RNG: Mutex<RefCell<Option<rand::ChaChaRng>>> = Mutex::new(RefCell::new(None));
+static RTC: Mutex<RefCell<Option<RTC0>>> = Mutex::new(RefCell::new(None));
+static TX: Mutex<RefCell<Option<serial::Tx<UART0>>>> = Mutex::new(RefCell::new(None));
+static RNG: Mutex<RefCell<Option<ChaChaRng>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
@@ -58,7 +56,7 @@ fn main() -> ! {
             /* Read 4 bytes of data from hardware RNG */
             rng.read(&mut seed).ok();
 
-            let rng = rand::ChaChaRng::from_seed(seed);
+            let rng = ChaChaRng::from_seed(seed);
             *RNG.borrow(cs).borrow_mut() = Some(rng);
 
             p.RTC0.prescaler.write(|w| unsafe { w.bits(1) });
@@ -81,10 +79,10 @@ fn main() -> ! {
     }
 }
 
-/* Define an exception, i.e. function to call when exception occurs. Here if our SysTick timer
- * trips the hello_world function will be called */
-interrupt!(RTC0, printrng);
-fn printrng() {
+// Define an exception, i.e. function to call when exception occurs. Here if our timer
+// trips, we'll print out a random number to the serial port
+#[interrupt]
+fn RTC0() {
     /* Enter critical section */
     cortex_m::interrupt::free(|cs| {
         if let (Some(rtc), &mut Some(ref mut rng), &mut Some(ref mut tx)) = (
