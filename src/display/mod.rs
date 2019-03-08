@@ -119,6 +119,8 @@
 //! Once you've called `set_frame()`, you are free to reuse the
 //! `MicrobitFrame`.
 //!
+//! See [`doc_example`](doc_example/index.html) for a complete working example.
+//!
 //! [dal]: https://lancaster-university.github.io/microbit-docs/
 //! [micropython]: https://microbit-micropython.readthedocs.io/
 //!
@@ -151,6 +153,8 @@ mod microbit_timer;
 pub mod image;
 
 pub use microbit_matrix::MicrobitFrame;
+
+pub mod doc_example;
 
 
 use microbit_control::MicrobitGpio;
