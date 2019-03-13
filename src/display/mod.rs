@@ -157,7 +157,10 @@ pub use microbit_matrix::MicrobitFrame;
 pub mod doc_example;
 
 
+use core::ops::Deref;
+use crate::hal::nrf51;
 use microbit_control::MicrobitGpio;
+use microbit_timer::MicrobitTimer;
 
 /// Initialises the micro:bit hardware to use the display driver.
 ///
@@ -176,9 +179,9 @@ use microbit_control::MicrobitGpio;
 pub fn initialise_display<'a, T>(
     timer: &'a mut T,
     gpio: &mut crate::hal::nrf51::GPIO)
-    where T: microbit_timer::Nrf51Timer<'a> {
+    where T: Deref <Target = nrf51::timer0::RegisterBlock> {
     tiny_led_matrix::initialise_control(&mut MicrobitGpio(gpio));
-    tiny_led_matrix::initialise_timer(&mut timer.as_display_timer());
+    tiny_led_matrix::initialise_timer(&mut MicrobitTimer(timer));
 }
 
 /// Updates the LEDs and timer state during a timer interrupt.
@@ -211,9 +214,9 @@ pub fn handle_display_event<'a, T>(
     display: &mut Display<MicrobitFrame>,
     timer: &'a mut T,
     gpio: &mut crate::hal::nrf51::GPIO)
-    where T: microbit_timer::Nrf51Timer<'a> {
+    where T: Deref <Target = nrf51::timer0::RegisterBlock> {
     display.handle_event(
-        &mut timer.as_display_timer(),
+        &mut MicrobitTimer(timer),
         &mut MicrobitGpio(gpio),
     );
 }
