@@ -9,9 +9,9 @@ use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::Peripherals;
 use cortex_m_rt::entry;
 
-use microbit::hal::nrf51::{interrupt, GPIO, RTC0, TIMER1};
-use microbit::display::{self, Display, Frame, MicrobitFrame};
 use microbit::display::image::GreyscaleImage;
+use microbit::display::{self, Display, Frame, MicrobitFrame};
+use microbit::hal::nrf51::{interrupt, GPIO, RTC0, TIMER1};
 
 fn heart_image(inner_brightness: u8) -> GreyscaleImage {
     let b = inner_brightness;
@@ -30,20 +30,18 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
 static GPIO: Mutex<RefCell<Option<GPIO>>> = Mutex::new(RefCell::new(None));
 static RTC0: Mutex<RefCell<Option<RTC0>>> = Mutex::new(RefCell::new(None));
 static TIMER1: Mutex<RefCell<Option<TIMER1>>> = Mutex::new(RefCell::new(None));
-static DISPLAY: Mutex<RefCell<Option<Display<MicrobitFrame>>>> =
-    Mutex::new(RefCell::new(None));
+static DISPLAY: Mutex<RefCell<Option<Display<MicrobitFrame>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
     if let Some(mut p) = microbit::Peripherals::take() {
-
         // Starting the low-frequency clock (needed for RTC to work)
         p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
         while p.CLOCK.events_lfclkstarted.read().bits() == 0 {}
         p.CLOCK.events_lfclkstarted.write(|w| unsafe { w.bits(0) });
 
         // 16Hz; 62.5ms period
-        p.RTC0.prescaler.write(|w| unsafe {w.bits(2047)});
+        p.RTC0.prescaler.write(|w| unsafe { w.bits(2047) });
         p.RTC0.evtenset.write(|w| w.tick().set_bit());
         p.RTC0.intenset.write(|w| w.tick().set_bit());
         p.RTC0.tasks_start.write(|w| unsafe { w.bits(1) });
@@ -57,7 +55,6 @@ fn main() -> ! {
             *DISPLAY.borrow(cs).borrow_mut() = Some(Display::new());
         });
 
-
         if let Some(mut cp) = Peripherals::take() {
             unsafe {
                 cp.NVIC.set_priority(microbit::Interrupt::RTC0, 64);
@@ -68,9 +65,7 @@ fn main() -> ! {
             microbit::NVIC::unpend(microbit::Interrupt::RTC0);
             microbit::NVIC::unpend(microbit::Interrupt::TIMER1);
         }
-
     }
-
 
     loop {
         continue;
@@ -97,14 +92,14 @@ fn RTC0() {
 
     cortex_m::interrupt::free(|cs| {
         if let Some(rtc0) = RTC0.borrow(cs).borrow().as_ref() {
-            rtc0.events_tick.write(|w| unsafe {w.bits(0)} );
+            rtc0.events_tick.write(|w| unsafe { w.bits(0) });
         }
     });
 
     let inner_brightness = match *STEP {
-        0..=8 => 9-*STEP,
+        0..=8 => 9 - *STEP,
         9..=12 => 0,
-        _ => unreachable!()
+        _ => unreachable!(),
     };
 
     FRAME.set(&mut heart_image(inner_brightness));
@@ -116,7 +111,7 @@ fn RTC0() {
     });
 
     *STEP += 1;
-    if *STEP == 13 {*STEP = 0};
-
+    if *STEP == 13 {
+        *STEP = 0
+    };
 }
-
