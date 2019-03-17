@@ -10,15 +10,16 @@ use tiny_led_matrix::DisplayTimer;
 /// This implements the [`DisplayTimer`] trait.
 ///
 /// [`DisplayTimer`]: tiny_led_matrix::DisplayTimer
-pub(crate) struct MicrobitTimer <'a> (pub &'a nrf51::timer0::RegisterBlock);
-
+pub(crate) struct MicrobitTimer<'a>(pub &'a nrf51::timer0::RegisterBlock);
 
 /// Checks whether the event for a CC register has been generated,
 /// then clears the event register.
 fn check_cc(timer: &nrf51::timer0::RegisterBlock, index: usize) -> bool {
     let event_reg = &timer.events_compare[index];
     let fired = event_reg.read().bits() != 0;
-    if fired {event_reg.write(|w| unsafe {w.bits(0)} )}
+    if fired {
+        event_reg.write(|w| unsafe { w.bits(0) })
+    }
     fired
 }
 
@@ -34,8 +35,7 @@ fn check_cc(timer: &nrf51::timer0::RegisterBlock, index: usize) -> bool {
 ///
 /// check_primary() and check_secondary() take care of clearing the timer's
 /// event registers.
-impl DisplayTimer for MicrobitTimer <'_> {
-
+impl DisplayTimer for MicrobitTimer<'_> {
     fn initialise_cycle(&mut self, ticks: u16) {
         let timer = &self.0;
         timer.prescaler.write(|w| unsafe { w.bits(8) });
@@ -65,6 +65,4 @@ impl DisplayTimer for MicrobitTimer <'_> {
     fn check_secondary(&mut self) -> bool {
         check_cc(&self.0, 1)
     }
-
 }
-

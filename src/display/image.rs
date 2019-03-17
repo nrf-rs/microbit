@@ -6,13 +6,9 @@ use tiny_led_matrix::{Render, MAX_BRIGHTNESS};
 ///
 /// Uses 25 bytes of storage.
 #[derive(Copy, Clone, Debug)]
-pub struct GreyscaleImage (
-    [[u8; 5]; 5]
-);
-
+pub struct GreyscaleImage([[u8; 5]; 5]);
 
 impl GreyscaleImage {
-
     /// Constructs a GreyscaleImage from an array of brightnesses.
     ///
     /// The data should be an array of 5 rows (top first), each of which is an
@@ -36,11 +32,9 @@ impl GreyscaleImage {
     pub const fn blank() -> GreyscaleImage {
         GreyscaleImage([[0; 5]; 5])
     }
-
 }
 
 impl Render for GreyscaleImage {
-
     fn brightness_at(&self, x: usize, y: usize) -> u8 {
         self.0[y][x]
     }
@@ -52,7 +46,6 @@ impl Render for &GreyscaleImage {
     }
 }
 
-
 /// A 5×5 image supporting only two levels of brightness (on and off).
 ///
 /// Uses 5 bytes of storage.
@@ -60,12 +53,9 @@ impl Render for &GreyscaleImage {
 /// For display, each pixel is treated as having brightness either 0 or
 /// MAX_BRIGHTNESS.
 #[derive(Copy, Clone, Debug)]
-pub struct BitImage (
-    [u8; 5]
-);
+pub struct BitImage([u8; 5]);
 
 impl BitImage {
-
     /// Constructs a BitImage from an array of brightnesses.
     ///
     /// The data should be an array of 5 rows (top first), each of which is an
@@ -85,7 +75,7 @@ impl BitImage {
     pub const fn new(im: &[[u8; 5]; 5]) -> BitImage {
         // FIXME: can we reject values other than 0 or 1?
         const fn row_byte(row: [u8; 5]) -> u8 {
-            row[0] | row[1]<<1 | row[2]<<2 | row[3]<<3 | row[4]<<4
+            row[0] | row[1] << 1 | row[2] << 2 | row[3] << 3 | row[4] << 4
         };
         BitImage([
             row_byte(im[0]),
@@ -102,13 +92,16 @@ impl BitImage {
     pub const fn blank() -> BitImage {
         BitImage([0; 5])
     }
-
 }
 
 impl Render for BitImage {
     fn brightness_at(&self, x: usize, y: usize) -> u8 {
         let rowdata = self.0[y];
-        if rowdata & (1<<x) != 0 {MAX_BRIGHTNESS as u8} else {0}
+        if rowdata & (1 << x) != 0 {
+            MAX_BRIGHTNESS as u8
+        } else {
+            0
+        }
     }
 }
 
@@ -117,4 +110,3 @@ impl Render for &BitImage {
         BitImage::brightness_at(self, x, y)
     }
 }
-

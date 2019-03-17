@@ -139,12 +139,7 @@
 //!
 
 #[doc(no_inline)]
-pub use tiny_led_matrix::{
-    Render,
-    MAX_BRIGHTNESS,
-    Display,
-    Frame,
-};
+pub use tiny_led_matrix::{Display, Frame, Render, MAX_BRIGHTNESS};
 
 mod microbit_control;
 mod microbit_matrix;
@@ -156,9 +151,8 @@ pub use microbit_matrix::MicrobitFrame;
 
 pub mod doc_example;
 
-
-use core::ops::Deref;
 use crate::hal::nrf51;
+use core::ops::Deref;
 use microbit_control::MicrobitGpio;
 use microbit_timer::MicrobitTimer;
 
@@ -176,10 +170,10 @@ use microbit_timer::MicrobitTimer;
 /// let mut p: nrf51::Peripherals = _;
 /// microbit::display::initialise_display(&mut p.TIMER1, &mut p.GPIO);
 /// ```
-pub fn initialise_display<'a, T>(
-    timer: &'a mut T,
-    gpio: &mut crate::hal::nrf51::GPIO)
-    where T: Deref <Target = nrf51::timer0::RegisterBlock> {
+pub fn initialise_display<'a, T>(timer: &'a mut T, gpio: &mut crate::hal::nrf51::GPIO)
+where
+    T: Deref<Target = nrf51::timer0::RegisterBlock>,
+{
     tiny_led_matrix::initialise_control(&mut MicrobitGpio(gpio));
     tiny_led_matrix::initialise_timer(&mut MicrobitTimer(timer));
 }
@@ -213,11 +207,9 @@ pub fn initialise_display<'a, T>(
 pub fn handle_display_event<'a, T>(
     display: &mut Display<MicrobitFrame>,
     timer: &'a mut T,
-    gpio: &mut crate::hal::nrf51::GPIO)
-    where T: Deref <Target = nrf51::timer0::RegisterBlock> {
-    display.handle_event(
-        &mut MicrobitTimer(timer),
-        &mut MicrobitGpio(gpio),
-    );
+    gpio: &mut crate::hal::nrf51::GPIO,
+) where
+    T: Deref<Target = nrf51::timer0::RegisterBlock>,
+{
+    display.handle_event(&mut MicrobitTimer(timer), &mut MicrobitGpio(gpio));
 }
-

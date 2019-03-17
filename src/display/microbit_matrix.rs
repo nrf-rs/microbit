@@ -6,13 +6,13 @@
 //! [`Matrix`]: tiny_led_matrix::Matrix
 //! [`Frame`]: tiny_led_matrix::Frame
 
+use crate::display::microbit_control::{MATRIX_COLS, MATRIX_ROWS};
 use tiny_led_matrix::{Frame, Matrix, RowPlan};
-use crate::display::microbit_control::{{MATRIX_COLS, MATRIX_ROWS}};
 
 /// Implementation of [`Matrix`] for the microbit's LED display.
 ///
 /// [`Matrix`]: tiny_led_matrix::Matrix
-pub struct MicrobitMatrix ();
+pub struct MicrobitMatrix();
 
 /// Gives the LED (x, y) coordinates for a given pin row and column.
 /// The origin is in the top-left.
@@ -24,12 +24,11 @@ const MICROBIT_LED_LAYOUT: [[Option<(usize, usize)>; 3]; 9] = [
     [Some((3, 3)), Some((3, 0)), Some((1, 1))],
     [Some((2, 3)), Some((3, 4)), Some((2, 1))],
     [Some((1, 3)), Some((1, 4)), Some((3, 1))],
-    [Some((0, 3)), None,         Some((4, 1))],
-    [Some((1, 2)), None,         Some((3, 2))],
+    [Some((0, 3)), None, Some((4, 1))],
+    [Some((1, 2)), None, Some((3, 2))],
 ];
 
 impl Matrix for MicrobitMatrix {
-
     /// The number of pins connected to LED columns (3).
     const MATRIX_COLS: usize = MATRIX_COLS;
     /// The number of pins connected to LED rows (9).
@@ -42,10 +41,7 @@ impl Matrix for MicrobitMatrix {
     fn image_coordinates(col: usize, row: usize) -> Option<(usize, usize)> {
         MICROBIT_LED_LAYOUT[col][row]
     }
-
 }
-
-
 
 /// A 'Compiled' representation of a 5×5 image to be displayed.
 ///
@@ -58,9 +54,7 @@ impl Matrix for MicrobitMatrix {
 /// [`Frame`]: tiny_led_matrix::Frame
 /// [`Render`]: tiny_led_matrix::Render
 #[derive(Copy, Clone, Debug)]
-pub struct MicrobitFrame (
-    [RowPlan; MicrobitFrame::ROWS]
-);
+pub struct MicrobitFrame([RowPlan; MicrobitFrame::ROWS]);
 
 impl MicrobitFrame {
     /// Returns a new frame, initially blank.
@@ -70,16 +64,13 @@ impl MicrobitFrame {
 }
 
 impl Default for MicrobitFrame {
-
     /// Returns a new frame, initially blank.
     fn default() -> MicrobitFrame {
         MicrobitFrame::const_default()
     }
-
 }
 
 impl Frame for MicrobitFrame {
-
     type Mtx = MicrobitMatrix;
 
     fn row_plan(&self, row: usize) -> &RowPlan {
@@ -89,6 +80,4 @@ impl Frame for MicrobitFrame {
     fn row_plan_mut(&mut self, row: usize) -> &mut RowPlan {
         &mut self.0[row]
     }
-
 }
-
