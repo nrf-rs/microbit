@@ -15,10 +15,10 @@
 //! #[allow(unused)]
 //! use panic_halt;
 //!
-//! use rtfm::app;
-//! use microbit::hal::nrf51;
-//! use microbit::display::{self, Display, Frame, MicrobitFrame};
 //! use microbit::display::image::GreyscaleImage;
+//! use microbit::display::{self, Display, Frame, MicrobitFrame};
+//! use microbit::hal::nrf51;
+//! use rtfm::app;
 //!
 //! fn heart_image(inner_brightness: u8) -> GreyscaleImage {
 //!     let b = inner_brightness;
@@ -33,7 +33,6 @@
 //!
 //! #[app(device = microbit::hal::nrf51)]
 //! const APP: () = {
-//!
 //!     static mut GPIO: nrf51::GPIO = ();
 //!     static mut TIMER1: nrf51::TIMER1 = ();
 //!     static mut RTC0: nrf51::RTC0 = ();
@@ -49,7 +48,7 @@
 //!         p.CLOCK.events_lfclkstarted.write(|w| unsafe { w.bits(0) });
 //!
 //!         // 16Hz; 62.5ms period
-//!         p.RTC0.prescaler.write(|w| unsafe {w.bits(2047)});
+//!         p.RTC0.prescaler.write(|w| unsafe { w.bits(2047) });
 //!         p.RTC0.evtenset.write(|w| w.tick().set_bit());
 //!         p.RTC0.intenset.write(|w| w.tick().set_bit());
 //!         p.RTC0.tasks_start.write(|w| unsafe { w.bits(1) });
@@ -57,21 +56,17 @@
 //!         display::initialise_display(&mut p.TIMER1, &mut p.GPIO);
 //!
 //!         init::LateResources {
-//!             GPIO : p.GPIO,
-//!             TIMER1 : p.TIMER1,
-//!             RTC0 : p.RTC0,
-//!             DISPLAY : Display::new(),
+//!             GPIO: p.GPIO,
+//!             TIMER1: p.TIMER1,
+//!             RTC0: p.RTC0,
+//!             DISPLAY: Display::new(),
 //!         }
 //!     }
 //!
 //!     #[interrupt(priority = 2,
 //!                 resources = [TIMER1, GPIO, DISPLAY])]
 //!     fn TIMER1() {
-//!         display::handle_display_event(
-//!             &mut resources.DISPLAY,
-//!             resources.TIMER1,
-//!             resources.GPIO,
-//!         );
+//!         display::handle_display_event(&mut resources.DISPLAY, resources.TIMER1, resources.GPIO);
 //!     }
 //!
 //!     #[interrupt(priority = 1,
@@ -81,12 +76,12 @@
 //!         static mut STEP: u8 = 0;
 //!
 //!         let event_reg = &resources.RTC0.events_tick;
-//!         event_reg.write(|w| unsafe {w.bits(0)} );
+//!         event_reg.write(|w| unsafe { w.bits(0) });
 //!
 //!         let inner_brightness = match *STEP {
-//!             0..=8 => 9-*STEP,
+//!             0..=8 => 9 - *STEP,
 //!             9..=12 => 0,
-//!             _ => unreachable!()
+//!             _ => unreachable!(),
 //!         };
 //!
 //!         FRAME.set(&mut heart_image(inner_brightness));
@@ -95,8 +90,9 @@
 //!         });
 //!
 //!         *STEP += 1;
-//!         if *STEP == 13 {*STEP = 0};
+//!         if *STEP == 13 {
+//!             *STEP = 0
+//!         };
 //!     }
-//!
 //! };
 //! ```
