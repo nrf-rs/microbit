@@ -23,7 +23,7 @@ version = "0.7.0"
 cortex-m = "0.5.8"
 cortex-m-rt = "0.6.7"
 nb = "0.1.1"
-nrf51-hal = "0.6.0"
+nrf51-hal = "0.6.2"
 tiny-led-matrix = "0.1"
 
 [dev-dependencies]
