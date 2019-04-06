@@ -11,6 +11,11 @@
 //! a function to be called from a timer interrupt. It knows how to program
 //! one of the micro:bit's timers to provide that interrupt.
 //!
+//! # Example
+//!
+//! `examples/led_nonblocking.rs` demonstrates the main features of this
+//! module.
+//!
 //! # Coordinate system
 //!
 //! The LEDs are identified using (x,y) coordinates as follows:
