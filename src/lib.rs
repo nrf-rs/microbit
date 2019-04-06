@@ -10,6 +10,7 @@ pub use crate::hal::nrf51::*;
 use crate::hal::gpio::gpio::Parts;
 use crate::hal::serial::*;
 
+pub mod display;
 pub mod led;
 
 // FIXME: Rewrite as macro to prevent problems consuming parts of gpio
