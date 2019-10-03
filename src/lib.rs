@@ -16,7 +16,7 @@ pub mod led;
 pub fn serial_port(
     gpio: Parts,
     uart: hal::nrf51::UART0,
-    speed: BAUDRATEW,
+    speed: BAUDRATE_A,
 ) -> (Tx<hal::nrf51::UART0>, Rx<hal::nrf51::UART0>) {
     /* Configure RX and TX pins accordingly */
     let tx = gpio.pin24.into_push_pull_output().downgrade();

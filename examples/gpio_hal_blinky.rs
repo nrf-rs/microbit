@@ -17,9 +17,9 @@ fn main() -> ! {
         let _ = gpio.pin4.into_push_pull_output();
 
         loop {
-            led.set_low();
+            let _ = led.set_low();
             delay.delay_ms(1_000_u16);
-            led.set_high();
+            let _ = led.set_high();
             delay.delay_ms(1_000_u16);
         }
     }
