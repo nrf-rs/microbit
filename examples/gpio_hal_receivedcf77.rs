@@ -1,7 +1,7 @@
 #![no_main]
 #![no_std]
 
-use panic_halt;
+use panic_halt as _;
 
 use dcf77::{DCF77Time, SimpleDCF77Decoder};
 

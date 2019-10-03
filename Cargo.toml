@@ -20,22 +20,25 @@ repository = "https://github.com/therealprof/microbit"
 version = "0.7.0"
 
 [dependencies]
-cortex-m = "0.5.8"
-cortex-m-rt = "0.6.7"
-nb = "0.1.1"
-nrf51-hal = "0.6.0"
+cortex-m = "0.6.1"
+cortex-m-rt = "0.6.10"
+nb = "0.1.2"
+nrf51-hal = "0.6.2"
 
 [dev-dependencies]
-cortex-m-semihosting = "0.3.2"
+cortex-m-semihosting = "0.3.5"
 numtoa = "0.2.3"
 dcf77 = "0.1.0"
 mag3110 = "0.1.4"
 panic-halt = "0.2.0"
-rand_chacha = "0.1.0"
 
 [dev-dependencies.rand]
 default-features = false
-version = "0.6.1"
+version = "0.7.2"
+
+[dev-dependencies.rand_chacha]
+version = "0.2.1"
+default-features = false
 
 [profile.dev]
 debug = true
