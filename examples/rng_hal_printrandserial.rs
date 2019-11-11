@@ -9,9 +9,9 @@ use microbit::hal::prelude::*;
 use microbit::hal::rng;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
+use microbit::NVIC;
 
 use cortex_m::interrupt::Mutex;
-use cortex_m::peripheral::Peripherals;
 use cortex_m_rt::entry;
 
 use rand::SeedableRng;
@@ -67,10 +67,10 @@ fn main() -> ! {
             *RTC.borrow(cs).borrow_mut() = Some(p.RTC0);
             *TX.borrow(cs).borrow_mut() = Some(tx);
 
-            if let Some(mut p) = Peripherals::take() {
-                p.NVIC.enable(microbit::Interrupt::RTC0);
-                microbit::NVIC::unpend(microbit::Interrupt::RTC0);
+            unsafe {
+                NVIC::unmask(microbit::Interrupt::RTC0);
             }
+            microbit::NVIC::unpend(microbit::Interrupt::RTC0);
         });
     }
 

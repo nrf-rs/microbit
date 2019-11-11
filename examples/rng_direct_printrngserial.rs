@@ -3,8 +3,9 @@
 
 use panic_halt as _;
 
+use microbit::NVIC;
+
 use cortex_m::interrupt::Mutex;
-use cortex_m::peripheral::Peripherals;
 use microbit::hal::nrf51::{interrupt, RNG, RTC0, UART0};
 
 use core::cell::RefCell;
@@ -56,10 +57,10 @@ fn main() -> ! {
             *UART.borrow(cs).borrow_mut() = Some(p.UART0);
         });
 
-        if let Some(mut p) = Peripherals::take() {
-            p.NVIC.enable(microbit::Interrupt::RTC0);
-            microbit::NVIC::unpend(microbit::Interrupt::RTC0);
+        unsafe {
+            NVIC::unmask(microbit::Interrupt::RTC0);
         }
+        microbit::NVIC::unpend(microbit::Interrupt::RTC0);
     }
 
     loop {
