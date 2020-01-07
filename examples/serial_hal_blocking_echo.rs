@@ -1,7 +1,7 @@
 #![no_main]
 #![no_std]
 
-use panic_halt;
+use panic_halt as _;
 
 use microbit::hal::prelude::*;
 use microbit::hal::serial::BAUD115200;

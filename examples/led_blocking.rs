@@ -1,16 +1,12 @@
 #![no_std]
 #![no_main]
 
-use panic_halt;
-
-use core::fmt::Write;
+use panic_halt as _;
 
 use cortex_m_rt::entry;
 
 use microbit::hal::delay::Delay;
 use microbit::hal::prelude::*;
-use microbit::hal::serial;
-use microbit::hal::serial::BAUD115200;
 
 use microbit::led;
 
@@ -37,13 +33,6 @@ fn main() -> ! {
             col1, col2, col3, col4, col5, col6, col7, col8, col9, row1, row2, row3,
         );
 
-        // Configure RX and TX pins accordingly
-        let tx = gpio.pin24.into_push_pull_output().downgrade();
-        let rx = gpio.pin25.into_floating_input().downgrade();
-        let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
-
-        let _ = write!(tx, "\n\rStarting!\n\r");
-
         #[allow(non_snake_case)]
         let letter_I = [
             [0, 1, 1, 1, 0],
@@ -62,19 +51,47 @@ fn main() -> ! {
         ];
 
         #[allow(non_snake_case)]
-        let letter_U = [
+        let letter_R = [
+            [0, 1, 1, 0, 0],
+            [0, 1, 0, 1, 0],
+            [0, 1, 1, 0, 0],
             [0, 1, 0, 1, 0],
             [0, 1, 0, 1, 0],
+        ];
+
+        #[allow(non_snake_case)]
+        let letter_u = [
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
             [0, 1, 0, 1, 0],
             [0, 1, 0, 1, 0],
             [0, 1, 1, 1, 0],
         ];
 
+        #[allow(non_snake_case)]
+        let letter_s = [
+            [0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 0],
+            [0, 1, 0, 0, 0],
+            [0, 0, 1, 0, 0],
+            [0, 1, 1, 1, 0],
+        ];
+
+        #[allow(non_snake_case)]
+        let letter_t = [
+            [0, 0, 1, 0, 0],
+            [0, 1, 1, 1, 0],
+            [0, 0, 1, 0, 0],
+            [0, 0, 1, 0, 0],
+            [0, 0, 1, 0, 0],
+        ];
         loop {
-            write!(tx, "I <3 Rust on the micro:bit!\n\r").ok();
             leds.display(&mut delay, letter_I, 1000);
             leds.display(&mut delay, heart, 1000);
-            leds.display(&mut delay, letter_U, 1000);
+            leds.display(&mut delay, letter_R, 1000);
+            leds.display(&mut delay, letter_u, 1000);
+            leds.display(&mut delay, letter_s, 1000);
+            leds.display(&mut delay, letter_t, 1000);
             leds.clear();
             delay.delay_ms(250_u32);
         }

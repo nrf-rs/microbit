@@ -1,7 +1,7 @@
 #![no_main]
 #![no_std]
 
-use panic_halt;
+use panic_halt as _;
 
 use cortex_m;
 use microbit::hal::nrf51::{interrupt, RTC0, UART0};

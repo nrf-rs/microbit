@@ -1,7 +1,7 @@
 #![no_main]
 #![no_std]
 
-use panic_halt;
+use panic_halt as _;
 
 use dcf77::{DCF77Time, SimpleDCF77Decoder};
 
@@ -86,7 +86,7 @@ fn RTC0() {
             DCFPIN.borrow(cs).borrow_mut().deref_mut(),
             DCF.borrow(cs).borrow_mut().deref_mut(),
         ) {
-            dcf.read_bit(pin.is_low());
+            dcf.read_bit(pin.is_low().unwrap());
             if dcf.bit_faulty() {
                 let _ = tx.write_str("F");
             } else if dcf.bit_complete() {
