@@ -8,9 +8,9 @@ use microbit::hal::nrf51::{interrupt, RTC0, TWI1, UART0};
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
+use microbit::NVIC;
 
 use cortex_m::interrupt::Mutex;
-use cortex_m::peripheral::Peripherals;
 
 use core::cell::RefCell;
 use core::fmt::Write;
@@ -63,11 +63,10 @@ fn main() -> ! {
             *I2C.borrow(cs).borrow_mut() = Some(i2c);
             *TX.borrow(cs).borrow_mut() = Some(tx);
         });
-
-        if let Some(mut p) = Peripherals::take() {
-            p.NVIC.enable(microbit::Interrupt::RTC0);
-            microbit::NVIC::unpend(microbit::Interrupt::RTC0);
+        unsafe {
+            NVIC::unmask(microbit::Interrupt::RTC0);
         }
+        microbit::NVIC::unpend(microbit::Interrupt::RTC0);
     }
 
     loop {

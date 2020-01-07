@@ -10,10 +10,10 @@ use microbit::hal::nrf51::{interrupt, GPIOTE, UART0};
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
+use microbit::NVIC;
 use microbit::TWI1;
 
 use crate::cortex_m::interrupt::Mutex;
-use crate::cortex_m::peripheral::Peripherals;
 use cortex_m_rt::entry;
 
 use mag3110::{DataRate, Mag3110, Oversampling};
@@ -28,10 +28,12 @@ static MAG3110: Mutex<RefCell<Option<Mag3110<I2c<TWI1>>>>> = Mutex::new(RefCell:
 
 #[entry]
 fn main() -> ! {
-    if let (Some(p), Some(mut cp)) = (microbit::Peripherals::take(), Peripherals::take()) {
+    if let Some(p) = microbit::Peripherals::take() {
         cortex_m::interrupt::free(move |cs| {
             /* Enable external GPIO interrupts */
-            cp.NVIC.enable(microbit::Interrupt::GPIOTE);
+            unsafe {
+                NVIC::unmask(microbit::Interrupt::GPIOTE);
+            }
             microbit::NVIC::unpend(microbit::Interrupt::GPIOTE);
 
             /* Set up pin 29 to act as external interrupt from the magnetometer */

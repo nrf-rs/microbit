@@ -11,9 +11,9 @@ use microbit::hal::nrf51::{interrupt, RTC0, UART0};
 use microbit::hal::prelude::*;
 use microbit::hal::serial;
 use microbit::hal::serial::BAUD115200;
+use microbit::NVIC;
 
 use cortex_m::interrupt::Mutex;
-use cortex_m::peripheral::Peripherals;
 
 use cortex_m_rt::entry;
 
@@ -28,7 +28,7 @@ static TX: Mutex<RefCell<Option<serial::Tx<UART0>>>> = Mutex::new(RefCell::new(N
 
 #[entry]
 fn main() -> ! {
-    if let (Some(p), Some(mut cp)) = (microbit::Peripherals::take(), Peripherals::take()) {
+    if let Some(p) = microbit::Peripherals::take() {
         cortex_m::interrupt::free(move |cs| {
             p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
 
@@ -64,7 +64,9 @@ fn main() -> ! {
             *DCFPIN.borrow(cs).borrow_mut() = Some(pin);
             *DCF.borrow(cs).borrow_mut() = Some(SimpleDCF77Decoder::new());
 
-            cp.NVIC.enable(microbit::Interrupt::RTC0);
+            unsafe {
+                NVIC::unmask(microbit::Interrupt::RTC0);
+            }
             microbit::NVIC::unpend(microbit::Interrupt::RTC0);
         });
     }
