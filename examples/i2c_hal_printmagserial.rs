@@ -38,8 +38,8 @@ fn main() -> ! {
             let gpio = p.GPIO.split();
 
             /* Configure RX and TX pins accordingly */
-            let scl = gpio.pin0.into_open_drain_input().downgrade();
-            let sda = gpio.pin30.into_open_drain_input().downgrade();
+            let scl = gpio.pin0.into_open_drain_input().into();
+            let sda = gpio.pin30.into_open_drain_input().into();
 
             let mut i2c = i2c::I2c::i2c1(p.TWI1, sda, scl);
 
@@ -51,8 +51,8 @@ fn main() -> ! {
             //let (mut tx, _) = microbit::serial_port(gpio, p.UART0, BAUD115200);
 
             /* Configure RX and TX pins accordingly */
-            let tx = gpio.pin24.into_push_pull_output().downgrade();
-            let rx = gpio.pin25.into_floating_input().downgrade();
+            let tx = gpio.pin24.into_push_pull_output().into();
+            let rx = gpio.pin25.into_floating_input().into();
 
             /* Set up serial port using the prepared pins */
             let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();

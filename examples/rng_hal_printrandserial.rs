@@ -40,8 +40,8 @@ fn main() -> ! {
             let gpio = p.GPIO.split();
 
             /* Configure RX and TX pins accordingly */
-            let tx = gpio.pin24.into_push_pull_output().downgrade();
-            let rx = gpio.pin25.into_floating_input().downgrade();
+            let tx = gpio.pin24.into_push_pull_output().into();
+            let rx = gpio.pin25.into_floating_input().into();
 
             /* Set up serial port using the prepared pins */
             let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();

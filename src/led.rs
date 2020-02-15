@@ -44,17 +44,17 @@ impl Display {
     ) -> Self {
         let mut retval = Display {
             delay_ms: DEFAULT_DELAY_MS,
-            rows: [row1.downgrade(), row2.downgrade(), row3.downgrade()],
+            rows: [row1.into(), row2.into(), row3.into()],
             cols: [
-                col1.downgrade(),
-                col2.downgrade(),
-                col3.downgrade(),
-                col4.downgrade(),
-                col5.downgrade(),
-                col6.downgrade(),
-                col7.downgrade(),
-                col8.downgrade(),
-                col9.downgrade(),
+                col1.into(),
+                col2.into(),
+                col3.into(),
+                col4.into(),
+                col5.into(),
+                col6.into(),
+                col7.into(),
+                col8.into(),
+                col9.into(),
             ],
         };
         // This is needed to reduce flickering on reset

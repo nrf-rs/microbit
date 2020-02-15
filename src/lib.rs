@@ -20,8 +20,8 @@ pub fn serial_port(
     speed: BAUDRATE_A,
 ) -> (Tx<hal::nrf51::UART0>, Rx<hal::nrf51::UART0>) {
     /* Configure RX and TX pins accordingly */
-    let tx = gpio.pin24.into_push_pull_output().downgrade();
-    let rx = gpio.pin25.into_floating_input().downgrade();
+    let tx = gpio.pin24.into_push_pull_output().into();
+    let rx = gpio.pin25.into_floating_input().into();
 
     /* Set up serial port using the prepared pins */
     let serial = Serial::uart0(uart, tx, rx, speed);
