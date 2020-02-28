@@ -117,7 +117,7 @@
 //! Once you've called `set_frame()`, you are free to reuse the
 //! `MicrobitFrame`.
 //!
-//! See [`doc_example`](doc_example/index.html) for a complete working example.
+//! See [`led_rtfm`](https://github.com/therealprof/microbit/blob/master/examples/led_rtfm.rs) example for a complete working example.
 //!
 //! [dal]: https://lancaster-university.github.io/microbit-docs/
 //! [micropython]: https://microbit-micropython.readthedocs.io/
@@ -149,8 +149,6 @@ pub mod image;
 
 pub use matrix::MicrobitFrame;
 pub use timer::MicrobitDisplayTimer;
-
-pub mod doc_example;
 
 use crate::hal::hi_res_timer::Nrf51Timer;
 use control::MicrobitGpio;
