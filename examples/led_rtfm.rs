@@ -1,6 +1,6 @@
 //! A complete working example.
 //!
-//! This requires `cortex-m-rtfm` v0.4.1.
+//! This requires `cortex-m-rtfm` v0.5.
 //!
 //! It uses `TIMER1` to drive the display, and `RTC0` to update a simple
 //! animated image.
@@ -26,16 +26,18 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
     ])
 }
 
-#[app(device = microbit::hal::nrf51)]
+#[app(device = microbit::hal::nrf51, peripherals = true)]
 const APP: () = {
-    static mut GPIO: nrf51::GPIO = ();
-    static mut DISPLAY_TIMER: MicrobitDisplayTimer<nrf51::TIMER1> = ();
-    static mut ANIM_TIMER: LoResTimer<nrf51::RTC0> = ();
-    static mut DISPLAY: Display<MicrobitFrame> = ();
+    struct Resources {
+        gpio: nrf51::GPIO,
+        display_timer: MicrobitDisplayTimer<nrf51::TIMER1>,
+        anim_timer: LoResTimer<nrf51::RTC0>,
+        display: Display<MicrobitFrame>,
+    }
 
     #[init]
-    fn init() -> init::LateResources {
-        let mut p: nrf51::Peripherals = device;
+    fn init(cx: init::Context) -> init::LateResources {
+        let mut p: nrf51::Peripherals = cx.device;
 
         // Starting the low-frequency clock (needed for RTC to work)
         p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
@@ -53,30 +55,30 @@ const APP: () = {
         display::initialise_display(&mut timer, &mut p.GPIO);
 
         init::LateResources {
-            GPIO: p.GPIO,
-            DISPLAY_TIMER: timer,
-            ANIM_TIMER: rtc0,
-            DISPLAY: Display::new(),
+            gpio: p.GPIO,
+            display_timer: timer,
+            anim_timer: rtc0,
+            display: Display::new(),
         }
     }
 
-    #[interrupt(priority = 2,
-                resources = [DISPLAY_TIMER, GPIO, DISPLAY])]
-    fn TIMER1() {
+    #[task(binds = TIMER1, priority = 2,
+           resources = [display_timer, gpio, display])]
+    fn timer1(mut cx: timer1::Context) {
         display::handle_display_event(
-            &mut resources.DISPLAY,
-            resources.DISPLAY_TIMER,
-            resources.GPIO,
+            &mut cx.resources.display,
+            cx.resources.display_timer,
+            cx.resources.gpio,
         );
     }
 
-    #[interrupt(priority = 1,
-                resources = [ANIM_TIMER, DISPLAY])]
-    fn RTC0() {
+    #[task(binds = RTC0, priority = 1,
+           resources = [anim_timer, display])]
+    fn rtc0(mut cx: rtc0::Context) {
         static mut FRAME: MicrobitFrame = MicrobitFrame::const_default();
         static mut STEP: u8 = 0;
 
-        &resources.ANIM_TIMER.clear_tick_event();
+        &cx.resources.anim_timer.clear_tick_event();
 
         let inner_brightness = match *STEP {
             0..=8 => 9 - *STEP,
@@ -85,7 +87,7 @@ const APP: () = {
         };
 
         FRAME.set(&mut heart_image(inner_brightness));
-        resources.DISPLAY.lock(|display| {
+        cx.resources.display.lock(|display| {
             display.set_frame(FRAME);
         });
 

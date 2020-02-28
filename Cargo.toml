@@ -32,7 +32,7 @@ numtoa = "0.2.3"
 dcf77 = "0.1.0"
 mag3110 = "0.1.4"
 panic-halt = "0.2.0"
-cortex-m-rtfm = "0.4"
+cortex-m-rtfm = "0.5"
 
 [dev-dependencies.rand]
 default-features = false

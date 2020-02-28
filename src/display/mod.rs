@@ -185,15 +185,16 @@ pub fn initialise_display<T: Nrf51Timer>(
 ///
 /// # Example
 ///
-/// In the style of `cortex-m-rtfm` v0.4:
+/// In the style of `cortex-m-rtfm` v0.5:
 ///
 /// ```ignore
-/// #[interrupt(priority = 2, resources = [DISPLAY_TIMER, GPIO, DISPLAY])]
-/// fn TIMER1() {
+/// #[task(binds = TIMER1, priority = 2,
+///        resources = [display_timer, gpio, display])]
+/// fn timer1(mut cx: timer1::Context) {
 ///     microbit::display::handle_display_event(
-///         &mut resources.DISPLAY,
-///         resources.DISPLAY_TIMER,
-///         resources.GPIO,
+///         &mut cx.resources.display,
+///         cx.resources.display_timer,
+///         cx.resources.gpio,
 ///     );
 /// }
 /// ```
