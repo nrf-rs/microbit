@@ -65,10 +65,10 @@ impl Display {
     /// Clear display
     pub fn clear(&mut self) {
         for row in &mut self.rows {
-            row.set_low();
+            row.set_low().ok();
         }
         for col in &mut self.cols {
-            col.set_high();
+            col.set_high().ok();
         }
     }
 
@@ -105,18 +105,18 @@ impl Display {
         let loops = duration_ms / (self.rows.len() as u32 * self.delay_ms);
         for _ in 0..loops {
             for (row_line, led_matrix_row) in self.rows.iter_mut().zip(led_matrix.iter()) {
-                row_line.set_high();
+                row_line.set_high().ok();
                 for (col_line, led_matrix_val) in self.cols.iter_mut().zip(led_matrix_row.iter()) {
                     // TODO : use value to set brightness
                     if *led_matrix_val > 0 {
-                        col_line.set_low();
+                        col_line.set_low().ok();
                     }
                 }
                 delay.delay_ms(self.delay_ms);
                 for col_line in &mut self.cols {
-                    col_line.set_high();
+                    col_line.set_high().ok();
                 }
-                row_line.set_low();
+                row_line.set_low().ok();
             }
         }
     }

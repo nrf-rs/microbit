@@ -20,7 +20,7 @@ fn main() -> ! {
         /* Print a nice hello message */
         let s = b"Please type characters to echo:\r\n";
 
-        let _ = s.into_iter().map(|c| nb::block!(tx.write(*c))).last();
+        let _ = s.iter().map(|c| nb::block!(tx.write(*c))).last();
 
         /* Endless loop */
         loop {

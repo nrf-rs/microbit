@@ -1,8 +1,7 @@
 #![no_main]
 #![no_std]
 
-#[allow(unused)]
-use panic_halt;
+use panic_halt as _;
 
 use core::cell::RefCell;
 use cortex_m::interrupt::Mutex;

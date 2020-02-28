@@ -8,7 +8,7 @@ use crate::hal::nrf51;
 use tiny_led_matrix::DisplayControl;
 
 const fn bit_range(lo: usize, count: usize) -> u32 {
-    return ((1 << count) - 1) << lo;
+    ((1 << count) - 1) << lo
 }
 
 pub(crate) const MATRIX_COLS: usize = 9;
