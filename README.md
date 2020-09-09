@@ -1,17 +1,15 @@
 microbit
 ========
 
-_microbit_ contains everything required to get started with the use of Rust to create firmwares for the 
-faboulus [BBC micro:bit][] microcontroller board. This little board
-contains has everything and a kitchensink built-in, even a capable debugging
-interface, so all that one needs to get going with progamming this device is:
+_microbit_ contains everything required to get started with the use of Rust to create firmwares for the fabulous [BBC micro:bit][] microcontroller board. This little board has everything and a kitchen sink built-in, even a capable debugging interface, so all that one needs to get going with programming this device is:
 
 * A BBC micro:bit board
 * A computer (macOS and Linux work perfectly, [Windows tested as well](http://flames-of-code.netlify.com/blog/rust-microbit-windows/))
 * A bit of open source software
 
-Some very preliminary examples of using this crate can be found [here in this repo][examples] or [here on my blog][myblog].  
-A guide to embedded development using Rust on the _microbit_ using this crate can be found in the [MicroRust book][microrust].
+Some very preliminary examples of using this crate can be found [here in this repo][examples] or [here on my blog][myblog].
+
+A guide to embedded development with Rust on the _microbit_ using this crate can be found in the [MicroRust book][microrust].
 
 [BBC micro:bit]: https://microbit.org
 [cortex-m]:(https://github.com/japaric/cortex-m)
