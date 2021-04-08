@@ -3,3 +3,5 @@
 **/*.rs.bk
 Cargo.lock
 bloat_log*
+!.gitignore
+!.github

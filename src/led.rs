@@ -8,6 +8,7 @@ use crate::hal::gpio::gpio::{
 use crate::hal::gpio::{Output, PushPull};
 use crate::hal::prelude::*;
 
+#[allow(clippy::upper_case_acronyms)]
 type LED = PIN<Output<PushPull>>;
 
 const DEFAULT_DELAY_MS: u32 = 2;
@@ -28,6 +29,7 @@ pub struct Display {
 
 impl Display {
     /// Initializes all the user LEDs
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         col1: PIN4<Output<PushPull>>,
         col2: PIN5<Output<PushPull>>,

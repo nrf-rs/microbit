@@ -1,5 +1,12 @@
-microbit
-========
+# microbit
+
+[![microbit on crates.io][cratesio-image]][cratesio]
+[![microbit on docs.rs][docsrs-image]][docsrs]
+
+[cratesio-image]: https://img.shields.io/crates/v/microbit.svg
+[cratesio]: https://crates.io/crates/microbit
+[docsrs-image]: https://docs.rs/microbit/badge.svg
+[docsrs]: https://docs.rs/microbit
 
 _microbit_ contains everything required to get started with the use of Rust to create firmwares for the fabulous [BBC micro:bit][] microcontroller board. This little board has everything and a kitchen sink built-in, even a capable debugging interface, so all that one needs to get going with programming this device is:
 
@@ -18,7 +25,6 @@ A guide to embedded development with Rust on the _microbit_ using this crate can
 [myblog]: https://www.eggers-club.de/blog/2018/05/31/rust-on-the-microbit-101-part-1
 [microrust]: https://droogmic.github.io/microrust/
 
-License
--------
+## License
 
 [0-clause BSD license](LICENSE-0BSD.txt).
