@@ -29,7 +29,8 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
 
 static GPIO: Mutex<RefCell<Option<GPIO>>> = Mutex::new(RefCell::new(None));
 static ANIM_TIMER: Mutex<RefCell<Option<LoResTimer<RTC0>>>> = Mutex::new(RefCell::new(None));
-static DISPLAY_TIMER: Mutex<RefCell<Option<MicrobitDisplayTimer<TIMER1>>>> = Mutex::new(RefCell::new(None));
+static DISPLAY_TIMER: Mutex<RefCell<Option<MicrobitDisplayTimer<TIMER1>>>> =
+    Mutex::new(RefCell::new(None));
 static DISPLAY: Mutex<RefCell<Option<Display<MicrobitFrame>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
