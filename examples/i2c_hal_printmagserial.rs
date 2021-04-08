@@ -48,14 +48,7 @@ fn main() -> ! {
             let _ = i2c.write(0xE, &[0x11, 0x7f]);
 
             /* Initialise serial port on the micro:bit */
-            //let (mut tx, _) = microbit::serial_port(gpio, p.UART0, BAUD115200);
-
-            /* Configure RX and TX pins accordingly */
-            let tx = gpio.pin24.into_push_pull_output().into();
-            let rx = gpio.pin25.into_floating_input().into();
-
-            /* Set up serial port using the prepared pins */
-            let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
+            let (mut tx, _) = microbit::serial_port!(gpio, p.UART0, BAUD115200);
 
             let _ = write!(&mut tx, "\n\rWelcome to the magnetometer reader!\n\r");
 
