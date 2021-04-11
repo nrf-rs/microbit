@@ -1,34 +1,38 @@
 #![no_std]
 #![no_main]
 
+use defmt_rtt as _;
 use panic_halt as _;
 
 use cortex_m_rt::entry;
 
-use microbit::hal::delay::Delay;
-use microbit::hal::prelude::*;
+use microbit::hal::{
+    gpio::{p0::Parts as P0Parts, Level},
+    prelude::*,
+    Timer,
+};
 
 use microbit::led;
 
 #[entry]
 fn main() -> ! {
-    if let Some(p) = microbit::Peripherals::take() {
-        let gpio = p.GPIO.split();
-        let mut delay = Delay::new(p.TIMER0);
+    if let Some(p) = microbit::pac::Peripherals::take() {
+        let mut timer = Timer::new(p.TIMER0);
+        let p0parts = P0Parts::new(p.GPIO);
 
         // Display
-        let row1 = gpio.pin13.into_push_pull_output();
-        let row2 = gpio.pin14.into_push_pull_output();
-        let row3 = gpio.pin15.into_push_pull_output();
-        let col1 = gpio.pin4.into_push_pull_output();
-        let col2 = gpio.pin5.into_push_pull_output();
-        let col3 = gpio.pin6.into_push_pull_output();
-        let col4 = gpio.pin7.into_push_pull_output();
-        let col5 = gpio.pin8.into_push_pull_output();
-        let col6 = gpio.pin9.into_push_pull_output();
-        let col7 = gpio.pin10.into_push_pull_output();
-        let col8 = gpio.pin11.into_push_pull_output();
-        let col9 = gpio.pin12.into_push_pull_output();
+        let row1 = p0parts.p0_13.into_push_pull_output(Level::Low);
+        let row2 = p0parts.p0_14.into_push_pull_output(Level::Low);
+        let row3 = p0parts.p0_15.into_push_pull_output(Level::Low);
+        let col1 = p0parts.p0_04.into_push_pull_output(Level::Low);
+        let col2 = p0parts.p0_05.into_push_pull_output(Level::Low);
+        let col3 = p0parts.p0_06.into_push_pull_output(Level::Low);
+        let col4 = p0parts.p0_07.into_push_pull_output(Level::Low);
+        let col5 = p0parts.p0_08.into_push_pull_output(Level::Low);
+        let col6 = p0parts.p0_09.into_push_pull_output(Level::Low);
+        let col7 = p0parts.p0_10.into_push_pull_output(Level::Low);
+        let col8 = p0parts.p0_11.into_push_pull_output(Level::Low);
+        let col9 = p0parts.p0_12.into_push_pull_output(Level::Low);
         let mut leds = led::Display::new(
             col1, col2, col3, col4, col5, col6, col7, col8, col9, row1, row2, row3,
         );
@@ -86,14 +90,14 @@ fn main() -> ! {
             [0, 0, 1, 0, 0],
         ];
         loop {
-            leds.display(&mut delay, letter_I, 1000);
-            leds.display(&mut delay, heart, 1000);
-            leds.display(&mut delay, letter_R, 1000);
-            leds.display(&mut delay, letter_u, 1000);
-            leds.display(&mut delay, letter_s, 1000);
-            leds.display(&mut delay, letter_t, 1000);
+            leds.display(&mut timer, letter_I, 1000);
+            leds.display(&mut timer, heart, 1000);
+            leds.display(&mut timer, letter_R, 1000);
+            leds.display(&mut timer, letter_u, 1000);
+            leds.display(&mut timer, letter_s, 1000);
+            leds.display(&mut timer, letter_t, 1000);
             leds.clear();
-            delay.delay_ms(250_u32);
+            timer.delay_ms(250_u32);
         }
     }
 

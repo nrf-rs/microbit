@@ -3,21 +3,20 @@
 
 use panic_halt as _;
 
-use microbit::hal::nrf51::{interrupt, GPIOTE, UART0};
-use microbit::hal::prelude::*;
-use microbit::hal::serial;
-use microbit::hal::serial::BAUD115200;
-use microbit::NVIC;
+use core::{cell::RefCell, fmt::Write, ops::DerefMut};
 
 use cortex_m::interrupt::Mutex;
 use cortex_m_rt::entry;
+use microbit::{
+    hal::{
+        self,
+        uart::{Baudrate, Uart},
+    },
+    pac::{self, interrupt},
+};
 
-use core::cell::RefCell;
-use core::fmt::Write;
-use core::ops::DerefMut;
-
-static GPIO: Mutex<RefCell<Option<GPIOTE>>> = Mutex::new(RefCell::new(None));
-static TX: Mutex<RefCell<Option<serial::Tx<UART0>>>> = Mutex::new(RefCell::new(None));
+static GPIO: Mutex<RefCell<Option<pac::GPIOTE>>> = Mutex::new(RefCell::new(None));
+static TX: Mutex<RefCell<Option<Uart<pac::UART0>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
@@ -25,17 +24,18 @@ fn main() -> ! {
         cortex_m::interrupt::free(move |cs| {
             /* Enable external GPIO interrupts */
             unsafe {
-                NVIC::unmask(microbit::Interrupt::GPIOTE);
+                pac::NVIC::unmask(pac::Interrupt::GPIOTE);
             }
-            microbit::NVIC::unpend(microbit::Interrupt::GPIOTE);
+            pac::NVIC::unpend(pac::Interrupt::GPIOTE);
 
             /* Split GPIO pins */
-            let gpio = p.GPIO.split();
+            let gpio = hal::gpio::p0::Parts::new(p.GPIO);
 
             /* Configure button GPIOs as inputs */
-            let _ = gpio.pin26.into_floating_input();
-            let _ = gpio.pin17.into_floating_input();
+            let _ = gpio.p0_26.into_floating_input();
+            let _ = gpio.p0_17.into_floating_input();
 
+            // TODO: check for safe wrappers
             /* Set up GPIO 17 (button A) to generate an interrupt when pulled down */
             p.GPIOTE.config[0]
                 .write(|w| unsafe { w.mode().event().psel().bits(17).polarity().hi_to_lo() });
@@ -50,18 +50,14 @@ fn main() -> ! {
 
             *GPIO.borrow(cs).borrow_mut() = Some(p.GPIOTE);
 
-            /* Configure RX and TX pins accordingly */
-            let tx = gpio.pin24.into_push_pull_output().into();
-            let rx = gpio.pin25.into_floating_input().into();
-
-            /* Set up serial port using the prepared pins */
-            let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
+            /* Initialise serial port on the micro:bit */
+            let mut serial = microbit::serial_port!(gpio, p.UART0, Baudrate::BAUD115200);
 
             let _ = write!(
-                tx,
+                serial,
                 "\n\rWelcome to the buttons demo. Press buttons A and/or B for some action.\n\r",
             );
-            *TX.borrow(cs).borrow_mut() = Some(tx);
+            *TX.borrow(cs).borrow_mut() = Some(serial);
         });
     }
 

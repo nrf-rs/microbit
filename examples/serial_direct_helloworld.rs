@@ -25,7 +25,7 @@ fn main() -> ! {
     }
 }
 
-fn write_uart0(uart0: &microbit::hal::nrf51::UART0, s: &str) -> core::fmt::Result {
+fn write_uart0(uart0: &microbit::pac::UART0, s: &str) -> core::fmt::Result {
     uart0.tasks_starttx.write(|w| unsafe { w.bits(1) });
     for c in s.as_bytes() {
         /* Write the current character to the output register */

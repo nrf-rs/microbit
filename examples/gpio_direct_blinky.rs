@@ -23,7 +23,7 @@ fn main() -> ! {
                 p.GPIO.out.write(|w| unsafe { w.bits(0) });
             }
 
-            for _ in 0..1_000_000 {
+            for _ in 0..50_000 {
                 cortex_m::asm::nop();
             }
         }

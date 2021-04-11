@@ -3,33 +3,31 @@
 
 use panic_halt as _;
 
-use dcf77::{DCF77Time, SimpleDCF77Decoder};
-
-use microbit::hal::gpio::gpio::PIN16;
-use microbit::hal::gpio::{Floating, Input};
-use microbit::hal::nrf51::{interrupt, RTC0, UART0};
-use microbit::hal::prelude::*;
-use microbit::hal::serial;
-use microbit::hal::serial::BAUD115200;
-use microbit::NVIC;
+use core::{cell::RefCell, fmt::Write, ops::DerefMut};
 
 use cortex_m::interrupt::Mutex;
-
 use cortex_m_rt::entry;
-
-use core::cell::RefCell;
-use core::fmt::Write;
-use core::ops::DerefMut;
+use dcf77::{DCF77Time, SimpleDCF77Decoder};
+use microbit::{
+    hal::{
+        self,
+        gpio::{p0::P0_16, Floating, Input},
+        prelude::*,
+        uart::{Baudrate, Uart},
+    },
+    pac::{self, interrupt},
+};
 
 static DCF: Mutex<RefCell<Option<SimpleDCF77Decoder>>> = Mutex::new(RefCell::new(None));
-static DCFPIN: Mutex<RefCell<Option<PIN16<Input<Floating>>>>> = Mutex::new(RefCell::new(None));
-static RTC: Mutex<RefCell<Option<RTC0>>> = Mutex::new(RefCell::new(None));
-static TX: Mutex<RefCell<Option<serial::Tx<UART0>>>> = Mutex::new(RefCell::new(None));
+static DCFPIN: Mutex<RefCell<Option<P0_16<Input<Floating>>>>> = Mutex::new(RefCell::new(None));
+static RTC: Mutex<RefCell<Option<pac::RTC0>>> = Mutex::new(RefCell::new(None));
+static TX: Mutex<RefCell<Option<Uart<pac::UART0>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
         cortex_m::interrupt::free(move |cs| {
+            // TODO: check if there are safe wrappers now
             p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
 
             while p.CLOCK.events_lfclkstarted.read().bits() == 0 {}
@@ -38,36 +36,34 @@ fn main() -> ! {
             p.CLOCK.events_lfclkstarted.write(|w| unsafe { w.bits(0) });
 
             /* Split GPIO pins */
-            let gpio = p.GPIO.split();
+            let gpio = hal::gpio::p0::Parts::new(p.GPIO);
 
             /* Configure DCF77 receiver GPIO as input */
-            let pin = gpio.pin16.into_floating_input();
+            let pin = gpio.p0_16.into_floating_input();
 
-            /* Configure RX and TX pins accordingly */
-            let tx = gpio.pin24.into_push_pull_output().into();
-            let rx = gpio.pin25.into_floating_input().into();
+            /* Initialise serial port on the micro:bit */
+            let mut serial = microbit::serial_port!(gpio, p.UART0, Baudrate::BAUD115200);
 
-            /* Set up serial port using the prepared pins */
-            let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
-
-            let _ = tx.write_str("\n\rWelcome to the DCF77 decoder demo.\n\r");
-            let _ = tx.write_str("If you are within reach of a DCF77 radio clock signal and have a DCF77 receiver connected\n\r");
-            let _ = tx.write_str("you should see a stream of 59 bits appear in a line, followed by thd decoded date and time.\n\r");
-            let _ = tx.write_str("If not, please check your hardware, location and reception.\n\r");
+            let _ = serial.write_str("\n\rWelcome to the DCF77 decoder demo.\n\r");
+            let _ = serial.write_str("If you are within reach of a DCF77 radio clock signal and have a DCF77 receiver connected\n\r");
+            let _ = serial.write_str("you should see a stream of 59 bits appear in a line, followed by thd decoded date and time.\n\r");
+            let _ =
+                serial.write_str("If not, please check your hardware, location and reception.\n\r");
+            // TODO: check for safe wrappers
             p.RTC0.prescaler.write(|w| unsafe { w.bits(327) });
             p.RTC0.evtenset.write(|w| w.tick().set_bit());
             p.RTC0.intenset.write(|w| w.tick().set_bit());
             p.RTC0.tasks_start.write(|w| unsafe { w.bits(1) });
 
             *RTC.borrow(cs).borrow_mut() = Some(p.RTC0);
-            *TX.borrow(cs).borrow_mut() = Some(tx);
+            *TX.borrow(cs).borrow_mut() = Some(serial);
             *DCFPIN.borrow(cs).borrow_mut() = Some(pin);
             *DCF.borrow(cs).borrow_mut() = Some(SimpleDCF77Decoder::new());
 
             unsafe {
-                NVIC::unmask(microbit::Interrupt::RTC0);
+                pac::NVIC::unmask(pac::Interrupt::RTC0);
             }
-            microbit::NVIC::unpend(microbit::Interrupt::RTC0);
+            pac::NVIC::unpend(pac::Interrupt::RTC0);
         });
     }
 

@@ -9,11 +9,12 @@
 
 use panic_halt as _;
 
-use microbit::display::image::GreyscaleImage;
-use microbit::display::{self, Display, Frame, MicrobitDisplayTimer, MicrobitFrame};
-use microbit::hal::lo_res_timer::{LoResTimer, FREQ_16HZ};
-use microbit::hal::nrf51;
-use rtfm::app;
+use microbit::{
+    display::{self, image::GreyscaleImage, Display, Frame, MicrobitDisplayTimer, MicrobitFrame},
+    hal::rtc::{Rtc, RtcInterrupt},
+    pac,
+};
+use rtic::app;
 
 fn heart_image(inner_brightness: u8) -> GreyscaleImage {
     let b = inner_brightness;
@@ -26,30 +27,30 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
     ])
 }
 
-#[app(device = microbit::hal::nrf51, peripherals = true)]
+#[app(device = microbit::pac, peripherals = true)]
 const APP: () = {
     struct Resources {
-        gpio: nrf51::GPIO,
-        display_timer: MicrobitDisplayTimer<nrf51::TIMER1>,
-        anim_timer: LoResTimer<nrf51::RTC0>,
+        gpio: pac::GPIO,
+        display_timer: MicrobitDisplayTimer<pac::TIMER1>,
+        anim_timer: Rtc<pac::RTC0>,
         display: Display<MicrobitFrame>,
     }
 
     #[init]
     fn init(cx: init::Context) -> init::LateResources {
-        let mut p: nrf51::Peripherals = cx.device;
+        let mut p: pac::Peripherals = cx.device;
 
         // Starting the low-frequency clock (needed for RTC to work)
         p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
         while p.CLOCK.events_lfclkstarted.read().bits() == 0 {}
         p.CLOCK.events_lfclkstarted.reset();
 
-        let mut rtc0 = LoResTimer::new(p.RTC0);
+        // RTC at 16Hz (32_768 / (2047 + 1))
         // 16Hz; 62.5ms period
-        rtc0.set_frequency(FREQ_16HZ);
-        rtc0.enable_tick_event();
-        rtc0.enable_tick_interrupt();
-        rtc0.start();
+        let mut rtc0 = Rtc::new(p.RTC0, 2047).unwrap();
+        rtc0.enable_event(RtcInterrupt::Tick);
+        rtc0.enable_interrupt(RtcInterrupt::Tick, None);
+        rtc0.enable_counter();
 
         let mut timer = MicrobitDisplayTimer::new(p.TIMER1);
         display::initialise_display(&mut timer, &mut p.GPIO);
@@ -78,7 +79,7 @@ const APP: () = {
         static mut FRAME: MicrobitFrame = MicrobitFrame::const_default();
         static mut STEP: u8 = 0;
 
-        &cx.resources.anim_timer.clear_tick_event();
+        cx.resources.anim_timer.reset_event(RtcInterrupt::Tick);
 
         let inner_brightness = match *STEP {
             0..=8 => 9 - *STEP,
@@ -86,7 +87,7 @@ const APP: () = {
             _ => unreachable!(),
         };
 
-        FRAME.set(&mut heart_image(inner_brightness));
+        FRAME.set(&heart_image(inner_brightness));
         cx.resources.display.lock(|display| {
             display.set_frame(FRAME);
         });
