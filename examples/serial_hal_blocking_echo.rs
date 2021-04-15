@@ -15,7 +15,7 @@ fn main() -> ! {
         let gpio = p.GPIO.split();
 
         /* Initialise serial port on the micro:bit */
-        let (mut tx, mut rx) = microbit::serial_port(gpio, p.UART0, BAUD115200);
+        let (mut tx, mut rx) = microbit::serial_port!(gpio, p.UART0, BAUD115200);
 
         /* Print a nice hello message */
         let s = b"Please type characters to echo:\r\n";
