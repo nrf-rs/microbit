@@ -28,6 +28,9 @@ jobs:
         run: cargo clippy --color=always -- -D warnings
 
       - name: build
-        run: cargo check
+        run: cargo build --target=thumbv6m-none-eabi
+
+      - name: build examples
+        run: .github/scripts/build-examples.sh
 
 
