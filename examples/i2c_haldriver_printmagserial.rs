@@ -3,28 +3,25 @@
 
 use panic_halt as _;
 
-use cortex_m;
-use microbit::hal::i2c;
-use microbit::hal::i2c::I2c;
-use microbit::hal::nrf51::{interrupt, GPIOTE, UART0};
-use microbit::hal::prelude::*;
-use microbit::hal::serial;
-use microbit::hal::serial::BAUD115200;
-use microbit::NVIC;
-use microbit::TWI1;
+use core::{cell::RefCell, fmt::Write, ops::DerefMut};
 
-use crate::cortex_m::interrupt::Mutex;
+use microbit::{
+    hal::{
+        self, twi,
+        uart::{Baudrate, Uart},
+    },
+    pac::{self, interrupt, twi0::frequency::FREQUENCY_A},
+};
+
+use cortex_m::interrupt::Mutex;
 use cortex_m_rt::entry;
 
 use mag3110::{DataRate, Mag3110, Oversampling};
 
-use core::cell::RefCell;
-use core::fmt::Write;
-use core::ops::DerefMut;
-
-static GPIO: Mutex<RefCell<Option<GPIOTE>>> = Mutex::new(RefCell::new(None));
-static TX: Mutex<RefCell<Option<serial::Tx<UART0>>>> = Mutex::new(RefCell::new(None));
-static MAG3110: Mutex<RefCell<Option<Mag3110<I2c<TWI1>>>>> = Mutex::new(RefCell::new(None));
+static GPIO: Mutex<RefCell<Option<pac::GPIOTE>>> = Mutex::new(RefCell::new(None));
+static TX: Mutex<RefCell<Option<Uart<pac::UART0>>>> = Mutex::new(RefCell::new(None));
+static MAG3110: Mutex<RefCell<Option<Mag3110<twi::Twi<pac::TWI1>>>>> =
+    Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
@@ -32,9 +29,9 @@ fn main() -> ! {
         cortex_m::interrupt::free(move |cs| {
             /* Enable external GPIO interrupts */
             unsafe {
-                NVIC::unmask(microbit::Interrupt::GPIOTE);
+                pac::NVIC::unmask(pac::Interrupt::GPIOTE);
             }
-            microbit::NVIC::unpend(microbit::Interrupt::GPIOTE);
+            pac::NVIC::unpend(pac::Interrupt::GPIOTE);
 
             /* Set up pin 29 to act as external interrupt from the magnetometer */
             p.GPIOTE.config[0]
@@ -43,25 +40,18 @@ fn main() -> ! {
             p.GPIOTE.events_in[0].write(|w| unsafe { w.bits(0) });
             *GPIO.borrow(cs).borrow_mut() = Some(p.GPIOTE);
 
-            /* Split GPIO pins */
-            let gpio = p.GPIO.split();
+            let gpio = hal::gpio::p0::Parts::new(p.GPIO);
+            let mut serial = microbit::serial_port!(gpio, p.UART0, Baudrate::BAUD115200);
 
-            /* Configure RX and TX pins accordingly */
-            let tx = gpio.pin24.into_push_pull_output().into();
-            let rx = gpio.pin25.into_floating_input().into();
-
-            /* Set up serial port using the prepared pins */
-            let (mut tx, _) = serial::Serial::uart0(p.UART0, tx, rx, BAUD115200).split();
-
-            let _ = write!(&mut tx, "\n\rWelcome to the magnetometer reader!\n\r");
-            *TX.borrow(cs).borrow_mut() = Some(tx);
-
-            /* Configure SCL and SDA pins accordingly */
-            let scl = gpio.pin0.into_open_drain_input().into();
-            let sda = gpio.pin30.into_open_drain_input().into();
+            let _ = write!(&mut serial, "\n\rWelcome to the magnetometer reader!\n\r");
+            *TX.borrow(cs).borrow_mut() = Some(serial);
 
             /* Set up I2C */
-            let i2c = i2c::I2c::i2c1(p.TWI1, sda, scl);
+            let twi_pins = twi::Pins {
+                scl: gpio.p0_00.into_floating_input().degrade(),
+                sda: gpio.p0_30.into_floating_input().degrade(),
+            };
+            let i2c = twi::Twi::new(p.TWI1, twi_pins, FREQUENCY_A::K250);
 
             /* Set up MAG3110 magnetometer on the I2C bus */
             let mut mag3110 = Mag3110::new(i2c).ok().unwrap();

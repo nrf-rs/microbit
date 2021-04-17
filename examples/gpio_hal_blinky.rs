@@ -3,24 +3,28 @@
 
 use panic_halt as _;
 
-use microbit::hal::delay::Delay;
-use microbit::hal::prelude::*;
-
 use cortex_m_rt::entry;
+use embedded_hal::{blocking::delay::DelayMs, digital::v2::OutputPin};
+use microbit::hal::{
+    gpio::{p0, Level},
+    timer::Timer,
+};
 
 #[entry]
 fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
-        let gpio = p.GPIO.split();
-        let mut delay = Delay::new(p.TIMER0);
-        let mut led = gpio.pin13.into_push_pull_output();
-        let _ = gpio.pin4.into_push_pull_output();
+        /* Split GPIO pins */
+        let gpio = p0::Parts::new(p.GPIO);
+
+        let mut timer = Timer::new(p.TIMER0);
+        let mut led = gpio.p0_13.into_push_pull_output(Level::Low);
+        let _ = gpio.p0_04.into_push_pull_output(Level::Low);
 
         loop {
             let _ = led.set_low();
-            delay.delay_ms(1_000_u16);
+            timer.delay_ms(1_000_u16);
             let _ = led.set_high();
-            delay.delay_ms(1_000_u16);
+            timer.delay_ms(1_000_u16);
         }
     }
 

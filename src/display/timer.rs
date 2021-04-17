@@ -4,7 +4,7 @@
 
 use tiny_led_matrix::DisplayTimer;
 
-use crate::hal::hi_res_timer::{As16BitTimer, HiResTimer, Nrf51Timer, TimerCc, TimerFrequency};
+use crate::hal::timer::Instance;
 
 /// A TIMER peripheral programmed to manage the display.
 ///
@@ -17,48 +17,85 @@ use crate::hal::hi_res_timer::{As16BitTimer, HiResTimer, Nrf51Timer, TimerCc, Ti
 /// CC0_CLEAR shortcut to implement the primary cycle.
 ///
 /// [`DisplayTimer`]: tiny_led_matrix::DisplayTimer
-pub struct MicrobitDisplayTimer<T: Nrf51Timer>(HiResTimer<T, u16>);
+pub struct MicrobitDisplayTimer<T: Instance>(T);
 
-impl<T: As16BitTimer> MicrobitDisplayTimer<T> {
+impl<T: Instance> MicrobitDisplayTimer<T> {
     /// Returns a new `MicrobitDisplayTimer` wrapping the passed TIMER.
     ///
     /// Takes ownership of the TIMER peripheral.
     pub fn new(timer: T) -> MicrobitDisplayTimer<T> {
-        MicrobitDisplayTimer(timer.as_16bit_timer())
+        MicrobitDisplayTimer(timer)
     }
 
     /// Gives the underlying `nrf51::TIMER`*n* instance back.
     pub fn free(self) -> T {
-        self.0.free()
+        self.0
     }
 }
 
-impl<T: Nrf51Timer> DisplayTimer for MicrobitDisplayTimer<T> {
+impl<T: Instance> DisplayTimer for MicrobitDisplayTimer<T> {
     fn initialise_cycle(&mut self, ticks: u16) {
-        self.0.set_frequency(TimerFrequency::Freq62500Hz);
-        self.0.set_compare_register(TimerCc::CC0, ticks);
-        self.0.enable_auto_clear(TimerCc::CC0);
-        self.0.enable_compare_interrupt(TimerCc::CC0);
-        self.0.start();
+        let timer0 = self.0.as_timer0();
+        // stop and reset timer
+        timer0.tasks_stop.write(|w| unsafe { w.bits(1) });
+        timer0.tasks_clear.write(|w| unsafe { w.bits(1) });
+
+        // set as 16 bits
+        timer0.bitmode.write(|w| w.bitmode()._16bit());
+
+        // set frequency to 62500Hz
+        timer0.prescaler.write(|w| unsafe { w.bits(8) });
+
+        // set compare register
+        timer0.cc[0].write(|w| unsafe { w.bits(ticks.into()) });
+
+        // enable auto clear
+        timer0.shorts.write(|w| w.compare0_clear().enabled());
+
+        // enable compare interrupt
+        timer0.intenset.write(|w| w.compare0().set());
+
+        // start
+        timer0.tasks_start.write(|w| unsafe { w.bits(1) });
+        // maybe?
+        // timer0.tasks_start.write(|w| w.tasks_start().set_bit());
     }
 
     fn enable_secondary(&mut self) {
-        self.0.enable_compare_interrupt(TimerCc::CC1);
+        self.0.as_timer0().intenset.write(|w| w.compare1().set());
     }
 
     fn disable_secondary(&mut self) {
-        self.0.disable_compare_interrupt(TimerCc::CC1);
+        // TODO: is this clear or clear_bit?
+        self.0
+            .as_timer0()
+            .intenset
+            .write(|w| w.compare0().clear_bit());
     }
 
     fn program_secondary(&mut self, ticks: u16) {
-        self.0.set_compare_register(TimerCc::CC1, ticks);
+        self.0.as_timer0().cc[1].write(|w| unsafe { w.bits(ticks.into()) });
+        // TODO: on nrf52
+        // self.0.as_timer0().cc[1].write(|w| unsafe { w.cc().bits(ticks) });
     }
 
     fn check_primary(&mut self) -> bool {
-        self.0.poll_compare_event(TimerCc::CC0)
+        // poll compare event
+        let reg = &self.0.as_timer0().events_compare[0];
+        let fired = reg.read().bits() != 0;
+        if fired {
+            reg.reset();
+        }
+        fired
     }
 
     fn check_secondary(&mut self) -> bool {
-        self.0.poll_compare_event(TimerCc::CC1)
+        // poll compare event
+        let reg = &self.0.as_timer0().events_compare[1];
+        let fired = reg.read().bits() != 0;
+        if fired {
+            reg.reset();
+        }
+        fired
     }
 }

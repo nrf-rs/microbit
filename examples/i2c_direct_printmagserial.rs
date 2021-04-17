@@ -3,19 +3,15 @@
 
 use panic_halt as _;
 
-use microbit::hal::nrf51::*;
-use microbit::hal::nrf51::{interrupt, UART0};
-use microbit::NVIC;
+use core::{cell::RefCell, fmt::Write};
 
 use cortex_m::interrupt::Mutex;
-
-use core::cell::RefCell;
-use core::fmt::Write;
 use cortex_m_rt::entry;
+use microbit::pac::{self, interrupt};
 
-static RTC: Mutex<RefCell<Option<RTC0>>> = Mutex::new(RefCell::new(None));
-static UART: Mutex<RefCell<Option<UART0>>> = Mutex::new(RefCell::new(None));
-static TWI: Mutex<RefCell<Option<TWI1>>> = Mutex::new(RefCell::new(None));
+static RTC: Mutex<RefCell<Option<pac::RTC0>>> = Mutex::new(RefCell::new(None));
+static UART: Mutex<RefCell<Option<pac::UART0>>> = Mutex::new(RefCell::new(None));
+static TWI: Mutex<RefCell<Option<pac::TWI1>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
@@ -93,9 +89,9 @@ fn main() -> ! {
         });
 
         unsafe {
-            NVIC::unmask(microbit::Interrupt::RTC0);
+            pac::NVIC::unmask(pac::Interrupt::RTC0);
         }
-        microbit::NVIC::unpend(microbit::Interrupt::RTC0);
+        pac::NVIC::unpend(pac::Interrupt::RTC0);
     }
 
     loop {
@@ -166,7 +162,7 @@ fn RTC0() {
     }
 }
 
-pub struct UART0Buffer<'a>(pub &'a UART0);
+pub struct UART0Buffer<'a>(pub &'a pac::UART0);
 
 impl<'a> core::fmt::Write for UART0Buffer<'a> {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {

@@ -1,15 +1,14 @@
 //! On-board user LEDs
 
-use crate::hal::delay::Delay;
-use crate::hal::gpio::gpio::PIN;
-use crate::hal::gpio::gpio::{
-    PIN10, PIN11, PIN12, PIN13, PIN14, PIN15, PIN4, PIN5, PIN6, PIN7, PIN8, PIN9,
+use crate::hal::{
+    gpio::{p0, Output, Pin, PushPull},
+    prelude::*,
 };
-use crate::hal::gpio::{Output, PushPull};
-use crate::hal::prelude::*;
+
+use embedded_hal::blocking::delay::DelayUs;
 
 #[allow(clippy::upper_case_acronyms)]
-type LED = PIN<Output<PushPull>>;
+type LED = Pin<Output<PushPull>>;
 
 const DEFAULT_DELAY_MS: u32 = 2;
 const LED_LAYOUT: [[(usize, usize); 5]; 5] = [
@@ -31,32 +30,32 @@ impl Display {
     /// Initializes all the user LEDs
     #[allow(clippy::too_many_arguments)]
     pub fn new(
-        col1: PIN4<Output<PushPull>>,
-        col2: PIN5<Output<PushPull>>,
-        col3: PIN6<Output<PushPull>>,
-        col4: PIN7<Output<PushPull>>,
-        col5: PIN8<Output<PushPull>>,
-        col6: PIN9<Output<PushPull>>,
-        col7: PIN10<Output<PushPull>>,
-        col8: PIN11<Output<PushPull>>,
-        col9: PIN12<Output<PushPull>>,
-        row1: PIN13<Output<PushPull>>,
-        row2: PIN14<Output<PushPull>>,
-        row3: PIN15<Output<PushPull>>,
+        col1: p0::P0_04<Output<PushPull>>,
+        col2: p0::P0_05<Output<PushPull>>,
+        col3: p0::P0_06<Output<PushPull>>,
+        col4: p0::P0_07<Output<PushPull>>,
+        col5: p0::P0_08<Output<PushPull>>,
+        col6: p0::P0_09<Output<PushPull>>,
+        col7: p0::P0_10<Output<PushPull>>,
+        col8: p0::P0_11<Output<PushPull>>,
+        col9: p0::P0_12<Output<PushPull>>,
+        row1: p0::P0_13<Output<PushPull>>,
+        row2: p0::P0_14<Output<PushPull>>,
+        row3: p0::P0_15<Output<PushPull>>,
     ) -> Self {
         let mut retval = Display {
             delay_ms: DEFAULT_DELAY_MS,
-            rows: [row1.into(), row2.into(), row3.into()],
+            rows: [row1.degrade(), row2.degrade(), row3.degrade()],
             cols: [
-                col1.into(),
-                col2.into(),
-                col3.into(),
-                col4.into(),
-                col5.into(),
-                col6.into(),
-                col7.into(),
-                col8.into(),
-                col9.into(),
+                col1.degrade(),
+                col2.degrade(),
+                col3.degrade(),
+                col4.degrade(),
+                col5.degrade(),
+                col6.degrade(),
+                col7.degrade(),
+                col8.degrade(),
+                col9.degrade(),
             ],
         };
         // This is needed to reduce flickering on reset
@@ -96,13 +95,23 @@ impl Display {
     }
 
     /// Display 5x5 display image for a given duration
-    pub fn display(&mut self, delay: &mut Delay, led_display: [[u8; 5]; 5], duration_ms: u32) {
+    pub fn display<D: DelayUs<u32>>(
+        &mut self,
+        delay: &mut D,
+        led_display: [[u8; 5]; 5],
+        duration_ms: u32,
+    ) {
         let led_matrix = Display::display2matrix(led_display);
         self.display_pre(delay, led_matrix, duration_ms);
     }
 
     /// Display 3x9 matrix image for a given duration
-    pub fn display_pre(&mut self, delay: &mut Delay, led_matrix: [[u8; 9]; 3], duration_ms: u32) {
+    pub fn display_pre<D: DelayUs<u32>>(
+        &mut self,
+        delay: &mut D,
+        led_matrix: [[u8; 9]; 3],
+        duration_ms: u32,
+    ) {
         // TODO: something more intelligent with timers
         let loops = duration_ms / (self.rows.len() as u32 * self.delay_ms);
         for _ in 0..loops {
@@ -114,7 +123,7 @@ impl Display {
                         col_line.set_low().ok();
                     }
                 }
-                delay.delay_ms(self.delay_ms);
+                delay.delay_us(self.delay_ms * 1000);
                 for col_line in &mut self.cols {
                     col_line.set_high().ok();
                 }

@@ -4,7 +4,7 @@
 //!
 //! [`DisplayControl`]: tiny_led_matrix::DisplayControl
 
-use crate::hal::nrf51;
+use crate::pac;
 use tiny_led_matrix::DisplayControl;
 
 const fn bit_range(lo: usize, count: usize) -> u32 {
@@ -26,7 +26,7 @@ const ROW_BITS: u32 = bit_range(FIRST_ROW_PIN, MATRIX_ROWS);
 /// This implements the `DisplayControl` trait.
 ///
 /// [`DisplayControl`]: tiny_led_matrix::DisplayControl
-pub(crate) struct MicrobitGpio<'a>(pub &'a nrf51::GPIO);
+pub(crate) struct MicrobitGpio<'a>(pub &'a pac::GPIO);
 
 /// Returns the GPIO pin numbers corresponding to the columns in a ColumnSet.
 fn column_pins(cols: u32) -> u32 {

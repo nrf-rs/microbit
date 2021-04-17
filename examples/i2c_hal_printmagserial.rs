@@ -3,27 +3,26 @@
 
 use panic_halt as _;
 
-use microbit::hal::i2c;
-use microbit::hal::nrf51::{interrupt, RTC0, TWI1, UART0};
-use microbit::hal::prelude::*;
-use microbit::hal::serial;
-use microbit::hal::serial::BAUD115200;
-use microbit::NVIC;
+use core::{cell::RefCell, fmt::Write, ops::DerefMut};
 
 use cortex_m::interrupt::Mutex;
-
-use core::cell::RefCell;
-use core::fmt::Write;
-use core::ops::DerefMut;
 use cortex_m_rt::entry;
+use microbit::{
+    hal::{
+        self, twi,
+        uart::{Baudrate, Uart},
+    },
+    pac::{self, interrupt, twi0::frequency::FREQUENCY_A},
+};
 
-static RTC: Mutex<RefCell<Option<RTC0>>> = Mutex::new(RefCell::new(None));
-static I2C: Mutex<RefCell<Option<i2c::I2c<TWI1>>>> = Mutex::new(RefCell::new(None));
-static TX: Mutex<RefCell<Option<serial::Tx<UART0>>>> = Mutex::new(RefCell::new(None));
+static RTC: Mutex<RefCell<Option<pac::RTC0>>> = Mutex::new(RefCell::new(None));
+static TX: Mutex<RefCell<Option<Uart<pac::UART0>>>> = Mutex::new(RefCell::new(None));
+static I2C: Mutex<RefCell<Option<twi::Twi<pac::TWI1>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
     if let Some(p) = microbit::Peripherals::take() {
+        // TODO: check if there are safe wrappers for this now
         p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
         while p.CLOCK.events_lfclkstarted.read().bits() == 0 {}
         p.CLOCK.events_lfclkstarted.write(|w| unsafe { w.bits(0) });
@@ -35,31 +34,32 @@ fn main() -> ! {
 
         cortex_m::interrupt::free(move |cs| {
             /* Split GPIO pins */
-            let gpio = p.GPIO.split();
+            let gpio = hal::gpio::p0::Parts::new(p.GPIO);
 
-            /* Configure RX and TX pins accordingly */
-            let scl = gpio.pin0.into_open_drain_input().into();
-            let sda = gpio.pin30.into_open_drain_input().into();
-
-            let mut i2c = i2c::I2c::i2c1(p.TWI1, sda, scl);
+            /* Set up I2C */
+            let twi_pins = twi::Pins {
+                scl: gpio.p0_00.into_floating_input().degrade(),
+                sda: gpio.p0_30.into_floating_input().degrade(),
+            };
+            let mut i2c = twi::Twi::new(p.TWI1, twi_pins, FREQUENCY_A::K250);
 
             /* Configure magnetometer for automatic updates */
             let _ = i2c.write(0xE, &[0x10, 0x1]);
             let _ = i2c.write(0xE, &[0x11, 0x7f]);
 
             /* Initialise serial port on the micro:bit */
-            let (mut tx, _) = microbit::serial_port!(gpio, p.UART0, BAUD115200);
+            let mut serial = microbit::serial_port!(gpio, p.UART0, Baudrate::BAUD115200);
 
-            let _ = write!(&mut tx, "\n\rWelcome to the magnetometer reader!\n\r");
+            let _ = write!(&mut serial, "\n\rWelcome to the magnetometer reader!\n\r");
 
             *RTC.borrow(cs).borrow_mut() = Some(p.RTC0);
             *I2C.borrow(cs).borrow_mut() = Some(i2c);
-            *TX.borrow(cs).borrow_mut() = Some(tx);
+            *TX.borrow(cs).borrow_mut() = Some(serial);
         });
         unsafe {
-            NVIC::unmask(microbit::Interrupt::RTC0);
+            pac::NVIC::unmask(pac::Interrupt::RTC0);
         }
-        microbit::NVIC::unpend(microbit::Interrupt::RTC0);
+        pac::NVIC::unpend(pac::Interrupt::RTC0);
     }
 
     loop {
@@ -80,7 +80,7 @@ fn RTC0() {
         ) {
             let mut data: [u8; 6] = [0; 6];
 
-            if i2c.write_read(0xE, &[0x1], &mut data).is_ok() {
+            if i2c.write_then_read(0xE, &[0x1], &mut data).is_ok() {
                 /* Join and translate 2s complement values */
                 let (x, y, z) = (
                     (u16::from(data[0]) << 8 | u16::from(data[1])) as i16,

@@ -52,7 +52,7 @@ fn main() -> ! {
     }
 }
 
-fn write_uart0(uart0: &microbit::hal::nrf51::UART0, s: &str) -> core::fmt::Result {
+fn write_uart0(uart0: &microbit::pac::UART0, s: &str) -> core::fmt::Result {
     /* Start UART sender */
     uart0.tasks_starttx.write(|w| unsafe { w.bits(1) });
 
