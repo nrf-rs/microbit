@@ -1,5 +1,5 @@
 [target.thumbv6m-none-eabi]
-runner = 'arm-none-eabi-gdb'
+runner = 'probe-run --chip nRF51822_xxAA'
 rustflags = [
   "-C", "link-arg=-Tlink.x",
   #"--emit=asm",
