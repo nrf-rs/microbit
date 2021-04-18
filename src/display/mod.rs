@@ -134,7 +134,7 @@ pub mod image;
 pub use matrix::MicrobitFrame;
 pub use timer::MicrobitDisplayTimer;
 
-use crate::hal::timer::Instance;
+use crate::{gpio::DisplayPins, hal::timer::Instance};
 
 use control::MicrobitGpio;
 
@@ -151,9 +151,9 @@ use control::MicrobitGpio;
 /// ```
 pub fn initialise_display<T: Instance>(
     timer: &mut MicrobitDisplayTimer<T>,
-    gpio: &mut crate::pac::GPIO,
+    _pins: &mut DisplayPins,
 ) {
-    tiny_led_matrix::initialise_control(&mut MicrobitGpio(gpio));
+    tiny_led_matrix::initialise_control(&mut MicrobitGpio {});
     tiny_led_matrix::initialise_timer(timer);
 }
 
@@ -186,7 +186,7 @@ pub fn initialise_display<T: Instance>(
 pub fn handle_display_event<T: Instance>(
     display: &mut Display<MicrobitFrame>,
     timer: &mut MicrobitDisplayTimer<T>,
-    gpio: &mut crate::pac::GPIO,
+    _pins: &mut DisplayPins,
 ) {
-    display.handle_event(timer, &mut MicrobitGpio(gpio));
+    display.handle_event(timer, &mut MicrobitGpio {});
 }

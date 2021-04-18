@@ -30,7 +30,7 @@ const ROW_BITS: u32 = pin_bits(&ROWS);
 /// This implements the `DisplayControl` trait.
 ///
 /// [`DisplayControl`]: tiny_led_matrix::DisplayControl
-pub(crate) struct MicrobitGpio<'a>(pub &'a pac::GPIO);
+pub(crate) struct MicrobitGpio;
 
 /// Returns the GPIO pin numbers corresponding to the columns in a Columnt et.
 fn column_pins(mut cols: u32) -> u32 {
@@ -50,38 +50,42 @@ fn column_pins(mut cols: u32) -> u32 {
 /// state it would have after system reset.
 ///
 /// [`DisplayControl`]: tiny_led_matrix::DisplayControl
-impl DisplayControl for MicrobitGpio<'_> {
+impl DisplayControl for MicrobitGpio {
     fn initialise_for_display(&mut self) {
-        let gpio = &self.0;
-        for ii in COLS.iter() {
-            gpio.pin_cnf[*ii].write(|w| w.dir().output());
-        }
-        for ii in ROWS.iter() {
-            gpio.pin_cnf[*ii].write(|w| w.dir().output());
-        }
+        unsafe {
+            let gpio = &*pac::GPIO::ptr();
+            for ii in COLS.iter() {
+                gpio.pin_cnf[*ii].write(|w| w.dir().output());
+            }
+            for ii in ROWS.iter() {
+                gpio.pin_cnf[*ii].write(|w| w.dir().output());
+            }
 
-        // Set all cols high.
-        gpio.outset
-            .write(|w| unsafe { w.bits(COLS.iter().map(|pin| 1 << pin).sum()) });
+            // Set all cols high.
+            gpio.outset
+                .write(|w| w.bits(COLS.iter().map(|pin| 1 << pin).sum()));
+        }
     }
 
     fn display_row_leds(&mut self, row: usize, cols: u32) {
-        let gpio = &self.0;
-        // To light an LED, we set the row bit and clear the col bit.
-        let rows_to_set = 1 << ROWS[row];
-        let rows_to_clear = ROW_BITS ^ rows_to_set;
+        unsafe {
+            let gpio = &*pac::GPIO::ptr();
+            // To light an LED, we set the row bit and clear the col bit.
+            let rows_to_set = 1 << ROWS[row];
+            let rows_to_clear = ROW_BITS ^ rows_to_set;
 
-        let cols_to_clear = column_pins(cols);
-        let cols_to_set = COL_BITS ^ cols_to_clear;
+            let cols_to_clear = column_pins(cols);
+            let cols_to_set = COL_BITS ^ cols_to_clear;
 
-        gpio.outset
-            .write(|w| unsafe { w.bits(rows_to_set | cols_to_set) });
-        gpio.outclr
-            .write(|w| unsafe { w.bits(rows_to_clear | cols_to_clear) });
+            gpio.outset.write(|w| w.bits(rows_to_set | cols_to_set));
+            gpio.outclr.write(|w| w.bits(rows_to_clear | cols_to_clear));
+        }
     }
 
     fn light_current_row_leds(&mut self, cols: u32) {
-        let gpio = &self.0;
-        gpio.outclr.write(|w| unsafe { w.bits(column_pins(cols)) });
+        unsafe {
+            let gpio = &*crate::pac::GPIO::ptr();
+            gpio.outclr.write(|w| w.bits(column_pins(cols)));
+        }
     }
 }
