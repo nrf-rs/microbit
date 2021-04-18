@@ -29,6 +29,7 @@ impl GreyscaleImage {
         GreyscaleImage(*data)
     }
 
+    /// Construct a GreyscaleImage with all LEDs turned off.
     pub const fn blank() -> GreyscaleImage {
         GreyscaleImage([[0; 5]; 5])
     }

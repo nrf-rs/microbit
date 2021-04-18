@@ -1,4 +1,8 @@
+//! microbit contains everything required to get started with the use of Rust
+//! to create firmwares for the fabulous [BBC micro:bit](https://microbit.org)
+//! microcontroller board.
 #![no_std]
+#![deny(missing_docs)]
 #![allow(non_camel_case_types)]
 
 pub use hal::pac;
@@ -11,6 +15,7 @@ pub mod display;
 pub mod gpio;
 pub mod led;
 
+/// Create a [Uart](hal::uart::Uart] client with the default pins
 #[macro_export]
 macro_rules! serial_port {
     ( $gpio:expr, $uart:expr, $speed:expr ) => {{

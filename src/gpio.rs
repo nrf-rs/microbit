@@ -4,7 +4,7 @@
 //! [v1.5 schematic](https://github.com/bbcmicrobit/hardware/tree/master/V1.5).
 //! Where appropriate the pins are restricted with the appropriate `MODE`
 //! from `nrf-hal`.
-#![allow(clippy::upper_case_acronyms)]
+#![allow(clippy::upper_case_acronyms, missing_docs)]
 use crate::hal::gpio::{p0, Floating, Input, Output, PushPull};
 
 /* GPIO pads */
@@ -27,6 +27,7 @@ pub type ROW1 = p0::P0_13<Output<PushPull>>;
 pub type ROW2 = p0::P0_14<Output<PushPull>>;
 pub type ROW3 = p0::P0_15<Output<PushPull>>;
 
+/// GPIO pins connected to the LED matrix
 pub struct DisplayPins {
     pub col1: COL1,
     pub col2: COL2,
@@ -42,6 +43,7 @@ pub struct DisplayPins {
     pub row3: ROW3,
 }
 
+/// Create [DisplayPins] from a [GPIO Parts](crate::hal::gpio::p0::Parts)
 #[macro_export]
 macro_rules! display_pins {
     ( $p0parts:expr ) => {{
