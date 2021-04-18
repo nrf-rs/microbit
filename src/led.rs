@@ -1,14 +1,16 @@
 //! On-board user LEDs
 
 use crate::hal::{
-    gpio::{p0, Output, Pin, PushPull},
+    gpio::{Output, Pin, PushPull},
     prelude::*,
 };
+
+use crate::gpio::{COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8, COL9, ROW1, ROW2, ROW3};
 
 use embedded_hal::blocking::delay::DelayUs;
 
 #[allow(clippy::upper_case_acronyms)]
-type LED = Pin<Output<PushPull>>;
+pub(crate) type LED = Pin<Output<PushPull>>;
 
 const DEFAULT_DELAY_MS: u32 = 2;
 const LED_LAYOUT: [[(usize, usize); 5]; 5] = [
@@ -18,6 +20,21 @@ const LED_LAYOUT: [[(usize, usize); 5]; 5] = [
     [(0, 7), (0, 6), (0, 5), (0, 4), (0, 3)],
     [(2, 2), (1, 6), (2, 0), (1, 5), (2, 1)],
 ];
+
+pub struct Pins {
+    pub col1: COL1,
+    pub col2: COL2,
+    pub col3: COL3,
+    pub col4: COL4,
+    pub col5: COL5,
+    pub col6: COL6,
+    pub col7: COL7,
+    pub col8: COL8,
+    pub col9: COL9,
+    pub row1: ROW1,
+    pub row2: ROW2,
+    pub row3: ROW3,
+}
 
 /// Array of all the LEDs in the 5x5 display on the board
 pub struct Display {
@@ -29,33 +46,24 @@ pub struct Display {
 impl Display {
     /// Initializes all the user LEDs
     #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        col1: p0::P0_04<Output<PushPull>>,
-        col2: p0::P0_05<Output<PushPull>>,
-        col3: p0::P0_06<Output<PushPull>>,
-        col4: p0::P0_07<Output<PushPull>>,
-        col5: p0::P0_08<Output<PushPull>>,
-        col6: p0::P0_09<Output<PushPull>>,
-        col7: p0::P0_10<Output<PushPull>>,
-        col8: p0::P0_11<Output<PushPull>>,
-        col9: p0::P0_12<Output<PushPull>>,
-        row1: p0::P0_13<Output<PushPull>>,
-        row2: p0::P0_14<Output<PushPull>>,
-        row3: p0::P0_15<Output<PushPull>>,
-    ) -> Self {
+    pub fn new(pins: Pins) -> Self {
         let mut retval = Display {
             delay_ms: DEFAULT_DELAY_MS,
-            rows: [row1.degrade(), row2.degrade(), row3.degrade()],
+            rows: [
+                pins.row1.degrade(),
+                pins.row2.degrade(),
+                pins.row3.degrade(),
+            ],
             cols: [
-                col1.degrade(),
-                col2.degrade(),
-                col3.degrade(),
-                col4.degrade(),
-                col5.degrade(),
-                col6.degrade(),
-                col7.degrade(),
-                col8.degrade(),
-                col9.degrade(),
+                pins.col1.degrade(),
+                pins.col2.degrade(),
+                pins.col3.degrade(),
+                pins.col4.degrade(),
+                pins.col5.degrade(),
+                pins.col6.degrade(),
+                pins.col7.degrade(),
+                pins.col8.degrade(),
+                pins.col9.degrade(),
             ],
         };
         // This is needed to reduce flickering on reset

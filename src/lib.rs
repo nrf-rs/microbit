@@ -8,6 +8,7 @@ pub use nrf51_hal as hal;
 pub use nb::*;
 
 pub mod display;
+pub mod gpio;
 pub mod led;
 
 #[macro_export]

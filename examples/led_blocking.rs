@@ -21,21 +21,21 @@ fn main() -> ! {
         let p0parts = P0Parts::new(p.GPIO);
 
         // Display
-        let row1 = p0parts.p0_13.into_push_pull_output(Level::Low);
-        let row2 = p0parts.p0_14.into_push_pull_output(Level::Low);
-        let row3 = p0parts.p0_15.into_push_pull_output(Level::Low);
-        let col1 = p0parts.p0_04.into_push_pull_output(Level::Low);
-        let col2 = p0parts.p0_05.into_push_pull_output(Level::Low);
-        let col3 = p0parts.p0_06.into_push_pull_output(Level::Low);
-        let col4 = p0parts.p0_07.into_push_pull_output(Level::Low);
-        let col5 = p0parts.p0_08.into_push_pull_output(Level::Low);
-        let col6 = p0parts.p0_09.into_push_pull_output(Level::Low);
-        let col7 = p0parts.p0_10.into_push_pull_output(Level::Low);
-        let col8 = p0parts.p0_11.into_push_pull_output(Level::Low);
-        let col9 = p0parts.p0_12.into_push_pull_output(Level::Low);
-        let mut leds = led::Display::new(
-            col1, col2, col3, col4, col5, col6, col7, col8, col9, row1, row2, row3,
-        );
+        let pins = led::Pins {
+            row1: p0parts.p0_13.into_push_pull_output(Level::Low),
+            row2: p0parts.p0_14.into_push_pull_output(Level::Low),
+            row3: p0parts.p0_15.into_push_pull_output(Level::Low),
+            col1: p0parts.p0_04.into_push_pull_output(Level::Low),
+            col2: p0parts.p0_05.into_push_pull_output(Level::Low),
+            col3: p0parts.p0_06.into_push_pull_output(Level::Low),
+            col4: p0parts.p0_07.into_push_pull_output(Level::Low),
+            col5: p0parts.p0_08.into_push_pull_output(Level::Low),
+            col6: p0parts.p0_09.into_push_pull_output(Level::Low),
+            col7: p0parts.p0_10.into_push_pull_output(Level::Low),
+            col8: p0parts.p0_11.into_push_pull_output(Level::Low),
+            col9: p0parts.p0_12.into_push_pull_output(Level::Low),
+        };
+        let mut leds = led::Display::new(pins);
 
         #[allow(non_snake_case)]
         let letter_I = [
