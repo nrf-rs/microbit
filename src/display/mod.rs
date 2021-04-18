@@ -47,8 +47,8 @@
 //! The [`Render`] trait defines the interface that an image-like type needs
 //! to provide in order to be displayed.
 //!
-//! It contains a single function: [`brightness_at(x,
-//! y)`][display::Render::brightness_at], returning a brightness level.
+//! It contains a single function: [`brightness_at(x, y)`](Render::brightness_at),
+//! returning a brightness level.
 //!
 //! The [`image`] submodule provides two static image types implementing
 //! `Render`:
@@ -77,7 +77,7 @@
 //!
 //! # Timer integration
 //!
-//! The `Display` expects to control a single timer. It can use the
+//! The [`Display`] expects to control a single timer. It can use the
 //! micro:bit's `TIMER0`, `TIMER1`, or `TIMER2`.
 //!
 //! This uses a 6ms period to light each of the three internal LED rows, so
@@ -100,14 +100,14 @@
 //! When your program starts:
 //! * create a [`MicrobitDisplayTimer`] struct, passing the timer you chose to
 //! [`MicrobitDisplayTimer::new()`]
-//! * call [`initialise_display()`], passing it the `MicrobitDisplayTimer` and
-//! the gpio peripheral
+//! * call [`initialise_display()`], passing it the `MicrobitDisplayTimer` and the
+//! [`crate::led::Pins`]
 //! * create a [`Display`] struct (a `Display<MicrobitFrame>`).
 //!
 //! In an interrupt handler for the timer, call [`handle_display_event()`].
 //!
 //! To change what's displayed: create a [`MicrobitFrame`] instance, use
-//! [`.set()`](`display::Frame::set()`) to put an image (something implementing
+//! [`.set()`](`Frame::set()`) to put an image (something implementing
 //! [`Render`]) in it, then call [`Display::set_frame()`]. Note you'll have to
 //! `use microbit::display::Frame` to make `set()` available.
 //!
@@ -121,22 +121,6 @@
 //!
 //! [dal]: https://lancaster-university.github.io/microbit-docs/
 //! [micropython]: https://microbit-micropython.readthedocs.io/
-//!
-//! [`BitImage`]: display::image::BitImage
-//! [`Display`]: display::Display
-//! [`Display::set_frame()`]: display::Display::set_frame
-//! [`Frame`]: display::Frame
-//! [`Matrix`]: display::Matrix
-//! [`MicrobitFrame`]: display::MicrobitFrame
-//! [`MicrobitDisplayTimer`]: display::MicrobitDisplayTimer
-//! [`MicrobitDisplayTimer::new()`]: display::MicrobitDisplayTimer::new
-//! [`Render`]: display::Render
-//! [`image`]: display::image
-//! [`handle_display_event()`]: display::handle_display_event
-//! [`initialise_display()`]: display::initialise_display
-//! [`DisplayTimer`]: tiny_led_matrix::DisplayTimer
-//! [`GreyscaleImage`]: display::image::GreyscaleImage
-//!
 
 #[doc(no_inline)]
 pub use tiny_led_matrix::{Display, Frame, Render, MAX_BRIGHTNESS};
@@ -150,7 +134,7 @@ pub mod image;
 pub use matrix::MicrobitFrame;
 pub use timer::MicrobitDisplayTimer;
 
-use crate::hal::timer::Instance;
+use crate::{gpio::DisplayPins, hal::timer::Instance};
 
 use control::MicrobitGpio;
 
@@ -167,9 +151,9 @@ use control::MicrobitGpio;
 /// ```
 pub fn initialise_display<T: Instance>(
     timer: &mut MicrobitDisplayTimer<T>,
-    gpio: &mut crate::pac::GPIO,
+    _pins: &mut DisplayPins,
 ) {
-    tiny_led_matrix::initialise_control(&mut MicrobitGpio(gpio));
+    tiny_led_matrix::initialise_control(&mut MicrobitGpio {});
     tiny_led_matrix::initialise_timer(timer);
 }
 
@@ -202,7 +186,7 @@ pub fn initialise_display<T: Instance>(
 pub fn handle_display_event<T: Instance>(
     display: &mut Display<MicrobitFrame>,
     timer: &mut MicrobitDisplayTimer<T>,
-    gpio: &mut crate::pac::GPIO,
+    _pins: &mut DisplayPins,
 ) {
-    display.handle_event(timer, &mut MicrobitGpio(gpio));
+    display.handle_event(timer, &mut MicrobitGpio {});
 }

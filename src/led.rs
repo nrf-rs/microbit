@@ -5,7 +5,7 @@ use crate::hal::{
     prelude::*,
 };
 
-use crate::gpio::{COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8, COL9, ROW1, ROW2, ROW3};
+use crate::gpio::DisplayPins;
 
 use embedded_hal::blocking::delay::DelayUs;
 
@@ -21,21 +21,6 @@ const LED_LAYOUT: [[(usize, usize); 5]; 5] = [
     [(2, 2), (1, 6), (2, 0), (1, 5), (2, 1)],
 ];
 
-pub struct Pins {
-    pub col1: COL1,
-    pub col2: COL2,
-    pub col3: COL3,
-    pub col4: COL4,
-    pub col5: COL5,
-    pub col6: COL6,
-    pub col7: COL7,
-    pub col8: COL8,
-    pub col9: COL9,
-    pub row1: ROW1,
-    pub row2: ROW2,
-    pub row3: ROW3,
-}
-
 /// Array of all the LEDs in the 5x5 display on the board
 pub struct Display {
     delay_ms: u32,
@@ -46,7 +31,7 @@ pub struct Display {
 impl Display {
     /// Initializes all the user LEDs
     #[allow(clippy::too_many_arguments)]
-    pub fn new(pins: Pins) -> Self {
+    pub fn new(pins: DisplayPins) -> Self {
         let mut retval = Display {
             delay_ms: DEFAULT_DELAY_MS,
             rows: [

@@ -11,8 +11,13 @@ use cortex_m_rt::entry;
 
 use microbit::{
     display::{self, image::GreyscaleImage, Display, Frame, MicrobitDisplayTimer, MicrobitFrame},
-    hal::rtc::{Rtc, RtcInterrupt},
-    pac::{self, interrupt, GPIO, RTC0, TIMER1},
+    display_pins,
+    gpio::DisplayPins,
+    hal::{
+        gpio::p0::Parts as P0Parts,
+        rtc::{Rtc, RtcInterrupt},
+    },
+    pac::{self, interrupt, RTC0, TIMER1},
 };
 
 fn heart_image(inner_brightness: u8) -> GreyscaleImage {
@@ -29,7 +34,7 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
 // We use TIMER1 to drive the display, and RTC0 to update the animation.
 // We set the TIMER1 interrupt to a higher priority than RTC0.
 
-static GPIO: Mutex<RefCell<Option<GPIO>>> = Mutex::new(RefCell::new(None));
+static LED_PINS: Mutex<RefCell<Option<DisplayPins>>> = Mutex::new(RefCell::new(None));
 static ANIM_TIMER: Mutex<RefCell<Option<Rtc<RTC0>>>> = Mutex::new(RefCell::new(None));
 static DISPLAY_TIMER: Mutex<RefCell<Option<MicrobitDisplayTimer<TIMER1>>>> =
     Mutex::new(RefCell::new(None));
@@ -52,9 +57,11 @@ fn main() -> ! {
             rtc0.enable_counter();
 
             let mut timer = MicrobitDisplayTimer::new(p.TIMER1);
-            let mut gpio = p.GPIO;
-            display::initialise_display(&mut timer, &mut gpio);
-            *GPIO.borrow(cs).borrow_mut() = Some(gpio);
+
+            let p0parts = P0Parts::new(p.GPIO);
+            let mut pins = display_pins!(p0parts);
+            display::initialise_display(&mut timer, &mut pins);
+            *LED_PINS.borrow(cs).borrow_mut() = Some(pins);
             *ANIM_TIMER.borrow(cs).borrow_mut() = Some(rtc0);
             *DISPLAY_TIMER.borrow(cs).borrow_mut() = Some(timer);
             *DISPLAY.borrow(cs).borrow_mut() = Some(Display::new());
@@ -78,9 +85,9 @@ fn main() -> ! {
 fn TIMER1() {
     cortex_m::interrupt::free(|cs| {
         if let Some(timer) = DISPLAY_TIMER.borrow(cs).borrow_mut().as_mut() {
-            if let Some(gpio) = GPIO.borrow(cs).borrow_mut().as_mut() {
+            if let Some(pins) = LED_PINS.borrow(cs).borrow_mut().as_mut() {
                 if let Some(d) = DISPLAY.borrow(cs).borrow_mut().as_mut() {
-                    display::handle_display_event(d, timer, gpio);
+                    display::handle_display_event(d, timer, pins);
                 }
             }
         }

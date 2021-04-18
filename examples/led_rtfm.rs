@@ -11,7 +11,12 @@ use panic_halt as _;
 
 use microbit::{
     display::{self, image::GreyscaleImage, Display, Frame, MicrobitDisplayTimer, MicrobitFrame},
-    hal::rtc::{Rtc, RtcInterrupt},
+    display_pins,
+    gpio::DisplayPins,
+    hal::{
+        gpio::p0::Parts as P0Parts,
+        rtc::{Rtc, RtcInterrupt},
+    },
     pac,
 };
 use rtic::app;
@@ -30,7 +35,7 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
 #[app(device = microbit::pac, peripherals = true)]
 const APP: () = {
     struct Resources {
-        gpio: pac::GPIO,
+        display_pins: DisplayPins,
         display_timer: MicrobitDisplayTimer<pac::TIMER1>,
         anim_timer: Rtc<pac::RTC0>,
         display: Display<MicrobitFrame>,
@@ -38,7 +43,7 @@ const APP: () = {
 
     #[init]
     fn init(cx: init::Context) -> init::LateResources {
-        let mut p: pac::Peripherals = cx.device;
+        let p: pac::Peripherals = cx.device;
 
         // Starting the low-frequency clock (needed for RTC to work)
         p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
@@ -53,10 +58,14 @@ const APP: () = {
         rtc0.enable_counter();
 
         let mut timer = MicrobitDisplayTimer::new(p.TIMER1);
-        display::initialise_display(&mut timer, &mut p.GPIO);
+
+        let p0parts = P0Parts::new(p.GPIO);
+        let mut pins = display_pins!(p0parts);
+
+        display::initialise_display(&mut timer, &mut pins);
 
         init::LateResources {
-            gpio: p.GPIO,
+            display_pins: pins,
             display_timer: timer,
             anim_timer: rtc0,
             display: Display::new(),
@@ -64,12 +73,12 @@ const APP: () = {
     }
 
     #[task(binds = TIMER1, priority = 2,
-           resources = [display_timer, gpio, display])]
+           resources = [display_timer, display_pins, display])]
     fn timer1(mut cx: timer1::Context) {
         display::handle_display_event(
             &mut cx.resources.display,
             cx.resources.display_timer,
-            cx.resources.gpio,
+            cx.resources.display_pins,
         );
     }
 

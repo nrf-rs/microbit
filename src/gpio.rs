@@ -4,7 +4,7 @@
 //! [v1.5 schematic](https://github.com/bbcmicrobit/hardware/tree/master/V1.5).
 //! Where appropriate the pins are restricted with the appropriate `MODE`
 //! from `nrf-hal`.
-#![allow(clippy::upper_case_acronyms)]
+#![allow(clippy::upper_case_acronyms, missing_docs)]
 use crate::hal::gpio::{p0, Floating, Input, Output, PushPull};
 
 /* GPIO pads */
@@ -26,6 +26,45 @@ pub type COL9 = p0::P0_12<Output<PushPull>>;
 pub type ROW1 = p0::P0_13<Output<PushPull>>;
 pub type ROW2 = p0::P0_14<Output<PushPull>>;
 pub type ROW3 = p0::P0_15<Output<PushPull>>;
+
+/// GPIO pins connected to the LED matrix
+pub struct DisplayPins {
+    pub col1: COL1,
+    pub col2: COL2,
+    pub col3: COL3,
+    pub col4: COL4,
+    pub col5: COL5,
+    pub col6: COL6,
+    pub col7: COL7,
+    pub col8: COL8,
+    pub col9: COL9,
+    pub row1: ROW1,
+    pub row2: ROW2,
+    pub row3: ROW3,
+}
+
+/// Create [DisplayPins] from a [GPIO Parts](crate::hal::gpio::p0::Parts)
+#[macro_export]
+macro_rules! display_pins {
+    ( $p0parts:expr ) => {{
+        use microbit::{gpio::DisplayPins, hal::gpio::Level};
+
+        DisplayPins {
+            row1: $p0parts.p0_13.into_push_pull_output(Level::Low),
+            row2: $p0parts.p0_14.into_push_pull_output(Level::Low),
+            row3: $p0parts.p0_15.into_push_pull_output(Level::Low),
+            col1: $p0parts.p0_04.into_push_pull_output(Level::Low),
+            col2: $p0parts.p0_05.into_push_pull_output(Level::Low),
+            col3: $p0parts.p0_06.into_push_pull_output(Level::Low),
+            col4: $p0parts.p0_07.into_push_pull_output(Level::Low),
+            col5: $p0parts.p0_08.into_push_pull_output(Level::Low),
+            col6: $p0parts.p0_09.into_push_pull_output(Level::Low),
+            col7: $p0parts.p0_10.into_push_pull_output(Level::Low),
+            col8: $p0parts.p0_11.into_push_pull_output(Level::Low),
+            col9: $p0parts.p0_12.into_push_pull_output(Level::Low),
+        }
+    }};
+}
 
 /* buttons */
 pub type BTN_A = p0::P0_17<Input<Floating>>;
