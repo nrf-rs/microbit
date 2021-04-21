@@ -9,28 +9,36 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - nightly
+          - 1.51.0  # Minimum supported rust version (MSRV)
+
     steps:
       - uses: actions/checkout@v2
 
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
           profile: minimal
-          target: thumbv6m-none-eabi
+          toolchain: ${{ matrix.rust }}
           override: true
+          target: thumbv6m-none-eabi
           components: rustfmt, clippy
 
       - name: rustfmt
         run: cargo fmt -- --check
 
-      - name: clippy
-        run: cargo clippy --color=always -- -D warnings
-
       - name: build
         run: cargo build --target=thumbv6m-none-eabi
 
+      - name: clippy
+        run: cargo clippy --color=always -- -D warnings
+
       - name: build examples
-        run: .github/scripts/build-examples.sh
+        run: cargo build --examples --target=thumbv6m-none-eabi
 
 
