@@ -1,5 +1,42 @@
-//! On-board user LEDs
-
+//! Blocking support for the 5x5 LED display.
+//!
+//! This module provides a simple blocking interface
+//! to the on board 5x5 LED display. If you need a more sophisticated
+//! or non-blocking interface use the [`display`](crate::display) module.
+//!
+//! # Example
+//!
+//! ```no_run
+//! use microbit::{
+//!     display_pins,
+//!     hal::{gpio::p0::Parts, prelude::*, Timer},
+//! };
+//! // take the peripherals
+//! let p = microbit::pac::Peripherals::take().unwrap();
+//! // make a timer
+//! let mut timer = Timer::new(p.TIMER0);
+//! // split off the p0::Parts
+//! let p0parts = Parts::new(p.GPIO);
+//! // create the DisplayPins struct
+//! let pins = display_pins!(p0parts);
+//! // create the Display
+//! let mut leds = led::Display::new(pins);
+//! // and light up some LEDs
+//! let heart = [
+//!     [0, 1, 0, 1, 0],
+//!     [1, 0, 1, 0, 1],
+//!     [1, 0, 0, 0, 1],
+//!     [0, 1, 0, 1, 0],
+//!     [0, 0, 1, 0, 0],
+//! ];
+//! loop {
+//!     leds.display(&mut timer, heart, 1000);
+//!     leds.clear();
+//!     timer.delay_ms(250);
+//! }
+//! ```
+//!
+//! See a working example at `examples/led_blocking.rs`
 use crate::hal::{
     gpio::{Output, Pin, PushPull},
     prelude::*,
@@ -21,7 +58,7 @@ const LED_LAYOUT: [[(usize, usize); 5]; 5] = [
     [(2, 2), (1, 6), (2, 0), (1, 5), (2, 1)],
 ];
 
-/// Array of all the LEDs in the 5x5 display on the board
+/// Blocking interface to the on board LED display
 pub struct Display {
     delay_ms: u32,
     rows: [LED; 3],
@@ -29,8 +66,10 @@ pub struct Display {
 }
 
 impl Display {
-    /// Initializes all the user LEDs
-    #[allow(clippy::too_many_arguments)]
+    /// Initialise display
+    ///
+    /// The [`display_pins!`](crate::display_pins) macro can be used
+    /// to create [`DisplayPins`].
     pub fn new(pins: DisplayPins) -> Self {
         let mut retval = Display {
             delay_ms: DEFAULT_DELAY_MS,
