@@ -1,7 +1,7 @@
 //! Named GPIO pin types
 //!
 //! This module maps the GPIO pin names as described in the
-//! [v1.5 schematic](https://github.com/bbcmicrobit/hardware/tree/master/V1.5).
+//! [Pins and Signals section of the micro:bit site](https://tech.microbit.org/hardware/edgeconnector/#pins-and-signals)
 //! Where appropriate the pins are restricted with the appropriate `MODE`
 //! from `nrf-hal`.
 #![allow(clippy::upper_case_acronyms, missing_docs)]

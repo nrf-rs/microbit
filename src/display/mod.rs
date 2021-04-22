@@ -1,8 +1,8 @@
-//! Support for the 5×5 LED display.
+//! Non-blocking support for the 5×5 LED display.
 //!
 //! # Scope
 //!
-//! Together with `tiny-led-matrix`, this module provides:
+//! Together with [`tiny-led-matrix`](tiny_led_matrix), this module provides:
 //! - support for driving the LED display from a timer interrupt
 //! - ten levels of brightness for each LED
 //! - simple 5×5 greyscale and black-and-white image types.
@@ -13,8 +13,49 @@
 //!
 //! # Example
 //!
-//! `examples/led_nonblocking.rs` demonstrates the main features of this
-//! module.
+//! This shows general usage but is not a working example.
+//! For a working exaple see `examples/led_nonblocking.rs`.
+//!
+//! ```no_run
+//! // in your main function
+//! {
+//!     let p = pac::Peripherals::take().unwrap();
+//!     let mut timer = MicrobitDisplayTimer::new(p.TIMER1);
+//!     let p0parts = P0Parts::new(p.GPIO);
+//!     let mut pins = display_pins!(p0parts);
+//!     display::initialise_display(&mut timer, &mut pins);
+//!     let display = Display::new();
+//!
+//!     static mut FRAME: MicrobitFrame = MicrobitFrame::const_default();
+//!
+//!     loop {
+//!         FRAME.set(GreyscaleImage::new(&[
+//!             [0, 7, 0, 7, 0],
+//!             [7, 0, 7, 0, 7],
+//!             [7, 0, 0, 0, 7],
+//!             [0, 7, 0, 7, 0],
+//!             [0, 0, 7, 0, 0],
+//!         ]));
+//!         display.set_frame(&FRAME);
+//!         timer2.delay_ms(1000);
+//!
+//!         FRAME.set(GreyscaleImage::new(&[
+//!             [0, 0, 0, 0, 0],
+//!             [0, 0, 0, 0, 0],
+//!             [0, 0, 0, 0, 0],
+//!             [0, 0, 0, 0, 0],
+//!             [0, 0, 0, 0, 0],
+//!         ]));
+//!         display.set_frame(&FRAME);
+//!         timer2.delay_ms(1000);
+//!     }
+//! }
+//!
+//! // in a timer interrupt
+//! {
+//!     display::handle_display_event(display, timer, pins);
+//! }
+//! ```
 //!
 //! # Coordinate system
 //!
@@ -52,8 +93,8 @@
 //!
 //! The [`image`] submodule provides two static image types implementing
 //! `Render`:
-//! - [`GreyscaleImage`], allowing all 9 levels (using one byte for each LED)
-//! - [`BitImage`], allowing only 'on' and 'off' (using five bytes)
+//! - [`GreyscaleImage`](image::GreyscaleImage), allowing all 9 levels (using one byte for each LED)
+//! - [`BitImage`](image::BitImage), allowing only 'on' and 'off' (using five bytes)
 //!
 //! # Display
 //!
@@ -101,7 +142,7 @@
 //! * create a [`MicrobitDisplayTimer`] struct, passing the timer you chose to
 //! [`MicrobitDisplayTimer::new()`]
 //! * call [`initialise_display()`], passing it the `MicrobitDisplayTimer` and the
-//! [`crate::led::Pins`]
+//! [`crate::gpio::DisplayPins`]
 //! * create a [`Display`] struct (a `Display<MicrobitFrame>`).
 //!
 //! In an interrupt handler for the timer, call [`handle_display_event()`].

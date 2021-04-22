@@ -9,13 +9,11 @@ pub use hal::pac;
 pub use hal::pac::Peripherals;
 pub use nrf51_hal as hal;
 
-pub use nb::*;
-
 pub mod display;
 pub mod gpio;
 pub mod led;
 
-/// Create a [Uart](hal::uart::Uart] client with the default pins
+/// Create a [Uart](hal::uart::Uart) client with the default pins
 #[macro_export]
 macro_rules! serial_port {
     ( $gpio:expr, $uart:expr, $speed:expr ) => {{
