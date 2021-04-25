@@ -1,0 +1,19 @@
+name: Sync main with master
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        fetch-depth: 0
+        ssh-key: ${{ SECRET_DEPLOY_KEY }}
+
+      - run: |
+        git checkout master
+        git merge --ff-only main
+        git push origin HEAD
