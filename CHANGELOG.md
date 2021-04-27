@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Add support for micro:bit V2. This is a significant change that splits
+  this repository into multiple crates.
+
 ## [0.9.0] - 2021-04-29
 
 ### Added

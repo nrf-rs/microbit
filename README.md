@@ -1,44 +1,65 @@
 # microbit
 
-[![microbit on crates.io][cratesio-image]][cratesio]
-[![microbit on docs.rs][docsrs-image]][docsrs]
+_microbit_ contains everything required to get started using Rust to create firmwares for the fabulous
+[BBC micro:bit](https://microbit.org) microcontroller board. This little board has everything and a kitchen sink built-in,
+even a capable debugging interface.
 
-[cratesio-image]: https://img.shields.io/crates/v/microbit.svg
-[cratesio]: https://crates.io/crates/microbit
-[docsrs-image]: https://docs.rs/microbit/badge.svg
-[docsrs]: https://docs.rs/microbit
+## Getting started
 
-_microbit_ contains everything required to get started with the use of Rust to create firmwares for the fabulous [BBC micro:bit][] microcontroller board. This little board has everything and a kitchen sink built-in, even a capable debugging interface, so all that one needs to get going with programming this device is:
+All you need to start programming this device is:
 
-* A BBC micro:bit board (at the moment v1 only)
+* A BBC micro:bit board
 * A computer (macOS and Linux work perfectly, [Windows tested as well](http://flames-of-code.netlify.com/blog/rust-microbit-windows/))
 * A bit of open source software
 
-Some very preliminary examples of using this crate can be found [here in this repo][examples] or [here on my blog][myblog].
+### Know your version
 
-A guide to embedded development with Rust on the _microbit_ using this crate can be found in the [MicroRust book][microrust].
+The micro:bit comes in different versions. There is a separate crate for each major board version. See the table below to identify
+which crate you need to use.
 
-The [BBC micro:bit][] and this crate is compatible with the fantastic tooling
-provided by the [knurling] project. If you haven't done so already, installing
-`probe-run` and playing around with the examples is highly recommended:
+| Crate                          | Board version | Board image | Docs | crates.io | target |
+| ------------------------------ | ----- | ---- | --------- | ------ |
+| [`microbit`](./microbit)       | V1 | [<img src="https://github.com/microbit-foundation/microbit-svg/raw/master/microbit-drawing-back-1-5.png" width="124px" height="100px">](https://github.com/microbit-foundation/microbit-svg/blob/master/microbit-drawing-back-1-5.png) | [![docs.rs](https://docs.rs/microbit/badge.svg)](https://docs.rs/microbit) | [![crates.io](https://img.shields.io/crates/d/microbit.svg)](https://crates.io/crates/microbit) | `thumbv6m-none-eabi` |
+| [`microbit-v2`](./microbit-v2) | V2 | [<img src="https://github.com/microbit-foundation/microbit-svg/raw/master/microbit-drawing-back-2.png" width="124px" height="100px">](https://github.com/microbit-foundation/microbit-svg/blob/master/microbit-drawing-back-2.png) | [![docs.rs](https://docs.rs/microbit-v2/badge.svg)](https://docs.rs/microbit-v2) | [![crates.io](https://img.shields.io/crates/d/microbit-v2.svg)](https://crates.io/crates/microbit-v2) | `thumbv7em-none-eabihf` |
+
+### Install dependencies
+
+The examples make use of some of the fantastic tooling from the [knurling](https://knurling.ferrous-systems.com/) project.
+In order to run the examples you need to install [`probe-run`](https://github.com/knurling-rs/probe-run#installation)
+and [`flip-link`](https://github.com/knurling-rs/flip-link#installation).
+
 ```bash
-# cargo install probe-run
-# cargo run --release --example led_blocking
-   Compiling microbit v0.8.0
-    Finished release [optimized + debuginfo] target(s) in 15.39s
-     Running `probe-run --chip nRF51822_xxAA target/thumbv6m-none-eabi/release/examples/led_blocking`
-  (HOST) INFO  flashing program (1.95 KiB)
-  (HOST) INFO  success!
-RTT logs not available; blocking until the device halts..
+> cargo install probe-run flip-link
 ```
 
-[BBC micro:bit]: https://microbit.org
-[cortex-m]:(https://github.com/japaric/cortex-m)
-[cortex-m-rt]:(https://github.com/japaric/cortex-m-rt)
-[examples]: https://github.com/therealprof/microbit/tree/master/examples
-[myblog]: https://www.eggers-club.de/blog/2018/05/31/rust-on-the-microbit-101-part-1
-[microrust]: https://droogmic.github.io/microrust/
-[knurling]: https://knurling.ferrous-systems.com/
+### Run an example
+
+The first thing to try is one of the [examples](./examples) in this repository. Plug in your micro:bit and
+run one of the commands below.
+
+*For micro:bit V1*
+```bash
+> cargo run --manifest-path ./examples/led-blocking/Cargo.toml --features v1 --target thumbv6m-none-eabi
+```
+
+*For micro:bit V2*
+```bash
+> cargo run --manifest-path ./examples/led-blocking/Cargo.toml --features v2 --target thumbv7em-none-eabihf
+```
+
+You should see a lot of build output, the orange LED on the back of the micro:bit should flash quickly and
+a message should appear on the LED display.
+
+Congratulations! You've flashed your first rust program onto your micro:bit!
+
+## Further reading
+
+A guide to embedded development with Rust on the _microbit_ using this crate can be found in the [MicroRust book](https://droogmic.github.io/microrust/).
+
+Other useful resources:
+- [micro:bit developer community](https://tech.microbit.org)
+- [micro:bit hardware overview](https://tech.microbit.org/hardware/)
+- [nrf-hal](https://github.com/nrf-rs/nrf-hal#readme) the hardware abstraction layer (HAL) this repository is based on
 
 ## License
 

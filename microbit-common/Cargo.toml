@@ -1,0 +1,41 @@
+[package]
+name = "microbit-common"
+version = "0.9.0"
+description = "Implementation details for the BBC Micro:bit board support crates"
+edition = "2018"
+
+repository = "https://github.com/nrf-rs/microbit"
+authors = [
+  "Daniel Egger <daniel@eggers-club.de>",
+  "Michael Droogleever <droogmic@gmail.com>",
+  "Rob Young <rob@robyoung.digital>",
+]
+categories = [
+    "hardware-support",
+    "embedded",
+    "no-std",
+]
+keywords = [
+    "arm",
+    "cortex-m",
+    "nrf",
+    "hal",
+]
+license = "0BSD"
+
+[dependencies]
+tiny-led-matrix = "1.0.1"
+embedded-hal = "0.2.4"
+
+[dependencies.nrf51-hal]
+optional = true
+version = "0.12.1"
+
+[dependencies.nrf52833-hal]
+optional = true
+version = "0.12.1"
+
+[features]
+doc = []
+v1 = ["nrf51-hal"]
+v2 = ["nrf52833-hal"]

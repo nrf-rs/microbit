@@ -1,9 +1,0 @@
-[target.thumbv6m-none-eabi]
-runner = 'probe-run --chip nRF51822_xxAA'
-rustflags = [
-  "-C", "link-arg=-Tlink.x",
-  #"--emit=asm",
-]
-
-[build]
-target = "thumbv6m-none-eabi"

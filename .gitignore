@@ -5,3 +5,4 @@ Cargo.lock
 bloat_log*
 !.gitignore
 !.github
+!.cargo
