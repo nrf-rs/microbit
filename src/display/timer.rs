@@ -74,9 +74,10 @@ impl<T: Instance> DisplayTimer for MicrobitDisplayTimer<T> {
     }
 
     fn program_secondary(&mut self, ticks: u16) {
+        #[cfg(feature = "microbit-v1")]
         self.0.as_timer0().cc[1].write(|w| unsafe { w.bits(ticks.into()) });
-        // TODO: on nrf52
-        // self.0.as_timer0().cc[1].write(|w| unsafe { w.cc().bits(ticks) });
+        #[cfg(feature = "microbit-v2")]
+        self.0.as_timer0().cc[1].write(|w| unsafe { w.cc().bits(ticks.into()) });
     }
 
     fn check_primary(&mut self) -> bool {

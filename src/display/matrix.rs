@@ -6,7 +6,7 @@
 //! [`Matrix`]: tiny_led_matrix::Matrix
 //! [`Frame`]: tiny_led_matrix::Frame
 
-use crate::display::control::{MATRIX_COLS, MATRIX_ROWS};
+use crate::gpio::{NUM_COLS, NUM_ROWS};
 use tiny_led_matrix::{Frame, Matrix, RowPlan};
 
 /// Implementation of [`Matrix`] for the microbit's LED display.
@@ -16,6 +16,7 @@ pub struct MicrobitMatrix();
 
 /// Gives the LED (x, y) coordinates for a given pin row and column.
 /// The origin is in the top-left.
+#[cfg(feature = "microbit-v1")]
 const MICROBIT_LED_LAYOUT: [[Option<(usize, usize)>; 3]; 9] = [
     [Some((0, 0)), Some((4, 2)), Some((2, 4))],
     [Some((2, 0)), Some((0, 2)), Some((4, 4))],
@@ -30,16 +31,26 @@ const MICROBIT_LED_LAYOUT: [[Option<(usize, usize)>; 3]; 9] = [
 
 impl Matrix for MicrobitMatrix {
     /// The number of pins connected to LED columns (3).
-    const MATRIX_COLS: usize = MATRIX_COLS;
+    const MATRIX_COLS: usize = NUM_COLS;
     /// The number of pins connected to LED rows (9).
-    const MATRIX_ROWS: usize = MATRIX_ROWS;
+    const MATRIX_ROWS: usize = NUM_ROWS;
     /// The number of visible LED columns (5).
     const IMAGE_COLS: usize = 5;
     /// The number of visible LED rows (5).
     const IMAGE_ROWS: usize = 5;
 
+    #[cfg(feature = "microbit-v1")]
     fn image_coordinates(col: usize, row: usize) -> Option<(usize, usize)> {
         MICROBIT_LED_LAYOUT[col][row]
+    }
+
+    #[cfg(feature = "microbit-v2")]
+    fn image_coordinates(col: usize, row: usize) -> Option<(usize, usize)> {
+        if col < NUM_COLS && row < NUM_ROWS {
+            Some((col, row))
+        } else {
+            None
+        }
     }
 }
 

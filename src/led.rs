@@ -42,7 +42,7 @@ use crate::hal::{
     prelude::*,
 };
 
-use crate::gpio::DisplayPins;
+use crate::gpio::{DisplayPins, NUM_COLS, NUM_ROWS};
 
 use embedded_hal::blocking::delay::DelayUs;
 
@@ -50,6 +50,7 @@ use embedded_hal::blocking::delay::DelayUs;
 pub(crate) type LED = Pin<Output<PushPull>>;
 
 const DEFAULT_DELAY_MS: u32 = 2;
+#[cfg(feature = "microbit-v1")]
 const LED_LAYOUT: [[(usize, usize); 5]; 5] = [
     [(0, 0), (1, 3), (0, 1), (1, 4), (0, 2)],
     [(2, 3), (2, 4), (2, 5), (2, 6), (2, 7)],
@@ -61,8 +62,8 @@ const LED_LAYOUT: [[(usize, usize); 5]; 5] = [
 /// Blocking interface to the on board LED display
 pub struct Display {
     delay_ms: u32,
-    rows: [LED; 3],
-    cols: [LED; 9],
+    rows: [LED; NUM_ROWS],
+    cols: [LED; NUM_COLS],
 }
 
 impl Display {
@@ -71,24 +72,11 @@ impl Display {
     /// The [`display_pins!`](crate::display_pins) macro can be used
     /// to create [`DisplayPins`].
     pub fn new(pins: DisplayPins) -> Self {
+        let (cols, rows) = pins.degrade();
         let mut retval = Display {
             delay_ms: DEFAULT_DELAY_MS,
-            rows: [
-                pins.row1.degrade(),
-                pins.row2.degrade(),
-                pins.row3.degrade(),
-            ],
-            cols: [
-                pins.col1.degrade(),
-                pins.col2.degrade(),
-                pins.col3.degrade(),
-                pins.col4.degrade(),
-                pins.col5.degrade(),
-                pins.col6.degrade(),
-                pins.col7.degrade(),
-                pins.col8.degrade(),
-                pins.col9.degrade(),
-            ],
+            rows,
+            cols,
         };
         // This is needed to reduce flickering on reset
         retval.clear();
@@ -116,6 +104,7 @@ impl Display {
     }
 
     /// Convert 5x5 display image to 3x9 matrix image
+    #[cfg(feature = "microbit-v1")]
     pub fn display2matrix(led_display: [[u8; 5]; 5]) -> [[u8; 9]; 3] {
         let mut led_matrix: [[u8; 9]; 3] = [[0; 9]; 3];
         for (led_display_row, layout_row) in led_display.iter().zip(LED_LAYOUT.iter()) {
@@ -133,15 +122,20 @@ impl Display {
         led_display: [[u8; 5]; 5],
         duration_ms: u32,
     ) {
-        let led_matrix = Display::display2matrix(led_display);
-        self.display_pre(delay, led_matrix, duration_ms);
+        #[cfg(feature = "microbit-v1")]
+        {
+            let led_matrix = Display::display2matrix(led_display);
+            self.display_pre(delay, led_matrix, duration_ms);
+        }
+        #[cfg(feature = "microbit-v2")]
+        self.display_pre(delay, led_display, duration_ms);
     }
 
     /// Display 3x9 matrix image for a given duration
     pub fn display_pre<D: DelayUs<u32>>(
         &mut self,
         delay: &mut D,
-        led_matrix: [[u8; 9]; 3],
+        led_matrix: [[u8; NUM_COLS]; NUM_ROWS],
         duration_ms: u32,
     ) {
         // TODO: something more intelligent with timers

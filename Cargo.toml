@@ -23,7 +23,8 @@ version = "0.8.0"
 cortex-m = "0.6.1"
 cortex-m-rt = "0.6.10"
 nb = "0.1.2"
-nrf51-hal = "0.12.1"
+nrf51-hal = { version = "0.12.1", optional = true }
+nrf52833-hal = { version = "0.12.1", optional = true }
 tiny-led-matrix = "1.0.1"
 embedded-hal = "0.2.4"
 
@@ -39,9 +40,13 @@ defmt-rtt = "0.1.0"
 panic-probe = { version = "0.1.0", features = ["print-defmt"] }
 
 [features]
+microbit-v1 = ["nrf51-hal"]
+microbit-v2 = ["nrf52833-hal"]
+
 # set logging levels here
 default = [
   "defmt-default",
+  "microbit-v1"
   # "dependency-a/defmt-trace",
 ]
 

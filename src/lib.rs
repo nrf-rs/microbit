@@ -5,13 +5,27 @@
 #![deny(missing_docs)]
 #![allow(non_camel_case_types)]
 
+#[cfg(all(feature = "microbit-v1", feature = "microbit-v2"))]
+compile_error!("canot build for microbit v1 and v2 at the same time");
+
+#[cfg(feature = "microbit-v1")]
+pub use nrf51_hal as hal;
+
+#[cfg(feature = "microbit-v2")]
+pub use nrf52833_hal as hal;
+
 pub use hal::pac;
 pub use hal::pac::Peripherals;
-pub use nrf51_hal as hal;
 
 pub mod display;
 pub mod gpio;
 pub mod led;
+
+#[cfg(feature = "microbit-v1")]
+mod v1;
+
+#[cfg(feature = "microbit-v2")]
+mod v2;
 
 /// Create a [Uart](hal::uart::Uart) client with the default pins
 #[macro_export]

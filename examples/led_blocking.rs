@@ -6,10 +6,13 @@ use panic_halt as _;
 
 use cortex_m_rt::entry;
 
-use microbit::{
-    display_pins,
-    hal::{gpio::p0::Parts as P0Parts, prelude::*, Timer},
-};
+use microbit::hal::{gpio::p0::Parts as P0Parts, prelude::*, Timer};
+
+#[cfg(feature = "microbit-v1")]
+use microbit::display_pins_v1 as display_pins;
+
+#[cfg(feature = "microbit-v2")]
+use microbit::{display_pins_v2 as display_pins, hal::gpio::p1::Parts as P1Parts};
 
 use microbit::led;
 
@@ -17,10 +20,22 @@ use microbit::led;
 fn main() -> ! {
     if let Some(p) = microbit::pac::Peripherals::take() {
         let mut timer = Timer::new(p.TIMER0);
-        let p0parts = P0Parts::new(p.GPIO);
+
+        // Set up pins
+        #[cfg(feature = "microbit-v1")]
+        let pins = {
+            let p0parts = P0Parts::new(p.GPIO);
+            display_pins!(p0parts)
+        };
+
+        #[cfg(feature = "microbit-v2")]
+        let pins = {
+            let p0parts = P0Parts::new(p.P0);
+            let p1parts = P1Parts::new(p.P1);
+            display_pins!(p0parts, p1parts)
+        };
 
         // Display
-        let pins = display_pins!(p0parts);
         let mut leds = led::Display::new(pins);
 
         #[allow(non_snake_case)]

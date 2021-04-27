@@ -2,7 +2,14 @@
 runner = 'probe-run --chip nRF51822_xxAA'
 rustflags = [
   "-C", "link-arg=-Tlink.x",
-  #"--emit=asm",
+]
+
+[target.thumbv7em-none-eabi]
+# Execute binary using gdb when calling cargo run
+runner = "probe-run --chip nRF52833_xxAA --defmt"
+# Tweak to the linking process required by the cortex-m-rt crate
+rustflags = [
+  "-C", "link-arg=-Tlink.x",
 ]
 
 [build]

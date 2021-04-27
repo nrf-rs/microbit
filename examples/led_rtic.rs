@@ -11,7 +11,6 @@ use panic_halt as _;
 
 use microbit::{
     display::{self, image::GreyscaleImage, Display, Frame, MicrobitDisplayTimer, MicrobitFrame},
-    display_pins,
     gpio::DisplayPins,
     hal::{
         gpio::p0::Parts as P0Parts,
@@ -19,6 +18,13 @@ use microbit::{
     },
     pac,
 };
+
+#[cfg(feature = "microbit-v1")]
+use microbit::display_pins_v1 as display_pins;
+
+#[cfg(feature = "microbit-v2")]
+use microbit::{display_pins_v2 as display_pins, hal::gpio::p1::Parts as P1Parts};
+
 use rtic::app;
 
 fn heart_image(inner_brightness: u8) -> GreyscaleImage {
@@ -59,8 +65,19 @@ const APP: () = {
 
         let mut timer = MicrobitDisplayTimer::new(p.TIMER1);
 
-        let p0parts = P0Parts::new(p.GPIO);
-        let mut pins = display_pins!(p0parts);
+        // Set up pins
+        #[cfg(feature = "microbit-v1")]
+        let mut pins = {
+            let p0parts = P0Parts::new(p.GPIO);
+            display_pins!(p0parts)
+        };
+
+        #[cfg(feature = "microbit-v2")]
+        let mut pins = {
+            let p0parts = P0Parts::new(p.P0);
+            let p1parts = P1Parts::new(p.P1);
+            display_pins!(p0parts, p1parts)
+        };
 
         display::initialise_display(&mut timer, &mut pins);
 
