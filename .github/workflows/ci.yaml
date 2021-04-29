@@ -16,6 +16,11 @@ jobs:
           - beta
           - nightly
           - 1.51.0  # Minimum supported rust version (MSRV)
+        version:
+          - feature: --features=microbit-v1
+            target: thumbv6m-none-eabi
+          - feature: --no-default-features --features=microbit-v2
+            target: thumbv7em-none-eabihf
 
     steps:
       - uses: actions/checkout@v2
@@ -26,19 +31,17 @@ jobs:
           profile: minimal
           toolchain: ${{ matrix.rust }}
           override: true
-          target: thumbv6m-none-eabi
+          target: ${{ matrix.version.target }}
           components: rustfmt, clippy
 
       - name: rustfmt
         run: cargo fmt -- --check
 
       - name: build
-        run: cargo build --target=thumbv6m-none-eabi
+        run: cargo build --target=${{ matrix.version.target }} ${{ matrix.version.feature }}
 
       - name: clippy
-        run: cargo clippy --color=always -- -D warnings
+        run: cargo clippy --target=${{ matrix.version.target }} ${{ matrix.version.feature }} --color=always -- -D warnings
 
       - name: build examples
-        run: cargo build --examples --target=thumbv6m-none-eabi
-
-
+        run: cargo build --target=${{ matrix.version.target }} ${{ matrix.version.feature }} --examples
