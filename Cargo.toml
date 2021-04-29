@@ -17,7 +17,7 @@ license = "0BSD"
 name = "microbit"
 readme = "README.md"
 repository = "https://github.com/therealprof/microbit"
-version = "0.8.0"
+version = "0.9.0"
 
 [dependencies]
 cortex-m = "0.6.1"
