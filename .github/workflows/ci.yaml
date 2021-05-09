@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [main, staging, trying]
   pull_request:
 
 jobs:
@@ -40,5 +40,3 @@ jobs:
 
       - name: build examples
         run: cargo build --examples --target=thumbv6m-none-eabi
-
-
