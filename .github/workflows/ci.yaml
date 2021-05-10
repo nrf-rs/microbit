@@ -26,17 +26,10 @@ jobs:
           profile: minimal
           toolchain: ${{ matrix.rust }}
           override: true
-          target: thumbv6m-none-eabi
           components: rustfmt, clippy
 
       - name: rustfmt
         run: cargo fmt -- --check
 
       - name: build
-        run: cargo build --target=thumbv6m-none-eabi
-
-      - name: clippy
-        run: cargo clippy --color=always -- -D warnings
-
-      - name: build examples
-        run: cargo build --examples --target=thumbv6m-none-eabi
+        run: cargo xtask ci

@@ -1,0 +1,12 @@
+[package]
+name = "serial-direct-helloworld"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+cortex-m-rt = "0.6.12"
+panic-halt = "0.2.0"
+defmt-rtt = "0.2.0"
+
+[dependencies.microbit]
+path = "../../microbit"

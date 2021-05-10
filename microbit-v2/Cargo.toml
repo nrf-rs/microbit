@@ -1,0 +1,34 @@
+[package]
+name = "microbit-v2"
+version = "0.9.0"
+description = "Board support crate for the BBC Micro:bit V2"
+edition = "2018"
+
+repository = "https://github.com/nrf-rs/microbit"
+authors = [
+  "Daniel Egger <daniel@eggers-club.de>",
+  "Michael Droogleever <droogmic@gmail.com>",
+  "Rob Young <rob@robyoung.digital>",
+]
+categories = [
+    "hardware-support",
+    "embedded",
+    "no-std",
+]
+keywords = [
+    "arm",
+    "cortex-m",
+    "nrf",
+    "hal",
+]
+license = "0BSD"
+
+[lib]
+name = "microbit"
+path = "src/lib.rs"
+
+[dependencies]
+
+[dependencies.microbit-common]
+path = "../microbit-common"
+features = ["v2"]

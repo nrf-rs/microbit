@@ -1,0 +1,34 @@
+[package]
+name = "led-blocking"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+cortex-m-rt = "0.6.12"
+panic-halt = "0.2.0"
+defmt-rtt = "0.2.0"
+defmt = "0.2.0"
+
+[dependencies.microbit]
+path = "../../microbit"
+optional = true
+
+[dependencies.microbit-v2]
+path = "../../microbit-v2"
+optional = true
+
+[features]
+v1 = ["microbit"]
+v2 = ["microbit-v2"]
+
+default = [
+  "defmt-default",
+]
+
+# do NOT modify these features
+defmt-default = []
+defmt-trace = []
+defmt-debug = []
+defmt-info = []
+defmt-warn = []
+defmt-error = []
