@@ -18,7 +18,7 @@ The micro:bit comes in different versions. There is a separate crate for each ma
 which crate you need to use.
 
 | Crate                          | Board version | Board image | Docs | crates.io | target |
-| ------------------------------ | ----- | ---- | --------- | ------ |
+| ------------------------------ | ------------- | ----------- | ---- | --------- | ------ |
 | [`microbit`](./microbit)       | V1 | [<img src="https://github.com/microbit-foundation/microbit-svg/raw/master/microbit-drawing-back-1-5.png" width="124px" height="100px">](https://github.com/microbit-foundation/microbit-svg/blob/master/microbit-drawing-back-1-5.png) | [![docs.rs](https://docs.rs/microbit/badge.svg)](https://docs.rs/microbit) | [![crates.io](https://img.shields.io/crates/d/microbit.svg)](https://crates.io/crates/microbit) | `thumbv6m-none-eabi` |
 | [`microbit-v2`](./microbit-v2) | V2 | [<img src="https://github.com/microbit-foundation/microbit-svg/raw/master/microbit-drawing-back-2.png" width="124px" height="100px">](https://github.com/microbit-foundation/microbit-svg/blob/master/microbit-drawing-back-2.png) | [![docs.rs](https://docs.rs/microbit-v2/badge.svg)](https://docs.rs/microbit-v2) | [![crates.io](https://img.shields.io/crates/d/microbit-v2.svg)](https://crates.io/crates/microbit-v2) | `thumbv7em-none-eabihf` |
 
