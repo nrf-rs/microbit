@@ -1,10 +1,11 @@
 [package]
 name = "microbit-v2"
-version = "0.9.0"
+version = "0.10.0"
 description = "Board support crate for the BBC Micro:bit V2"
 edition = "2018"
 
 repository = "https://github.com/nrf-rs/microbit"
+readme = "../README.md"
 authors = [
   "Daniel Egger <daniel@eggers-club.de>",
   "Michael Droogleever <droogmic@gmail.com>",
@@ -32,3 +33,4 @@ path = "src/lib.rs"
 [dependencies.microbit-common]
 path = "../microbit-common"
 features = ["v2"]
+version = "=0.10.0"
