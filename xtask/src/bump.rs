@@ -1,5 +1,6 @@
 //! This has been copied pretty much wholesale from https://github.com/nrf-rs/nrf-hal/blob/master/xtask/src/lib.rs
 use super::CRATES;
+use chrono::Local;
 use std::fs;
 
 fn file_replace(path: &str, from: &str, to: &str, dry_run: bool) {
@@ -33,13 +34,17 @@ pub fn bump_versions(new_version: &str, dry_run: bool) {
         let changelog = fs::read_to_string(changelog_path).unwrap();
         // (ignore empty changelog when this is a dry_run, since that runs in normal CI)
         assert!(
-            dry_run || !changelog.contains("(no entries)"),
-            "changelog contains `(no entries)`; please fill it"
+            dry_run || !changelog.contains("(no changes)"),
+            "changelog contains `(no changes)`; please fill it"
         );
 
         // Prepend empty "[Unreleased]" section, promote the current one.
+        let today = Local::today().format("%Y-%m-%d").to_string();
         let from = String::from("## [Unreleased]");
-        let to = format!("## [Unreleased]\n\n(no changes)\n\n## [{}]", new_version);
+        let to = format!(
+            "## [Unreleased]\n\n(no changes)\n\n## [{}] - {}",
+            new_version, today
+        );
         file_replace(changelog_path, &from, &to, dry_run);
 
         // Replace the Unreleased link
@@ -48,21 +53,12 @@ pub fn bump_versions(new_version: &str, dry_run: bool) {
             old_version = old_version,
         );
         let to = format!(
-            r#"[Unreleased]: https://github.com/nrf-rs/microbit/compare/v{new_version}...HEAD"#,
-            new_version = new_version,
-        );
-        file_replace(changelog_path, &from, &to, dry_run);
-
-        // Append release link at the end.
-        let mut changelog = fs::read_to_string(changelog_path).unwrap();
-        changelog.push_str(&format!(
-            "[{new_version}]: https://github.com/nrf-rs/microbit/releases/tag/v{new_version}...v{old_version}\n",
+            "[Unreleased]: https://github.com/nrf-rs/microbit/compare/v{new_version}...HEAD\n\
+             [{new_version}]: https://github.com/nrf-rs/microbit/releases/tag/v{old_version}...v{new_version}",
             new_version = new_version,
             old_version = old_version,
-        ));
-        if !dry_run {
-            fs::write(changelog_path, changelog).unwrap();
-        }
+        );
+        file_replace(changelog_path, &from, &to, dry_run);
     }
 
     {
