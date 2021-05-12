@@ -32,3 +32,4 @@ path = "src/lib.rs"
 [dependencies.microbit-common]
 path = "../microbit-common"
 features = ["v2"]
+version = "=0.9.0"
