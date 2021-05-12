@@ -14,7 +14,7 @@ use microbit::{
 #[cfg(feature = "v2")]
 use microbit::hal::gpio::p1::Parts as P1Parts;
 
-use microbit::led;
+use microbit::display::blocking::Display;
 
 #[entry]
 fn main() -> ! {
@@ -36,7 +36,7 @@ fn main() -> ! {
         };
 
         // Display
-        let mut leds = led::Display::new(pins);
+        let mut display = Display::new(pins);
 
         #[allow(non_snake_case)]
         let letter_I = [
@@ -91,13 +91,13 @@ fn main() -> ! {
             [0, 0, 1, 0, 0],
         ];
         loop {
-            leds.display(&mut timer, letter_I, 1000);
-            leds.display(&mut timer, heart, 1000);
-            leds.display(&mut timer, letter_R, 1000);
-            leds.display(&mut timer, letter_u, 1000);
-            leds.display(&mut timer, letter_s, 1000);
-            leds.display(&mut timer, letter_t, 1000);
-            leds.clear();
+            display.show(&mut timer, letter_I, 1000);
+            display.show(&mut timer, heart, 1000);
+            display.show(&mut timer, letter_R, 1000);
+            display.show(&mut timer, letter_u, 1000);
+            display.show(&mut timer, letter_s, 1000);
+            display.show(&mut timer, letter_t, 1000);
+            display.clear();
             timer.delay_ms(250_u32);
         }
     }

@@ -1,5 +1,5 @@
 [package]
-name = "led-rtic"
+name = "display-rtic"
 version = "0.1.0"
 edition = "2018"
 

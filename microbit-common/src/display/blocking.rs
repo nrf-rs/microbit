@@ -2,24 +2,23 @@
 //!
 //! This module provides a simple blocking interface
 //! to the on board 5x5 LED display. If you need a more sophisticated
-//! or non-blocking interface use the [`display`](crate::display) module.
+//! or non-blocking interface use the [`display::nonblocking`](crate::display::nonblocking) module.
 //!
 //! # Example
 //!
 //! ```no_run
 //! # use microbit_common as microbit;
-//! use microbit::{
-//!     display_pins,
-//!     pac,
-#![cfg_attr(feature = "v1", doc = "    hal::{self, gpio::p0::Parts as P0Parts},")]
+//! # use microbit::{
+//! #     display_pins,
+//! #     pac,
+#![cfg_attr(feature = "v1", doc = "#     hal::{self, gpio::p0::Parts as P0Parts},")]
 #![cfg_attr(
     feature = "v2",
-    doc = "    hal::{self, gpio::{p0::Parts as P0Parts, p1::Parts as P1Parts}},"
+    doc = "#     hal::{self, gpio::{p0::Parts as P0Parts, p1::Parts as P1Parts}},"
 )]
-//!     led::Display,
-//! };
-//! use embedded_hal::blocking::delay::DelayMs;
-//!
+//! #     display::blocking::Display,
+//! # };
+//! # use embedded_hal::blocking::delay::DelayMs;
 //! // take the peripherals
 //! let p = pac::Peripherals::take().unwrap();
 //! // make a timer
@@ -33,7 +32,7 @@
 #![cfg_attr(feature = "v2", doc = "   display_pins!(p0parts, p1parts)")]
 //! };
 //! // create the Display
-//! let mut leds = Display::new(pins);
+//! let mut display = Display::new(pins);
 //! // and light up some LEDs
 //! let heart = [
 //!     [0, 1, 0, 1, 0],
@@ -43,13 +42,13 @@
 //!     [0, 0, 1, 0, 0],
 //! ];
 //! loop {
-//!     leds.display(&mut timer, heart, 1000);
-//!     leds.clear();
+//!     display.show(&mut timer, heart, 1000);
+//!     display.clear();
 //!     timer.delay_ms(250u32);
 //! }
 //! ```
 //!
-//! See a working example at `examples/led_blocking.rs`
+//! For a working example [`examples/display-blocking`](https://github.com/nrf-rs/microbit/tree/main/examples/display-blocking)
 use crate::hal::{
     gpio::{Output, Pin, PushPull},
     prelude::*,
@@ -80,7 +79,7 @@ pub struct Display {
 }
 
 impl Display {
-    /// Initialise display
+    /// Create and initialise the display driver
     ///
     /// The [`display_pins!`](crate::display_pins) macro can be used
     /// to create [`DisplayPins`].
@@ -96,7 +95,7 @@ impl Display {
         retval
     }
 
-    /// Clear display
+    /// Clear the display
     pub fn clear(&mut self) {
         for row in &mut self.rows {
             row.set_low().ok();
@@ -116,20 +115,23 @@ impl Display {
         self.delay_ms = 1000 / freq_hz / 3;
     }
 
-    /// Convert 5x5 display image to 3x9 matrix image
+    /// Convert 5x5 image to 3x9 matrix
+    ///
+    /// The pins are represented as a [3x9 matrix on the micro:bit
+    /// V1](https://tech.microbit.org/hardware/1-5-revision/#display).
     #[cfg(feature = "v1")]
-    pub fn display2matrix(led_display: [[u8; 5]; 5]) -> [[u8; 9]; 3] {
+    fn image2matrix(led_image: [[u8; 5]; 5]) -> [[u8; 9]; 3] {
         let mut led_matrix: [[u8; 9]; 3] = [[0; 9]; 3];
-        for (led_display_row, layout_row) in led_display.iter().zip(LED_LAYOUT.iter()) {
-            for (led_display_val, layout_loc) in led_display_row.iter().zip(layout_row) {
-                led_matrix[layout_loc.0][layout_loc.1] = *led_display_val;
+        for (led_image_row, layout_row) in led_image.iter().zip(LED_LAYOUT.iter()) {
+            for (led_image_val, layout_loc) in led_image_row.iter().zip(layout_row) {
+                led_matrix[layout_loc.0][layout_loc.1] = *led_image_val;
             }
         }
         led_matrix
     }
 
-    /// Display 5x5 display image for a given duration
-    pub fn display<D: DelayUs<u32>>(
+    /// Display 5x5 image for a given duration
+    pub fn show<D: DelayUs<u32>>(
         &mut self,
         delay: &mut D,
         led_display: [[u8; 5]; 5],
@@ -137,15 +139,18 @@ impl Display {
     ) {
         #[cfg(feature = "v1")]
         {
-            let led_matrix = Display::display2matrix(led_display);
-            self.display_pre(delay, led_matrix, duration_ms);
+            let led_matrix = Display::image2matrix(led_display);
+            self.show_inner(delay, led_matrix, duration_ms);
         }
         #[cfg(feature = "v2")]
-        self.display_pre(delay, led_display, duration_ms);
+        self.show_inner(delay, led_display, duration_ms);
     }
 
-    /// Display 3x9 matrix image for a given duration
-    pub fn display_pre<D: DelayUs<u32>>(
+    /// Display matrix image for a given duration (3x9 for V1 micro:bit)
+    ///
+    /// The pins are represented as a [3x9 matrix on the micro:bit
+    /// V1](https://tech.microbit.org/hardware/1-5-revision/#display).
+    fn show_inner<D: DelayUs<u32>>(
         &mut self,
         delay: &mut D,
         led_matrix: [[u8; NUM_COLS]; NUM_ROWS],

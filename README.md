@@ -39,12 +39,12 @@ run one of the commands below.
 
 *For micro:bit V1*
 ```bash
-> cargo run --release --manifest-path ./examples/led-blocking/Cargo.toml --features v1 --target thumbv6m-none-eabi
+> cargo run --release --manifest-path ./examples/display-blocking/Cargo.toml --features v1 --target thumbv6m-none-eabi
 ```
 
 *For micro:bit V2*
 ```bash
-> cargo run --release --manifest-path ./examples/led-blocking/Cargo.toml --features v2 --target thumbv7em-none-eabihf
+> cargo run --release --manifest-path ./examples/display-blocking/Cargo.toml --features v2 --target thumbv7em-none-eabihf
 ```
 
 You should see a lot of build output, the orange LED on the back of the micro:bit should flash quickly and

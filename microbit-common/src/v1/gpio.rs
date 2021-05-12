@@ -31,6 +31,11 @@ pub type ROW3 = p0::P0_15<Output<PushPull>>;
 
 /// GPIO pins connected to the LED matrix
 ///
+/// The pins are represented as a [3x9 matrix on the micro:bit
+/// V1](https://tech.microbit.org/hardware/1-5-revision/#display).
+/// This is mapped to the physical 5x5 LED matrix in the [crate::display]
+/// modules.
+///
 /// Use the [display_pins] macro for easier construction.
 pub struct DisplayPins {
     pub col1: COL1,

@@ -20,7 +20,6 @@ pub use hal::pac::Peripherals;
 
 pub mod display;
 pub mod gpio;
-pub mod led;
 
 #[cfg(feature = "v1")]
 mod v1;
