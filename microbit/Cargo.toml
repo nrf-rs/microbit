@@ -1,8 +1,9 @@
 [package]
 name = "microbit"
-version = "0.10.0"
+version = "0.10.1"
 description = "Board support crate for the BBC Micro:bit V1"
 edition = "2018"
+readme = "../README.md"
 
 repository = "https://github.com/nrf-rs/microbit"
 authors = [
@@ -28,4 +29,4 @@ license = "0BSD"
 [dependencies.microbit-common]
 path = "../microbit-common"
 features = ["v1"]
-version = "=0.10.0"
+version = "=0.10.1"

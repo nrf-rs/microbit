@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 (no changes)
 
+## [0.10.1] - 2021-05-25
+
+Republished without changes to fix missing README.md in crates.io.
+
 ## [0.10.0] - 2021-05-13
 
 ### Added
