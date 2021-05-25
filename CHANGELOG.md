@@ -34,6 +34,7 @@ Republished without changes to fix missing README.md in crates.io.
 - Fix rustdoc warnings
 - Upgrade nrf51-hal to 0.12.1
 
-[Unreleased]: https://github.com/nrf-rs/microbit/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/nrf-rs/microbit/compare/v0.10.1...HEAD
+[0.10.1]: https://github.com/nrf-rs/microbit/releases/tag/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/nrf-rs/microbit/releases/tag/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/nrf-rs/microbit/compare/v0.8.0...v0.9.0
