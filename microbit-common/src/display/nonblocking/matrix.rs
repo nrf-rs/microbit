@@ -46,11 +46,7 @@ impl Matrix for MicrobitMatrix {
 
     #[cfg(feature = "v2")]
     fn image_coordinates(col: usize, row: usize) -> Option<(usize, usize)> {
-        if col < NUM_COLS && row < NUM_ROWS {
-            Some((col, row))
-        } else {
-            None
-        }
+        Some((col, row))
     }
 }
 
@@ -69,7 +65,7 @@ pub struct MicrobitFrame([RowPlan; MicrobitFrame::ROWS]);
 
 impl MicrobitFrame {
     /// Returns a new frame, initially blank.
-    pub const fn const_default() -> MicrobitFrame {
+    pub const fn default() -> MicrobitFrame {
         MicrobitFrame([RowPlan::default(); MicrobitFrame::ROWS])
     }
 }
@@ -77,7 +73,7 @@ impl MicrobitFrame {
 impl Default for MicrobitFrame {
     /// Returns a new frame, initially blank.
     fn default() -> MicrobitFrame {
-        MicrobitFrame::const_default()
+        MicrobitFrame::default()
     }
 }
 

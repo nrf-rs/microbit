@@ -11,9 +11,8 @@ use defmt_rtt as _;
 use panic_halt as _;
 
 use microbit::{
-    display::{self, image::GreyscaleImage, Display, Frame, MicrobitDisplayTimer, MicrobitFrame},
+    display::nonblocking::{Display, GreyscaleImage},
     display_pins,
-    gpio::DisplayPins,
     hal::{
         gpio::p0::Parts as P0Parts,
         rtc::{Rtc, RtcInterrupt},
@@ -40,10 +39,8 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
 #[app(device = microbit::pac, peripherals = true)]
 const APP: () = {
     struct Resources {
-        display_pins: DisplayPins,
-        display_timer: MicrobitDisplayTimer<pac::TIMER1>,
+        display: Display<pac::TIMER1>,
         anim_timer: Rtc<pac::RTC0>,
-        display: Display<MicrobitFrame>,
     }
 
     #[init]
@@ -52,6 +49,7 @@ const APP: () = {
 
         // Starting the low-frequency clock (needed for RTC to work)
         p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
+
         while p.CLOCK.events_lfclkstarted.read().bits() == 0 {}
         p.CLOCK.events_lfclkstarted.reset();
 
@@ -62,46 +60,35 @@ const APP: () = {
         rtc0.enable_interrupt(RtcInterrupt::Tick, None);
         rtc0.enable_counter();
 
-        let mut timer = MicrobitDisplayTimer::new(p.TIMER1);
-
         // Set up pins
         #[cfg(feature = "v1")]
-        let mut pins = {
+        let pins = {
             let p0parts = P0Parts::new(p.GPIO);
             display_pins!(p0parts)
         };
 
         #[cfg(feature = "v2")]
-        let mut pins = {
+        let pins = {
             let p0parts = P0Parts::new(p.P0);
             let p1parts = P1Parts::new(p.P1);
             display_pins!(p0parts, p1parts)
         };
 
-        display::initialise_display(&mut timer, &mut pins);
+        let display = Display::new(p.TIMER1, pins);
 
         init::LateResources {
-            display_pins: pins,
-            display_timer: timer,
             anim_timer: rtc0,
-            display: Display::new(),
+            display,
         }
     }
 
-    #[task(binds = TIMER1, priority = 2,
-           resources = [display_timer, display_pins, display])]
-    fn timer1(mut cx: timer1::Context) {
-        display::handle_display_event(
-            &mut cx.resources.display,
-            cx.resources.display_timer,
-            cx.resources.display_pins,
-        );
+    #[task(binds = TIMER1, priority = 2, resources = [display])]
+    fn timer1(cx: timer1::Context) {
+        cx.resources.display.handle_display_event();
     }
 
-    #[task(binds = RTC0, priority = 1,
-           resources = [anim_timer, display])]
+    #[task(binds = RTC0, priority = 1, resources = [anim_timer, display])]
     fn rtc0(mut cx: rtc0::Context) {
-        static mut FRAME: MicrobitFrame = MicrobitFrame::const_default();
         static mut STEP: u8 = 0;
 
         cx.resources.anim_timer.reset_event(RtcInterrupt::Tick);
@@ -112,9 +99,8 @@ const APP: () = {
             _ => unreachable!(),
         };
 
-        FRAME.set(&heart_image(inner_brightness));
         cx.resources.display.lock(|display| {
-            display.set_frame(FRAME);
+            display.show(&heart_image(inner_brightness));
         });
 
         *STEP += 1;

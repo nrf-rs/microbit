@@ -18,7 +18,7 @@ impl GreyscaleImage {
     ///
     /// ```no_run
     /// # use microbit_common as microbit;
-    /// # use microbit::display::image::GreyscaleImage;
+    /// # use microbit::display::nonblocking::GreyscaleImage;
     /// const GREY_HEART: GreyscaleImage = GreyscaleImage::new(&[
     ///     [0, 9, 0, 9, 0],
     ///     [9, 5, 9, 5, 9],
@@ -68,7 +68,7 @@ impl BitImage {
     ///
     /// ```no_run
     /// # use microbit_common as microbit;
-    /// # use microbit::display::image::BitImage;
+    /// # use microbit::display::nonblocking::BitImage;
     /// const HEART: BitImage = BitImage::new(&[
     ///     [0, 1, 0, 1, 0],
     ///     [1, 0, 1, 0, 1],

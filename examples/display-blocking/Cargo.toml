@@ -1,5 +1,5 @@
 [package]
-name = "led-blocking"
+name = "display-blocking"
 version = "0.1.0"
 edition = "2018"
 

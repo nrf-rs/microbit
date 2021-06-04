@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-(no changes)
+- Rearrange LED display modules under the same root module and change their
+  APIs to be more aligned with each other.
 
 ## [0.10.1] - 2021-05-25
 

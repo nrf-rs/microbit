@@ -10,9 +10,8 @@ use cortex_m::peripheral::Peripherals;
 use cortex_m_rt::entry;
 
 use microbit::{
-    display::{self, image::GreyscaleImage, Display, Frame, MicrobitDisplayTimer, MicrobitFrame},
+    display::nonblocking::{Display, GreyscaleImage},
     display_pins,
-    gpio::DisplayPins,
     hal::{
         gpio::p0::Parts as P0Parts,
         rtc::{Rtc, RtcInterrupt},
@@ -37,11 +36,8 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
 // We use TIMER1 to drive the display, and RTC0 to update the animation.
 // We set the TIMER1 interrupt to a higher priority than RTC0.
 
-static LED_PINS: Mutex<RefCell<Option<DisplayPins>>> = Mutex::new(RefCell::new(None));
+static DISPLAY: Mutex<RefCell<Option<Display<TIMER1>>>> = Mutex::new(RefCell::new(None));
 static ANIM_TIMER: Mutex<RefCell<Option<Rtc<RTC0>>>> = Mutex::new(RefCell::new(None));
-static DISPLAY_TIMER: Mutex<RefCell<Option<MicrobitDisplayTimer<TIMER1>>>> =
-    Mutex::new(RefCell::new(None));
-static DISPLAY: Mutex<RefCell<Option<Display<MicrobitFrame>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
@@ -51,35 +47,32 @@ fn main() -> ! {
         while p.CLOCK.events_lfclkstarted.read().bits() == 0 {}
         p.CLOCK.events_lfclkstarted.reset();
 
+        // RTC at 16Hz (32_768 / (2047 + 1))
+        // 62.5ms period
+        let mut rtc0 = Rtc::new(p.RTC0, 2047).unwrap();
+        rtc0.enable_event(RtcInterrupt::Tick);
+        rtc0.enable_interrupt(RtcInterrupt::Tick, None);
+        rtc0.enable_counter();
+
+        // Set up pins
+        #[cfg(feature = "v1")]
+        let pins = {
+            let p0parts = P0Parts::new(p.GPIO);
+            display_pins!(p0parts)
+        };
+
+        #[cfg(feature = "v2")]
+        let pins = {
+            let p0parts = P0Parts::new(p.P0);
+            let p1parts = P1Parts::new(p.P1);
+            display_pins!(p0parts, p1parts)
+        };
+
+        let display = Display::new(p.TIMER1, pins);
+
         cortex_m::interrupt::free(move |cs| {
-            // RTC at 16Hz (32_768 / (2047 + 1))
-            // 62.5ms period
-            let mut rtc0 = Rtc::new(p.RTC0, 2047).unwrap();
-            rtc0.enable_event(RtcInterrupt::Tick);
-            rtc0.enable_interrupt(RtcInterrupt::Tick, None);
-            rtc0.enable_counter();
-
-            let mut timer = MicrobitDisplayTimer::new(p.TIMER1);
-
-            // Set up pins
-            #[cfg(feature = "v1")]
-            let mut pins = {
-                let p0parts = P0Parts::new(p.GPIO);
-                display_pins!(p0parts)
-            };
-
-            #[cfg(feature = "v2")]
-            let mut pins = {
-                let p0parts = P0Parts::new(p.P0);
-                let p1parts = P1Parts::new(p.P1);
-                display_pins!(p0parts, p1parts)
-            };
-
-            display::initialise_display(&mut timer, &mut pins);
-            *LED_PINS.borrow(cs).borrow_mut() = Some(pins);
+            *DISPLAY.borrow(cs).borrow_mut() = Some(display);
             *ANIM_TIMER.borrow(cs).borrow_mut() = Some(rtc0);
-            *DISPLAY_TIMER.borrow(cs).borrow_mut() = Some(timer);
-            *DISPLAY.borrow(cs).borrow_mut() = Some(Display::new());
         });
         if let Some(mut cp) = Peripherals::take() {
             unsafe {
@@ -99,12 +92,8 @@ fn main() -> ! {
 #[interrupt]
 fn TIMER1() {
     cortex_m::interrupt::free(|cs| {
-        if let Some(timer) = DISPLAY_TIMER.borrow(cs).borrow_mut().as_mut() {
-            if let Some(pins) = LED_PINS.borrow(cs).borrow_mut().as_mut() {
-                if let Some(d) = DISPLAY.borrow(cs).borrow_mut().as_mut() {
-                    display::handle_display_event(d, timer, pins);
-                }
-            }
+        if let Some(display) = DISPLAY.borrow(cs).borrow_mut().as_mut() {
+            display.handle_display_event();
         }
     });
 }
@@ -112,7 +101,6 @@ fn TIMER1() {
 #[interrupt]
 unsafe fn RTC0() {
     static mut STEP: u8 = 0;
-    static mut FRAME: MicrobitFrame = MicrobitFrame::const_default();
 
     cortex_m::interrupt::free(|cs| {
         if let Some(rtc) = ANIM_TIMER.borrow(cs).borrow_mut().as_mut() {
@@ -126,11 +114,9 @@ unsafe fn RTC0() {
         _ => unreachable!(),
     };
 
-    FRAME.set(&heart_image(inner_brightness));
-
     cortex_m::interrupt::free(|cs| {
-        if let Some(d) = DISPLAY.borrow(cs).borrow_mut().as_mut() {
-            d.set_frame(&FRAME);
+        if let Some(display) = DISPLAY.borrow(cs).borrow_mut().as_mut() {
+            display.show(&heart_image(inner_brightness));
         }
     });
 
