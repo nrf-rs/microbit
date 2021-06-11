@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add BLE Beacon demo.
 - Add a simple speaker demo for micro:bit V2.
 - Add Board struct following the pattern used in other nrf board support crates.
+- Add magnetometer example.
 
 ## [0.10.1] - 2021-05-25
 
