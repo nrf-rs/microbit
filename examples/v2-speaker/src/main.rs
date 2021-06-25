@@ -9,37 +9,43 @@ use cortex_m::interrupt::Mutex;
 
 use cortex_m_rt::entry;
 use microbit::{
-    hal::{clocks::Clocks, gpio, prelude::OutputPin, pwm, time::Hertz},
+    hal::{
+        clocks::Clocks,
+        gpio,
+        prelude::OutputPin,
+        pwm,
+        rtc::{Rtc, RtcInterrupt},
+        time::Hertz,
+    },
     pac::{self, interrupt},
+    Board,
 };
 
-static RTC: Mutex<RefCell<Option<pac::RTC0>>> = Mutex::new(RefCell::new(None));
+static RTC: Mutex<RefCell<Option<Rtc<pac::RTC0>>>> = Mutex::new(RefCell::new(None));
 static SPEAKER: Mutex<RefCell<Option<pwm::Pwm<pac::PWM0>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
-    if let Some(p) = microbit::Peripherals::take() {
+    if let Some(mut board) = Board::take() {
         cortex_m::interrupt::free(move |cs| {
             // NB: The LF CLK pin is used by the speaker
-            let _clocks = Clocks::new(p.CLOCK)
+            let _clocks = Clocks::new(board.CLOCK)
                 .enable_ext_hfosc()
                 .set_lfclk_src_synth()
                 .start_lfclk();
 
-            p.RTC0.prescaler.write(|w| unsafe { w.bits(511) });
-            p.RTC0.evtenset.write(|w| w.tick().set_bit());
-            p.RTC0.intenset.write(|w| w.tick().set_bit());
-            p.RTC0.tasks_start.write(|w| unsafe { w.bits(1) });
+            let mut rtc = Rtc::new(board.RTC0, 511).unwrap();
+            rtc.enable_counter();
+            rtc.enable_interrupt(RtcInterrupt::Tick, Some(&mut board.NVIC));
+            rtc.enable_event(RtcInterrupt::Tick);
 
-            *RTC.borrow(cs).borrow_mut() = Some(p.RTC0);
+            *RTC.borrow(cs).borrow_mut() = Some(rtc);
 
-            let p0parts = gpio::p0::Parts::new(p.P0);
-
-            let mut speaker_pin = p0parts.p0_00.into_push_pull_output(gpio::Level::High);
+            let mut speaker_pin = board.speaker_pin.into_push_pull_output(gpio::Level::High);
             let _ = speaker_pin.set_low();
 
             // Use the PWM peripheral to generate a waveform for the speaker
-            let speaker = pwm::Pwm::new(p.PWM0);
+            let speaker = pwm::Pwm::new(board.PWM0);
             speaker
                 // output the waveform on the speaker pin
                 .set_output_pin(pwm::Channel::C0, &speaker_pin.degrade())
@@ -105,10 +111,10 @@ fn RTC0() {
                 defmt::info!("Fin");
                 // Stop speaker and RTC
                 speaker.disable();
-                rtc.tasks_stop.write(|w| unsafe { w.bits(1) });
+                rtc.disable_counter();
             };
             // Clear the RTC interrupt
-            rtc.events_tick.write(|w| unsafe { w.bits(0) });
+            rtc.reset_event(RtcInterrupt::Tick);
         }
     });
     // Increase the frequency

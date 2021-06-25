@@ -10,53 +10,47 @@ use cortex_m::interrupt::Mutex;
 use cortex_m_rt::entry;
 
 use microbit::{
-    hal::rng,
+    hal::{clocks, rng, rtc},
     pac::{self, interrupt},
 };
 
 use rand::{RngCore, SeedableRng};
 use rand_pcg::Pcg32;
 
-static RTC: Mutex<RefCell<Option<pac::RTC0>>> = Mutex::new(RefCell::new(None));
+static RTC: Mutex<RefCell<Option<rtc::Rtc<pac::RTC0>>>> = Mutex::new(RefCell::new(None));
 static RNG: Mutex<RefCell<Option<Pcg32>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
-    if let Some(p) = microbit::Peripherals::take() {
-        cortex_m::interrupt::free(move |cs| {
-            p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
+    let mut cp = pac::CorePeripherals::take().unwrap();
+    let p = microbit::Peripherals::take().unwrap();
 
-            while p.CLOCK.events_lfclkstarted.read().bits() == 0 {}
+    cortex_m::interrupt::free(move |cs| {
+        /* Start low frequency clock */
+        clocks::Clocks::new(p.CLOCK).start_lfclk();
 
-            /* And then set it back to 0 again, just because ?!? */
-            p.CLOCK.events_lfclkstarted.write(|w| unsafe { w.bits(0) });
+        defmt::info!("Welcome to the random number printer!");
 
-            defmt::info!("Welcome to the random number printer!");
+        /* Use hardware RNG to initialise PRNG */
+        let mut rng = rng::Rng::new(p.RNG);
 
-            /* Use hardware RNG to initialise PRNG */
-            let mut rng = rng::Rng::new(p.RNG);
+        let mut seed: [u8; 16] = [0; 16];
 
-            let mut seed: [u8; 16] = [0; 16];
+        /* Read 4 bytes of data from hardware RNG */
+        rng.random(&mut seed);
 
-            /* Read 4 bytes of data from hardware RNG */
-            rng.random(&mut seed);
+        let rng = Pcg32::from_seed(seed);
+        *RNG.borrow(cs).borrow_mut() = Some(rng);
 
-            let rng = Pcg32::from_seed(seed);
-            *RNG.borrow(cs).borrow_mut() = Some(rng);
+        let mut rtc = rtc::Rtc::new(p.RTC0, 1).unwrap();
+        rtc.enable_counter();
+        rtc.enable_interrupt(rtc::RtcInterrupt::Tick, Some(&mut cp.NVIC));
+        rtc.enable_event(rtc::RtcInterrupt::Tick);
 
-            p.RTC0.prescaler.write(|w| unsafe { w.bits(1) });
-            p.RTC0.evtenset.write(|w| w.tick().set_bit());
-            p.RTC0.intenset.write(|w| w.tick().set_bit());
-            p.RTC0.tasks_start.write(|w| unsafe { w.bits(1) });
+        *RTC.borrow(cs).borrow_mut() = Some(rtc);
 
-            *RTC.borrow(cs).borrow_mut() = Some(p.RTC0);
-
-            unsafe {
-                pac::NVIC::unmask(pac::Interrupt::RTC0);
-            }
-            pac::NVIC::unpend(pac::Interrupt::RTC0);
-        });
-    }
+        pac::NVIC::unpend(pac::Interrupt::RTC0);
+    });
 
     loop {
         continue;
@@ -74,7 +68,7 @@ fn RTC0() {
             RNG.borrow(cs).borrow_mut().deref_mut(),
         ) {
             defmt::info!("{:?}", rng.next_u32());
-            rtc.events_tick.write(|w| unsafe { w.bits(0) });
+            rtc.reset_event(rtc::RtcInterrupt::Tick);
         }
     });
 }

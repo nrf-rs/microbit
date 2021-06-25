@@ -11,17 +11,14 @@ use defmt_rtt as _;
 use panic_halt as _;
 
 use microbit::{
+    board::Board,
     display::nonblocking::{Display, GreyscaleImage},
-    display_pins,
     hal::{
-        gpio::p0::Parts as P0Parts,
+        clocks::Clocks,
         rtc::{Rtc, RtcInterrupt},
     },
     pac,
 };
-
-#[cfg(feature = "v2")]
-use microbit::hal::gpio::p1::Parts as P1Parts;
 
 use rtic::app;
 
@@ -36,7 +33,7 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
     ])
 }
 
-#[app(device = microbit::pac, peripherals = true)]
+#[app(device = microbit::pac, peripherals = false)]
 const APP: () = {
     struct Resources {
         display: Display<pac::TIMER1>,
@@ -44,37 +41,20 @@ const APP: () = {
     }
 
     #[init]
-    fn init(cx: init::Context) -> init::LateResources {
-        let p: pac::Peripherals = cx.device;
+    fn init(_cx: init::Context) -> init::LateResources {
+        let board = Board::take().unwrap();
 
         // Starting the low-frequency clock (needed for RTC to work)
-        p.CLOCK.tasks_lfclkstart.write(|w| unsafe { w.bits(1) });
-
-        while p.CLOCK.events_lfclkstarted.read().bits() == 0 {}
-        p.CLOCK.events_lfclkstarted.reset();
+        Clocks::new(board.CLOCK).start_lfclk();
 
         // RTC at 16Hz (32_768 / (2047 + 1))
         // 16Hz; 62.5ms period
-        let mut rtc0 = Rtc::new(p.RTC0, 2047).unwrap();
+        let mut rtc0 = Rtc::new(board.RTC0, 2047).unwrap();
         rtc0.enable_event(RtcInterrupt::Tick);
         rtc0.enable_interrupt(RtcInterrupt::Tick, None);
         rtc0.enable_counter();
 
-        // Set up pins
-        #[cfg(feature = "v1")]
-        let pins = {
-            let p0parts = P0Parts::new(p.GPIO);
-            display_pins!(p0parts)
-        };
-
-        #[cfg(feature = "v2")]
-        let pins = {
-            let p0parts = P0Parts::new(p.P0);
-            let p1parts = P1Parts::new(p.P1);
-            display_pins!(p0parts, p1parts)
-        };
-
-        let display = Display::new(p.TIMER1, pins);
+        let display = Display::new(board.TIMER1, board.display_pins);
 
         init::LateResources {
             anim_timer: rtc0,

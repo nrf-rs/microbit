@@ -3,6 +3,7 @@
 
 use panic_halt as _;
 
+use core::fmt::Write;
 use microbit::hal;
 use microbit::hal::prelude::*;
 use microbit::hal::uart::Baudrate;
@@ -18,9 +19,7 @@ fn main() -> ! {
         let mut serial = microbit::serial_port!(gpio, p.UART0, Baudrate::BAUD115200);
 
         /* Print a nice hello message */
-        let s = b"Please type characters to echo:\r\n";
-
-        let _ = s.iter().map(|c| nb::block!(serial.write(*c))).last();
+        write!(serial, "Please type characters to echo:\r\n");
 
         /* Endless loop */
         loop {

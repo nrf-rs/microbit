@@ -18,8 +18,11 @@ pub use nrf52833_hal as hal;
 pub use hal::pac;
 pub use hal::pac::Peripherals;
 
+pub mod board;
 pub mod display;
 pub mod gpio;
+
+pub use board::Board;
 
 #[cfg(feature = "v1")]
 mod v1;

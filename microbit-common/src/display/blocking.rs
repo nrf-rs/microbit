@@ -9,30 +9,17 @@
 //! ```no_run
 //! # use microbit_common as microbit;
 //! # use microbit::{
-//! #     display_pins,
-//! #     pac,
-#![cfg_attr(feature = "v1", doc = "#     hal::{self, gpio::p0::Parts as P0Parts},")]
-#![cfg_attr(
-    feature = "v2",
-    doc = "#     hal::{self, gpio::{p0::Parts as P0Parts, p1::Parts as P1Parts}},"
-)]
+//! #     Board,
+//! #     hal,
 //! #     display::blocking::Display,
 //! # };
 //! # use embedded_hal::blocking::delay::DelayMs;
-//! // take the peripherals
-//! let p = pac::Peripherals::take().unwrap();
+//! // take the board
+//! let board = Board::take().unwrap();
 //! // make a timer
-//! let mut timer = hal::Timer::new(p.TIMER0);
-//! // set up the pins
-//! let mut pins = {
-#![cfg_attr(feature = "v1", doc = "   let p0parts = P0Parts::new(p.GPIO);")]
-#![cfg_attr(feature = "v1", doc = "   display_pins!(p0parts)")]
-#![cfg_attr(feature = "v2", doc = "   let p0parts = P0Parts::new(p.P0);")]
-#![cfg_attr(feature = "v2", doc = "   let p1parts = P1Parts::new(p.P1);")]
-#![cfg_attr(feature = "v2", doc = "   display_pins!(p0parts, p1parts)")]
-//! };
+//! let mut timer = hal::Timer::new(board.TIMER0);
 //! // create the Display
-//! let mut display = Display::new(pins);
+//! let mut display = Display::new(board.display_pins);
 //! // and light up some LEDs
 //! let heart = [
 //!     [0, 1, 0, 1, 0],

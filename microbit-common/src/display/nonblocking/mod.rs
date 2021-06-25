@@ -18,32 +18,19 @@
 //! ```no_run
 //! # use microbit_common as microbit;
 //! use microbit::{
-//!     display_pins,
-//!     pac,
+//!     Board,
+//!     hal,
 //!     display::nonblocking::{Display, GreyscaleImage},
-#![cfg_attr(feature = "v1", doc = "    hal::{self, gpio::p0::Parts as P0Parts},")]
-#![cfg_attr(
-    feature = "v2",
-    doc = "    hal::{self, gpio::{p0::Parts as P0Parts, p1::Parts as P1Parts}},"
-)]
 //! };
 //! use embedded_hal::blocking::delay::DelayMs;
 //!
-//! let p = pac::Peripherals::take().unwrap();
+//! let board = Board::take().unwrap();
 //!
-//! let mut pins = {
-#![cfg_attr(feature = "v1", doc = "   let p0parts = P0Parts::new(p.GPIO);")]
-#![cfg_attr(feature = "v1", doc = "   display_pins!(p0parts)")]
-#![cfg_attr(feature = "v2", doc = "   let p0parts = P0Parts::new(p.P0);")]
-#![cfg_attr(feature = "v2", doc = "   let p1parts = P1Parts::new(p.P1);")]
-#![cfg_attr(feature = "v2", doc = "   display_pins!(p0parts, p1parts)")]
-//! };
-//!
-//! let mut display = Display::new(p.TIMER1, pins);
+//! let mut display = Display::new(board.TIMER1, board.display_pins);
 //!
 //! // in your main function
 //! {
-//!     let mut timer2 = hal::Timer::new(p.TIMER0);
+//!     let mut timer2 = hal::Timer::new(board.TIMER0);
 //!     loop {
 //!         display.show(&GreyscaleImage::new(&[
 //!             [0, 7, 0, 7, 0],
@@ -190,8 +177,8 @@ pub struct Display<T: Instance> {
 impl<T: Instance> Display<T> {
     /// Create and initialise the display driver
     ///
-    /// The [`display_pins!`](crate::display_pins) macro can be used
-    /// to create [`DisplayPins`].
+    /// [`DisplayPins`] can be used from [`Board::display_pins`](crate::Board::display_pins)
+    /// or the [`display_pins!`](crate::display_pins) macro can be used is manually.
     pub fn new(timer: T, pins: DisplayPins) -> Self {
         let mut display = Self {
             display: tiny_led_matrix::Display::new(),
