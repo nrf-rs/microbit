@@ -25,13 +25,19 @@ fn install_targets() {
 /// Install global dependencies
 fn install_dependencies() {
     for dependency in DEPENDENCIES {
-        let mut cargo = Command::new("cargo");
-        cargo.args(&["install", dependency]);
-        let status = cargo
-            .status()
-            .map_err(|e| format!("couldn't execute {:?}: {}", cargo, e))
-            .unwrap();
-        assert!(status.success(),);
+        let exists = Command::new("which")
+            .arg(dependency)
+            .output()
+            .expect("failed to execute");
+        if !exists.status.success() {
+            let mut cargo = Command::new("cargo");
+            cargo.args(&["install", dependency]);
+            let status = cargo
+                .status()
+                .map_err(|e| format!("couldn't execute {:?}: {}", cargo, e))
+                .unwrap();
+            assert!(status.success(),);
+        }
     }
 }
 
@@ -154,16 +160,35 @@ fn build_example(manifest_path: &path::PathBuf, feature: Option<String>, target:
     );
 }
 
+fn start_group(is_ci: bool, name: &str) {
+    if is_ci {
+        println!("::group::{}", name);
+    }
+}
+
+fn end_group(is_ci: bool) {
+    if is_ci {
+        println!("::endgroup::");
+    }
+}
+
+fn wrap_in_group(is_ci: bool, name: &str, callable: &dyn Fn()) {
+    start_group(is_ci, name);
+    callable();
+    end_group(is_ci);
+}
+
 pub fn ci() {
-    install_targets();
-    install_dependencies();
+    let is_ci = env::var("CI").map_or(false, |ci| ci == "true");
 
     // move up if we're running from inside xtask
     if env::current_dir().unwrap().ends_with("xtask") {
         env::set_current_dir("..").unwrap();
     }
 
-    build_crates();
-    build_run_doc_tests();
-    build_examples();
+    wrap_in_group(is_ci, "install targets", &install_targets);
+    wrap_in_group(is_ci, "install dependencies", &install_dependencies);
+    wrap_in_group(is_ci, "build crates", &build_crates);
+    wrap_in_group(is_ci, "build examples", &build_examples);
+    wrap_in_group(is_ci, "run doc tests", &build_run_doc_tests);
 }
