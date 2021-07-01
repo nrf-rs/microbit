@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Rearrange LED display modules under the same root module and change their
   APIs to be more aligned with each other.
+- Add BLE Beacon demo.
 
 ## [0.10.1] - 2021-05-25
 
