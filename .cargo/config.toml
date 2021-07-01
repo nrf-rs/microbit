@@ -1,6 +1,8 @@
 [alias]
 xtask = "run --package xtask --"
 
+# For micro:bit v1.x
+
 [target.thumbv6m-none-eabi]
 runner = 'probe-run --chip nRF51822_xxAA'
 rustflags = [
@@ -9,10 +11,18 @@ rustflags = [
   "-C", "link-arg=-Tdefmt.x",
 ]
 
-[target.thumbv7em-none-eabihf]
-# Execute binary using gdb when calling cargo run
+# For micro:bit v2
+
+[target.thumbv7em-none-eabi]
 runner = "probe-run --chip nRF52833_xxAA"
-# Tweak to the linking process required by the cortex-m-rt crate
+rustflags = [
+  "-C", "linker=flip-link",
+  "-C", "link-arg=-Tlink.x",
+  "-C", "link-arg=-Tdefmt.x",
+]
+
+[target.thumbv7em-none-eabihf]
+runner = "probe-run --chip nRF52833_xxAA"
 rustflags = [
   "-C", "linker=flip-link",
   "-C", "link-arg=-Tlink.x",
