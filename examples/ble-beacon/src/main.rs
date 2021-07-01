@@ -1,6 +1,7 @@
 #![no_main]
 #![no_std]
 
+use defmt_rtt as _;
 use panic_halt as _;
 
 use cortex_m_rt::entry;
@@ -30,17 +31,20 @@ fn main() -> ! {
         let mut timer = Timer::new(p.TIMER0);
 
         loop {
-            defmt::info!("Local name");
+            // Broadcast local name
+            let local_name = "Rusty microbit";
+            defmt::info!("Local name: {}", local_name);
             let beacon = Beacon::new(
                 device_address,
-                &[AdStructure::CompleteLocalName("Rusty microbit")],
+                &[AdStructure::CompleteLocalName(local_name)],
             )
             .unwrap();
             beacon.broadcast(&mut radio);
-            timer.delay_ms(1_000_u16);
+            timer.delay_ms(100_u16);
 
+            // Broadcast data
             let data = "Hello world";
-            defmt::info!("{}", data);
+            defmt::info!("Data: {}", data);
             let beacon = Beacon::new(
                 device_address,
                 &[AdStructure::ManufacturerSpecificData {
@@ -50,7 +54,7 @@ fn main() -> ! {
             )
             .unwrap();
             beacon.broadcast(&mut radio);
-            timer.delay_ms(1_000_u16);
+            timer.delay_ms(500_u16);
         }
     }
 
