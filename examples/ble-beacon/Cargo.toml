@@ -22,7 +22,7 @@ optional = true
 
 [features]
 v1 = ["microbit", "rubble-nrf5x/51"]
-v2 = ["microbit-v2"]
+v2 = ["microbit-v2", "rubble-nrf5x/52833"]
 
 default = [
   "defmt-default",
