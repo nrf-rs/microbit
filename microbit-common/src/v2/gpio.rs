@@ -112,3 +112,6 @@ pub type SDA = p1::P1_00<Input<Floating>>;
 /* uart */
 pub type UART_TX = p1::P1_08<Output<PushPull>>;
 pub type UART_RX = p0::P0_06<Input<Floating>>;
+
+/* speaker */
+pub type SPEAKER = p0::P0_00<Output<PushPull>>;
