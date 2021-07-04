@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Added support for the thumbv7em-none-eabi target for microbit:v2 (same as
+  thumbv7em-none-eabihf but without hardware floating point support)
+
+### Changed
+
 - Rearrange LED display modules under the same root module and change their
   APIs to be more aligned with each other.
 - Add BLE Beacon demo.
