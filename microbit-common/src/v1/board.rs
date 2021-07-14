@@ -1,6 +1,9 @@
-use super::gpio::{DisplayPins, BTN_A, BTN_B};
+use super::gpio::{DisplayPins, BTN_A, BTN_B, SCL, SDA};
 use crate::{
-    hal::gpio::{p0, Disconnected, Level},
+    hal::{
+        gpio::{p0, Disconnected, Level},
+        twi,
+    },
     pac,
 };
 
@@ -15,6 +18,9 @@ pub struct Board {
 
     /// buttons
     pub buttons: Buttons,
+
+    /// I2C shared internal and external bus pins
+    pub i2c: I2CPins,
 
     /// Core peripheral: Cache and branch predictor maintenance operations
     pub CBP: pac::CBP,
@@ -75,6 +81,9 @@ pub struct Board {
 
     /// nRF51 peripheral: TIMER2
     pub TIMER2: pac::TIMER2,
+
+    /// nRF51 peripheral: TWI0
+    pub TWI0: pac::TWI0,
 }
 
 impl Board {
@@ -93,7 +102,6 @@ impl Board {
         let p0parts = p0::Parts::new(p.GPIO);
         Self {
             pins: Pins {
-                p0_00: p0parts.p0_00,
                 p0_01: p0parts.p0_01,
                 p0_02: p0parts.p0_02,
                 p0_03: p0parts.p0_03,
@@ -109,7 +117,6 @@ impl Board {
                 p0_27: p0parts.p0_27,
                 p0_28: p0parts.p0_28,
                 p0_29: p0parts.p0_29,
-                p0_30: p0parts.p0_30,
             },
             display_pins: DisplayPins {
                 row1: p0parts.p0_13.into_push_pull_output(Level::High),
@@ -128,6 +135,10 @@ impl Board {
             buttons: Buttons {
                 button_a: p0parts.p0_17.into_floating_input(),
                 button_b: p0parts.p0_26.into_floating_input(),
+            },
+            i2c: I2CPins {
+                scl: p0parts.p0_00.into_floating_input(),
+                sda: p0parts.p0_30.into_floating_input(),
             },
 
             // Core peripherals
@@ -153,6 +164,7 @@ impl Board {
             TIMER0: p.TIMER0,
             TIMER1: p.TIMER1,
             TIMER2: p.TIMER2,
+            TWI0: p.TWI0,
         }
     }
 }
@@ -160,7 +172,7 @@ impl Board {
 /// Unused GPIO pins
 #[allow(missing_docs)]
 pub struct Pins {
-    pub p0_00: p0::P0_00<Disconnected>,
+    // pub p0_00: p0::P0_00<Disconnected>, // SCL
     pub p0_01: p0::P0_01<Disconnected>,
     pub p0_02: p0::P0_02<Disconnected>,
     pub p0_03: p0::P0_03<Disconnected>,
@@ -190,7 +202,7 @@ pub struct Pins {
     pub p0_27: p0::P0_27<Disconnected>,
     pub p0_28: p0::P0_28<Disconnected>,
     pub p0_29: p0::P0_29<Disconnected>,
-    pub p0_30: p0::P0_30<Disconnected>,
+    // pub p0_30: p0::P0_30<Disconnected>, // SDA
 }
 
 /// Board buttons
@@ -199,4 +211,19 @@ pub struct Buttons {
     pub button_a: BTN_A,
     /// Right hand side button
     pub button_b: BTN_B,
+}
+
+/// I2C shared internal and external bus pins
+pub struct I2CPins {
+    scl: SCL,
+    sda: SDA,
+}
+
+impl Into<twi::Pins> for I2CPins {
+    fn into(self) -> twi::Pins {
+        twi::Pins {
+            scl: self.scl.degrade(),
+            sda: self.sda.degrade(),
+        }
+    }
 }

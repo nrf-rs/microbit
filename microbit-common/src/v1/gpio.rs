@@ -127,7 +127,7 @@ pub type MOSI<MODE> = p0::P0_21<MODE>;
 pub type MISO<MODE> = p0::P0_22<MODE>;
 pub type SCK<MODE> = p0::P0_23<MODE>;
 
-/* i2c */
+/* i2c - shared external and internal */
 pub type SCL = p0::P0_00<Input<Floating>>;
 pub type SDA = p0::P0_30<Input<Floating>>;
 
