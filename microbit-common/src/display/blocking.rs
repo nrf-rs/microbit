@@ -77,8 +77,6 @@ impl Display {
             rows,
             cols,
         };
-        // This is needed to reduce flickering on reset
-        retval.clear();
         retval
     }
 
