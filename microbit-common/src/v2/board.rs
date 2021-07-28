@@ -1,9 +1,8 @@
-use super::gpio::{DisplayPins, BTN_A, BTN_B, INT_SCL, INT_SDA, SCL, SDA, UART_TX, UART_RX};
+use super::gpio::{DisplayPins, BTN_A, BTN_B, INT_SCL, INT_SDA, SCL, SDA, UART_RX, UART_TX};
 use crate::{
     hal::{
         gpio::{p0, p1, Disconnected, Level},
-        twim, twis,
-        uarte,
+        twim, twis, uarte,
     },
     pac,
 };
