@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add Board struct following the pattern used in other nrf board support crates.
 - Add magnetometer example.
 - LEDs on the micro:bit V1 are now turned off per default
+- UART(E) is now exposed in the same way as I2C
 
 ## [0.10.1] - 2021-05-25
 
