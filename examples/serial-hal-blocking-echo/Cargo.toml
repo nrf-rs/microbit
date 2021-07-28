@@ -11,3 +11,12 @@ nb = "0.1.2"
 
 [dependencies.microbit]
 path = "../../microbit"
+optional = true
+
+[dependencies.microbit-v2]
+path = "../../microbit-v2"
+optional = true
+
+[features]
+v1 = ["microbit"]
+v2 = ["microbit-v2"]

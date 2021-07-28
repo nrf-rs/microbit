@@ -72,12 +72,11 @@ impl Display {
     /// to create [`DisplayPins`].
     pub fn new(pins: DisplayPins) -> Self {
         let (cols, rows) = pins.degrade();
-        let mut retval = Display {
+        Display {
             delay_ms: DEFAULT_DELAY_MS,
             rows,
             cols,
-        };
-        retval
+        }
     }
 
     /// Clear the display

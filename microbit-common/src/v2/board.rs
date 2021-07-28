@@ -1,8 +1,9 @@
-use super::gpio::{DisplayPins, BTN_A, BTN_B, INT_SCL, INT_SDA, SCL, SDA};
+use super::gpio::{DisplayPins, BTN_A, BTN_B, INT_SCL, INT_SDA, SCL, SDA, UART_TX, UART_RX};
 use crate::{
     hal::{
         gpio::{p0, p1, Disconnected, Level},
         twim, twis,
+        uarte,
     },
     pac,
 };
@@ -27,6 +28,9 @@ pub struct Board {
 
     /// I2C external bus pins
     pub i2c_external: I2CExternalPins,
+
+    /// UART to debugger pins
+    pub uart: UartPins,
 
     /// Core peripheral: Cache and branch predictor maintenance operations
     pub CBP: pac::CBP,
@@ -114,6 +118,12 @@ pub struct Board {
 
     /// nRF52 peripheral: TWIS0
     pub TWIS0: pac::TWIS0,
+
+    /// nRF52 peripheral: UARTE0
+    pub UARTE0: pac::UARTE0,
+
+    /// nRF52 peripheral: UARTE1
+    pub UARTE1: pac::UARTE1,
 }
 
 impl Board {
@@ -138,7 +148,6 @@ impl Board {
                 p0_03: p0parts.p0_03,
                 p0_04: p0parts.p0_04,
                 p0_05: p0parts.p0_05,
-                p0_06: p0parts.p0_06,
                 p0_07: p0parts.p0_07,
                 p0_09: p0parts.p0_09,
                 p0_10: p0parts.p0_10,
@@ -156,7 +165,6 @@ impl Board {
                 p1_04: p1parts.p1_04,
                 p1_06: p1parts.p1_06,
                 p1_07: p1parts.p1_07,
-                p1_08: p1parts.p1_08,
                 p1_09: p1parts.p1_09,
             },
             display_pins: DisplayPins {
@@ -183,6 +191,10 @@ impl Board {
             i2c_external: I2CExternalPins {
                 scl: p0parts.p0_26.into_floating_input(),
                 sda: p1parts.p1_00.into_floating_input(),
+            },
+            uart: UartPins {
+                tx: p1parts.p1_08.into_push_pull_output(Level::Low),
+                rx: p0parts.p0_06.into_floating_input(),
             },
 
             // Core peripherals
@@ -217,6 +229,8 @@ impl Board {
             TIMER4: p.TIMER4,
             TWIM0: p.TWIM0,
             TWIS0: p.TWIS0,
+            UARTE0: p.UARTE0,
+            UARTE1: p.UARTE1,
         }
     }
 }
@@ -230,7 +244,7 @@ pub struct Pins {
     pub p0_03: p0::P0_03<Disconnected>,
     pub p0_04: p0::P0_04<Disconnected>,
     pub p0_05: p0::P0_05<Disconnected>,
-    pub p0_06: p0::P0_06<Disconnected>,
+    // pub p0_06: p0::P0_06<Disconnected>, // UART RX
     pub p0_07: p0::P0_07<Disconnected>,
     // pub p0_08: p0::P0_08<Disconnected>, // INT_SCL
     pub p0_09: p0::P0_09<Disconnected>,
@@ -264,7 +278,7 @@ pub struct Pins {
     // pub p1_05: p1::P1_05<Disconnected>, // LEDs
     pub p1_06: p1::P1_06<Disconnected>,
     pub p1_07: p1::P1_07<Disconnected>,
-    pub p1_08: p1::P1_08<Disconnected>,
+    // pub p1_08: p1::P1_08<Disconnected>, // UART TX
     pub p1_09: p1::P1_09<Disconnected>,
 }
 
@@ -320,6 +334,23 @@ impl Into<twis::Pins> for I2CExternalPins {
         twis::Pins {
             scl: self.scl.degrade(),
             sda: self.sda.degrade(),
+        }
+    }
+}
+
+/// UART to debugger pins
+pub struct UartPins {
+    tx: UART_TX,
+    rx: UART_RX,
+}
+
+impl Into<uarte::Pins> for UartPins {
+    fn into(self) -> uarte::Pins {
+        uarte::Pins {
+            txd: self.tx.degrade(),
+            rxd: self.rx.degrade(),
+            cts: None,
+            rts: None,
         }
     }
 }

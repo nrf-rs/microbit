@@ -4,33 +4,40 @@
 use panic_halt as _;
 
 use core::fmt::Write;
-use microbit::hal;
 use microbit::hal::prelude::*;
-use microbit::hal::uart::Baudrate;
+
+#[cfg(feature = "v1")]
+use microbit::{
+    hal::uart,
+    hal::uart::{Baudrate, Parity},
+};
+#[cfg(feature = "v2")]
+use microbit::{
+    hal::uarte,
+    hal::uarte::{Baudrate, Parity},
+};
 
 use cortex_m_rt::entry;
 
+
 #[entry]
 fn main() -> ! {
-    if let Some(p) = microbit::Peripherals::take() {
-        let gpio = hal::gpio::p0::Parts::new(p.GPIO);
+    let board = microbit::Board::take().unwrap();
 
-        /* Initialise serial port on the micro:bit */
-        let mut serial = microbit::serial_port!(gpio, p.UART0, Baudrate::BAUD115200);
+    #[cfg(feature = "v1")]
+    let mut serial = { uart::Uart::new(board.UART0, board.uart.into(), Parity::EXCLUDED, Baudrate::BAUD115200) };
 
-        /* Print a nice hello message */
-        write!(serial, "Please type characters to echo:\r\n");
+    #[cfg(feature = "v2")]
+    let mut serial = { uarte::Uarte::new(board.UARTE0, board.uart.into(), Parity::EXCLUDED, Baudrate::BAUD115200) };
 
-        /* Endless loop */
-        loop {
-            /* Read and echo back */
-            if let Ok(c) = nb::block!(serial.read()) {
-                let _ = nb::block!(serial.write(c));
-            }
-        }
-    }
+    /* Print a nice hello message */
+    write!(serial, "Please type characters to echo:\r\n").unwrap();
 
+    /* Endless loop */
     loop {
-        continue;
+        /* Read and echo back */
+        if let Ok(c) = nb::block!(serial.read()) {
+            let _ = nb::block!(serial.write(c));
+        }
     }
 }
