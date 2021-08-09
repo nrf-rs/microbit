@@ -192,8 +192,8 @@ impl Board {
                 sda: p1parts.p1_00.into_floating_input(),
             },
             uart: UartPins {
-                tx: p1parts.p1_08.into_push_pull_output(Level::Low),
-                rx: p0parts.p0_06.into_floating_input(),
+                tx: p0parts.p0_06.into_push_pull_output(Level::High),
+                rx: p1parts.p1_08.into_floating_input(),
             },
 
             // Core peripherals
