@@ -7,16 +7,16 @@ use core::fmt::Write;
 
 #[cfg(feature = "v1")]
 use microbit::{
+    hal::prelude::*,
     hal::uart,
     hal::uart::{Baudrate, Parity},
-    hal::prelude::*,
 };
 
 #[cfg(feature = "v2")]
 use microbit::{
+    hal::prelude::*,
     hal::uarte,
     hal::uarte::{Baudrate, Parity},
-    hal::prelude::*,
 };
 
 use cortex_m_rt::entry;
@@ -25,7 +25,6 @@ use cortex_m_rt::entry;
 mod serial_setup;
 #[cfg(feature = "v2")]
 use serial_setup::UartePort;
-
 
 #[entry]
 fn main() -> ! {
