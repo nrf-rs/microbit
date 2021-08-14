@@ -48,7 +48,7 @@ fn main() -> ! {
             let speaker = pwm::Pwm::new(board.PWM0);
             speaker
                 // output the waveform on the speaker pin
-                .set_output_pin(pwm::Channel::C0, &speaker_pin.degrade())
+                .set_output_pin(pwm::Channel::C0, speaker_pin.degrade())
                 // Use prescale by 16 to achive darker sounds
                 .set_prescaler(pwm::Prescaler::Div16)
                 // Initial frequency
