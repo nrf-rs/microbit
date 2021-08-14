@@ -4,20 +4,28 @@
 use panic_halt as _;
 
 use core::fmt::Write;
-use microbit::hal::prelude::*;
 
 #[cfg(feature = "v1")]
 use microbit::{
     hal::uart,
     hal::uart::{Baudrate, Parity},
+    hal::prelude::*,
 };
+
 #[cfg(feature = "v2")]
 use microbit::{
     hal::uarte,
     hal::uarte::{Baudrate, Parity},
+    hal::prelude::*,
 };
 
 use cortex_m_rt::entry;
+
+#[cfg(feature = "v2")]
+mod serial_setup;
+#[cfg(feature = "v2")]
+use serial_setup::UartePort;
+
 
 #[entry]
 fn main() -> ! {
@@ -35,22 +43,18 @@ fn main() -> ! {
 
     #[cfg(feature = "v2")]
     let mut serial = {
-        uarte::Uarte::new(
+        let serial = uarte::Uarte::new(
             board.UARTE0,
             board.uart.into(),
             Parity::EXCLUDED,
             Baudrate::BAUD115200,
-        )
+        );
+        UartePort::new(serial)
     };
 
-    /* Print a nice hello message */
-    write!(serial, "Please type characters to echo:\r\n").unwrap();
-
-    /* Endless loop */
     loop {
-        /* Read and echo back */
-        if let Ok(c) = nb::block!(serial.read()) {
-            let _ = nb::block!(serial.write(c));
-        }
+        write!(serial, "Hello World:\r\n").unwrap();
+        let input = nb::block!(serial.read()).unwrap();
+        write!(serial, "You said: {}\r\n", input as char).unwrap();
     }
 }
