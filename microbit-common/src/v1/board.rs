@@ -1,8 +1,8 @@
-use super::gpio::{DisplayPins, BTN_A, BTN_B, SCL, SDA};
+use super::gpio::{DisplayPins, BTN_A, BTN_B, SCL, SDA, UART_RX, UART_TX};
 use crate::{
     hal::{
         gpio::{p0, Disconnected, Level},
-        twi,
+        twi, uart,
     },
     pac,
 };
@@ -21,6 +21,9 @@ pub struct Board {
 
     /// I2C shared internal and external bus pins
     pub i2c: I2CPins,
+
+    /// UART to debugger pins
+    pub uart: UartPins,
 
     /// Core peripheral: Cache and branch predictor maintenance operations
     pub CBP: pac::CBP,
@@ -84,6 +87,9 @@ pub struct Board {
 
     /// nRF51 peripheral: TWI0
     pub TWI0: pac::TWI0,
+
+    /// nrf51 peripheral: UART0
+    pub UART0: pac::UART0,
 }
 
 impl Board {
@@ -112,8 +118,6 @@ impl Board {
                 p0_21: p0parts.p0_21,
                 p0_22: p0parts.p0_22,
                 p0_23: p0parts.p0_23,
-                p0_24: p0parts.p0_24,
-                p0_25: p0parts.p0_25,
                 p0_27: p0parts.p0_27,
                 p0_28: p0parts.p0_28,
                 p0_29: p0parts.p0_29,
@@ -140,6 +144,10 @@ impl Board {
                 scl: p0parts.p0_00.into_floating_input(),
                 sda: p0parts.p0_30.into_floating_input(),
             },
+            uart: UartPins {
+                tx: p0parts.p0_24.into_push_pull_output(Level::Low),
+                rx: p0parts.p0_25.into_floating_input(),
+            },
 
             // Core peripherals
             CBP: cp.CBP,
@@ -165,6 +173,7 @@ impl Board {
             TIMER1: p.TIMER1,
             TIMER2: p.TIMER2,
             TWI0: p.TWI0,
+            UART0: p.UART0,
         }
     }
 }
@@ -196,8 +205,8 @@ pub struct Pins {
     pub p0_21: p0::P0_21<Disconnected>,
     pub p0_22: p0::P0_22<Disconnected>,
     pub p0_23: p0::P0_23<Disconnected>,
-    pub p0_24: p0::P0_24<Disconnected>,
-    pub p0_25: p0::P0_25<Disconnected>,
+    // pub p0_24: p0::P0_24<Disconnected>, // UART TX
+    // pub p0_25: p0::P0_25<Disconnected>, // UART RX
     // pub p0_26: p0::P0_26<Disconnected>, // BTN_B
     pub p0_27: p0::P0_27<Disconnected>,
     pub p0_28: p0::P0_28<Disconnected>,
@@ -224,6 +233,23 @@ impl Into<twi::Pins> for I2CPins {
         twi::Pins {
             scl: self.scl.degrade(),
             sda: self.sda.degrade(),
+        }
+    }
+}
+
+/// UART to debugger pins
+pub struct UartPins {
+    tx: UART_TX,
+    rx: UART_RX,
+}
+
+impl Into<uart::Pins> for UartPins {
+    fn into(self) -> uart::Pins {
+        uart::Pins {
+            txd: self.tx.degrade(),
+            rxd: self.rx.degrade(),
+            cts: None,
+            rts: None,
         }
     }
 }

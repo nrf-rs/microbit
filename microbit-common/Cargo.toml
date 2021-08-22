@@ -30,11 +30,12 @@ embedded-hal = "0.2.4"
 
 [dependencies.nrf51-hal]
 optional = true
-version = "0.12.1"
+version = "0.13.0"
 
 [dependencies.nrf52833-hal]
 optional = true
-version = "0.12.1"
+version = "0.13.0"
+git = "https://github.com/nrf-rs/nrf-hal"
 
 [features]
 doc = []

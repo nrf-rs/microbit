@@ -8,6 +8,16 @@ cortex-m-rt = "0.6.12"
 panic-halt = "0.2.0"
 defmt-rtt = "0.2.0"
 nb = "0.1.2"
+embedded-hal = "0.2.6"
 
 [dependencies.microbit]
 path = "../../microbit"
+optional = true
+
+[dependencies.microbit-v2]
+path = "../../microbit-v2"
+optional = true
+
+[features]
+v1 = ["microbit"]
+v2 = ["microbit-v2"]
