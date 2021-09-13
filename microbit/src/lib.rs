@@ -8,7 +8,7 @@
 //!
 //! [<img src="https://github.com/microbit-foundation/microbit-svg/raw/master/microbit-drawing-back-1-5.png" width="372px" height="300px">](https://github.com/microbit-foundation/microbit-svg/blob/master/microbit-drawing-back-1-5.png)
 //! [<img src="https://github.com/microbit-foundation/microbit-svg/raw/master/microbit-drawing-back-2.png" width="372px" height="300px">](https://github.com/microbit-foundation/microbit-svg/blob/master/microbit-drawing-back-2.png)
-#![doc(html_root_url = "https://docs.rs/microbit/0.10.0")]
+#![doc(html_root_url = "https://docs.rs/microbit/0.11.0")]
 #![no_std]
 #![deny(missing_docs)]
 #![allow(non_camel_case_types)]

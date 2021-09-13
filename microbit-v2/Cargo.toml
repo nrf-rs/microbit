@@ -1,6 +1,6 @@
 [package]
 name = "microbit-v2"
-version = "0.10.1"
+version = "0.11.0"
 description = "Board support crate for the BBC Micro:bit V2"
 edition = "2018"
 readme = "../README.md"
@@ -33,4 +33,4 @@ path = "src/lib.rs"
 [dependencies.microbit-common]
 path = "../microbit-common"
 features = ["v2"]
-version = "=0.10.1"
+version = "=0.11.0"
