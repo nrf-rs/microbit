@@ -54,7 +54,7 @@ pub fn bump_versions(new_version: &str, dry_run: bool) {
         );
         let to = format!(
             "[Unreleased]: https://github.com/nrf-rs/microbit/compare/v{new_version}...HEAD\n\
-             [{new_version}]: https://github.com/nrf-rs/microbit/releases/tag/v{old_version}...v{new_version}",
+             [{new_version}]: https://github.com/nrf-rs/microbit/compare/v{old_version}...v{new_version}",
             new_version = new_version,
             old_version = old_version,
         );

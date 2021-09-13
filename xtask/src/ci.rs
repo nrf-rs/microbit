@@ -112,7 +112,7 @@ fn build_examples() {
             .collect::<Vec<_>>();
 
         // if there are no features find the target from the dependencies
-        if features.len() == 0 {
+        if features.is_empty() {
             features = manifest
                 .dependencies
                 .keys()
@@ -135,7 +135,7 @@ fn build_examples() {
     }
 }
 
-fn build_example(manifest_path: &path::PathBuf, feature: Option<String>, target: String) {
+fn build_example(manifest_path: &path::Path, feature: Option<String>, target: String) {
     let mut cargo = Command::new("cargo");
     cargo.args(&[
         "build",
