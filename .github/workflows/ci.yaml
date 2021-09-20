@@ -15,7 +15,12 @@ jobs:
           - stable
           - beta
           - nightly
-          - 1.53.0  # Minimum supported rust version (MSRV)
+        include:
+          # Minimum supported rust version (MSRV)
+          - name: MSRV
+            rust: 1.53.0
+
+    name: "build (${{ matrix.name || matrix.rust }})"
 
     steps:
       - uses: actions/checkout@v2
