@@ -25,17 +25,16 @@ keywords = [
 license = "0BSD"
 
 [dependencies]
-tiny-led-matrix = "1.0.1"
-embedded-hal = "0.2.4"
+tiny-led-matrix = "1.0"
+embedded-hal = "0.2"
 
 [dependencies.nrf51-hal]
 optional = true
-version = "0.13.0"
+version = "0.14"
 
 [dependencies.nrf52833-hal]
 optional = true
-version = "0.13.0"
-git = "https://github.com/nrf-rs/nrf-hal"
+version = "0.14"
 
 [features]
 doc = []

@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-(no changes)
+### Changed
+- Upgraded nrf-hals to 0.14
 
 ## [0.11.0] - 2021-09-13
 
