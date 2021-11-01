@@ -3,7 +3,7 @@
 //! microcontroller board.
 //!
 //! This crate is for the new micro:bit (V2) pictured below on the right. If
-//! your micro:bit looks like the one on the right you need the
+//! your micro:bit looks like the one on the left you need the
 //! [microbit](https://crates.io/crates/microbit) crate.
 //!
 //! [<img src="https://github.com/microbit-foundation/microbit-svg/raw/master/microbit-drawing-back-1-5.png" width="372px" height="300px">](https://github.com/microbit-foundation/microbit-svg/blob/master/microbit-drawing-back-1-5.png)
