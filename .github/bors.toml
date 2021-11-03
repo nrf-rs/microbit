@@ -4,5 +4,5 @@ delete_merged_branches = true
 status = [
     "Rustfmt",
     "build (stable)",
-    "build (1.53.0)",
+    "build (MSRV)",
 ]
