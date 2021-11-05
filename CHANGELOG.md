@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+(no changes)
+
+## [0.12.0] - 2021-11-05
+
 ### Changed
 
 - Update dependencies nrf51-hal and nrf52833-hal to 0.14.0
@@ -54,7 +58,8 @@ Republished without changes to fix missing README.md in crates.io.
 - Fix rustdoc warnings
 - Upgrade nrf51-hal to 0.12.1
 
-[Unreleased]: https://github.com/nrf-rs/microbit/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/nrf-rs/microbit/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/nrf-rs/microbit/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/nrf-rs/microbit/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/nrf-rs/microbit/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/nrf-rs/microbit/compare/v0.9.0...v0.10.0
