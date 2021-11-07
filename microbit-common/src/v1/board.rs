@@ -76,6 +76,9 @@ pub struct Board {
     /// nRF51 peripheral: RTC0
     pub RTC0: pac::RTC0,
 
+    /// nRF51 peripheral: TEMP
+    pub TEMP: pac::TEMP,
+
     /// nRF51 peripheral: TIMER0
     pub TIMER0: pac::TIMER0,
 
@@ -169,6 +172,7 @@ impl Board {
             RADIO: p.RADIO,
             RNG: p.RNG,
             RTC0: p.RTC0,
+            TEMP: p.TEMP,
             TIMER0: p.TIMER0,
             TIMER1: p.TIMER1,
             TIMER2: p.TIMER2,
