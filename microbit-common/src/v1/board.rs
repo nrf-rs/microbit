@@ -76,7 +76,8 @@ pub struct Board {
     /// nRF51 peripheral: RTC0
     pub RTC0: pac::RTC0,
 
-    /// nRF51 peripheral: TEMP
+    /// nRF51 peripheral: TEMP <br>
+    /// Can be used with [`Temp::new()`](`crate::hal::temp::Temp::new()`)
     pub TEMP: pac::TEMP,
 
     /// nRF51 peripheral: TIMER0
