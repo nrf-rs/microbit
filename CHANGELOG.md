@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - Update dependencies nrf51-hal and nrf52833-hal to 0.14.0
+- Added TEMP field to board
 
 ## [0.11.0] - 2021-09-13
 
