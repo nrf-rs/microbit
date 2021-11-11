@@ -38,7 +38,7 @@ static ANIM_TIMER: Mutex<RefCell<Option<Rtc<RTC0>>>> = Mutex::new(RefCell::new(N
 
 #[entry]
 fn main() -> ! {
-    if let Some(board) = Board::take() {
+    if let Some(mut board) = Board::take() {
         // Starting the low-frequency clock (needed for RTC to work)
         Clocks::new(board.CLOCK).start_lfclk();
 
@@ -56,13 +56,11 @@ fn main() -> ! {
             *DISPLAY.borrow(cs).borrow_mut() = Some(display);
             *ANIM_TIMER.borrow(cs).borrow_mut() = Some(rtc0);
         });
-        if let Some(mut cp) = Peripherals::take() {
-            unsafe {
-                cp.NVIC.set_priority(pac::Interrupt::RTC0, 64);
-                cp.NVIC.set_priority(pac::Interrupt::TIMER1, 128);
-                pac::NVIC::unmask(pac::Interrupt::RTC0);
-                pac::NVIC::unmask(pac::Interrupt::TIMER1);
-            }
+        unsafe {
+            board.NVIC.set_priority(pac::Interrupt::RTC0, 64);
+            board.NVIC.set_priority(pac::Interrupt::TIMER1, 128);
+            pac::NVIC::unmask(pac::Interrupt::RTC0);
+            pac::NVIC::unmask(pac::Interrupt::TIMER1);
         }
     }
 
