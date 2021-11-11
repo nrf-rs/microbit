@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-(no changes)
+- Fix display-nonblocking example
 
 ## [0.12.0] - 2021-11-10
 
