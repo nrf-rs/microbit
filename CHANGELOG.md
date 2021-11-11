@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Update dependencies nrf51-hal and nrf52833-hal to 0.14.0
 - Added TEMP field to board
+- Fixed Issue where columns 2,3 and 4 of the nonblocking display were swapped
 
 ## [0.11.0] - 2021-09-13
 
