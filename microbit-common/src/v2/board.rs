@@ -145,10 +145,10 @@ impl Board {
 
     /// Fallback method in the case peripherals and core peripherals were taken
     /// elsewhere already.
-    /// 
+    ///
     /// This method will take the peripherals and core peripherals and
-    /// return an instance of the board. 
-    /// 
+    /// return an instance of the board.
+    ///
     /// An exemplary usecase is shown in the rtic display example.
     pub fn new(p: pac::Peripherals, cp: pac::CorePeripherals) -> Self {
         let p0parts = p0::Parts::new(p.P0);
