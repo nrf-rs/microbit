@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Make `Board::new(p, cp)` public and fix RTIC example
 - Fix display-nonblocking example
+- Fix timer for LED-display (GreyscaleImage with a empty Row did not work)
 
 ## [0.12.0] - 2021-11-10
 
