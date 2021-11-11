@@ -117,7 +117,7 @@ impl Board {
     /// return an instance of the board.
     ///
     /// An exemplary usecase is shown in the rtic display example.
-    fn new(p: pac::Peripherals, cp: pac::CorePeripherals) -> Self {
+    pub fn new(p: pac::Peripherals, cp: pac::CorePeripherals) -> Self {
         let p0parts = p0::Parts::new(p.GPIO);
         Self {
             pins: Pins {
