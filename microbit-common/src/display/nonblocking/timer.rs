@@ -66,11 +66,10 @@ impl<T: Instance> DisplayTimer for MicrobitDisplayTimer<T> {
     }
 
     fn disable_secondary(&mut self) {
-        // TODO: is this clear or clear_bit?
         self.0
             .as_timer0()
-            .intenset
-            .write(|w| w.compare0().clear_bit());
+            .intenclr
+            .write(|w| w.compare1().set_bit());
     }
 
     fn program_secondary(&mut self, ticks: u16) {
