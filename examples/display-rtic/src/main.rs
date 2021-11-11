@@ -33,7 +33,7 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
     ])
 }
 
-#[app(device = microbit::pac, peripherals = false)]
+#[app(device = microbit::pac, peripherals = true)]
 const APP: () = {
     struct Resources {
         display: Display<pac::TIMER1>,
@@ -41,8 +41,8 @@ const APP: () = {
     }
 
     #[init]
-    fn init(_cx: init::Context) -> init::LateResources {
-        let board = Board::take().unwrap();
+    fn init(cx: init::Context) -> init::LateResources {
+        let board = Board::new(cx.device, cx.core);
 
         // Starting the low-frequency clock (needed for RTC to work)
         Clocks::new(board.CLOCK).start_lfclk();
