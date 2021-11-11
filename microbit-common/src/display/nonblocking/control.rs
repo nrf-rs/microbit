@@ -31,8 +31,7 @@ mod pins {
 #[cfg(feature = "v2")]
 mod pins {
     use super::{NUM_COLS, NUM_ROWS};
-    // WTF!? this should be [28, 11, 31, 30] but cols 2 & 3 are swapped
-    pub(super) const P0_COLS: [usize; NUM_COLS - 1] = [28, 31, 11, 30];
+    pub(super) const P0_COLS: [usize; NUM_COLS - 1] = [28, 11, 31, 30];
     pub(super) const P1_COLS: [usize; 1] = [5];
 
     pub(super) const P0_ROWS: [usize; NUM_ROWS] = [21, 22, 15, 24, 19];
@@ -75,10 +74,10 @@ fn split_cols(cols: u32) -> (u32, u32) {
 
 #[cfg(feature = "v2")]
 fn split_cols(cols: u32) -> (u32, u32) {
-    // get all except col 4 (2nd from least significant)
-    let p0_cols = ((cols >> 2) << 1) | (1 & cols);
-    // get col 4 (2nd from least significant)
-    let p1_cols = (cols >> 1) & 1;
+    // get all except col 2 (4th from least significant)
+    let p0_cols = ((cols & 0b10000) >> 1) | (0b00111 & cols);
+    // get col 4 (4th from least significant)
+    let p1_cols = (cols & 0b01000) >> 3;
     (p0_cols, p1_cols)
 }
 
