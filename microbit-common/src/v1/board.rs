@@ -101,6 +101,8 @@ impl Board {
     ///
     /// This method will return an instance of the board the first time it is
     /// called. It will return only `None` on subsequent calls.
+    /// This function can also return `None` if one of the the peripherals was
+    /// already taken.
     pub fn take() -> Option<Self> {
         Some(Self::new(
             pac::Peripherals::take()?,
@@ -108,6 +110,13 @@ impl Board {
         ))
     }
 
+    /// Fallback method in the case peripherals and core peripherals were taken
+    /// elsewhere already.
+    ///
+    /// This method will take the peripherals and core peripherals and
+    /// return an instance of the board.
+    ///
+    /// An exemplary usecase is shown in the rtic display example.
     fn new(p: pac::Peripherals, cp: pac::CorePeripherals) -> Self {
         let p0parts = p0::Parts::new(p.GPIO);
         Self {
