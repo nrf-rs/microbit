@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-(no changes)
+- Make `Board::new(p, cp)` public and fix RTIC example
 
 ## [0.12.0] - 2021-11-10
 
