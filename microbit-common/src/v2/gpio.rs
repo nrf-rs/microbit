@@ -1,5 +1,5 @@
 #![allow(clippy::upper_case_acronyms, missing_docs)]
-use nrf52833_hal::gpio::{p0, p1, Floating, Input, Output, Pin, PushPull};
+use nrf52833_hal::gpio::{p0, p1, Floating, Input, OpenDrain, Output, Pin, PushPull};
 
 /* LED display */
 pub const NUM_COLS: usize = 5;
@@ -30,6 +30,12 @@ pub struct DisplayPins {
     pub row3: ROW3,
     pub row4: ROW4,
     pub row5: ROW5,
+}
+
+/// GPIO pins connected to the microphone
+pub struct MicrophonePins {
+    pub mic_in: p0::P0_05<Input<Floating>>,
+    pub mic_run: p0::P0_20<Output<OpenDrain>>,
 }
 
 type LED = Pin<Output<PushPull>>;
