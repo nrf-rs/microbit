@@ -1,7 +1,9 @@
-use super::gpio::{DisplayPins, BTN_A, BTN_B, INT_SCL, INT_SDA, SCL, SDA, UART_RX, UART_TX};
+use super::gpio::{
+    DisplayPins, MicrophonePins, BTN_A, BTN_B, INT_SCL, INT_SDA, SCL, SDA, UART_RX, UART_TX,
+};
 use crate::{
     hal::{
-        gpio::{p0, p1, Disconnected, Level},
+        gpio::{p0, p1, Disconnected, Level, OpenDrainConfig::Disconnect0HighDrive1},
         twim, twis, uarte,
     },
     pac,
@@ -21,6 +23,9 @@ pub struct Board {
 
     /// speaker
     pub speaker_pin: p0::P0_00<Disconnected>,
+
+    /// microphone pins
+    pub microphone_pins: MicrophonePins,
 
     /// I2C internal bus pins
     pub i2c_internal: I2CInternalPins,
@@ -127,6 +132,9 @@ pub struct Board {
 
     /// nRF52 peripheral: UARTE1
     pub UARTE1: pac::UARTE1,
+
+    /// nRF52 peripheral: SAADC
+    pub SAADC: pac::SAADC,
 }
 
 impl Board {
@@ -159,7 +167,6 @@ impl Board {
                 p0_02: p0parts.p0_02,
                 p0_03: p0parts.p0_03,
                 p0_04: p0parts.p0_04,
-                p0_05: p0parts.p0_05,
                 p0_07: p0parts.p0_07,
                 p0_09: p0parts.p0_09,
                 p0_10: p0parts.p0_10,
@@ -167,7 +174,6 @@ impl Board {
                 p0_13: p0parts.p0_13,
                 p0_17: p0parts.p0_17,
                 p0_18: p0parts.p0_18,
-                p0_20: p0parts.p0_20,
                 p0_25: p0parts.p0_25,
                 p0_27: p0parts.p0_27,
                 p0_29: p0parts.p0_29,
@@ -196,6 +202,12 @@ impl Board {
                 button_b: p0parts.p0_23.into_floating_input(),
             },
             speaker_pin: p0parts.p0_00,
+            microphone_pins: MicrophonePins {
+                mic_in: p0parts.p0_05.into_floating_input(),
+                mic_run: p0parts
+                    .p0_20
+                    .into_open_drain_output(Disconnect0HighDrive1, Level::Low),
+            },
             i2c_internal: I2CInternalPins {
                 scl: p0parts.p0_08.into_floating_input(),
                 sda: p0parts.p0_16.into_floating_input(),
@@ -244,6 +256,7 @@ impl Board {
             TWIS0: p.TWIS0,
             UARTE0: p.UARTE0,
             UARTE1: p.UARTE1,
+            SAADC: p.SAADC,
         }
     }
 }
@@ -256,7 +269,7 @@ pub struct Pins {
     pub p0_02: p0::P0_02<Disconnected>,
     pub p0_03: p0::P0_03<Disconnected>,
     pub p0_04: p0::P0_04<Disconnected>,
-    pub p0_05: p0::P0_05<Disconnected>,
+    // pub p0_05: p0::P0_05<Disconnected>, // Microphone IN
     // pub p0_06: p0::P0_06<Disconnected>, // UART RX
     pub p0_07: p0::P0_07<Disconnected>,
     // pub p0_08: p0::P0_08<Disconnected>, // INT_SCL
@@ -271,7 +284,7 @@ pub struct Pins {
     pub p0_17: p0::P0_17<Disconnected>,
     pub p0_18: p0::P0_18<Disconnected>,
     // pub p0_19: p0::P0_19<Disconnected>, // LEDs
-    pub p0_20: p0::P0_20<Disconnected>,
+    // pub p0_20: p0::P0_20<Disconnected>, // Microphone RUN
     // pub p0_21: p0::P0_21<Disconnected>, // LEDs
     // pub p0_22: p0::P0_22<Disconnected>, // LEDs
     // pub p0_23: p0::P0_23<Disconnected>, // BTN_B
