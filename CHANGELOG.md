@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Make `Board::new(p, cp)` public and fix RTIC example
 - Fix display-nonblocking example
 - Fix timer for LED-display (GreyscaleImage with a empty Row did not work)
+- Add SAADC and microphone_pins for micro:bit V2.
+- Add microphone example
 
 ## [0.12.0] - 2021-11-10
 
