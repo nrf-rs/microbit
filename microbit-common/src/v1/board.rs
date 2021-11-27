@@ -242,11 +242,11 @@ pub struct I2CPins {
     sda: SDA,
 }
 
-impl Into<twi::Pins> for I2CPins {
-    fn into(self) -> twi::Pins {
-        twi::Pins {
-            scl: self.scl.degrade(),
-            sda: self.sda.degrade(),
+impl From<I2CPins> for twi::Pins {
+    fn from(pins: I2CPins) -> Self {
+        Self {
+            scl: pins.scl.degrade(),
+            sda: pins.sda.degrade(),
         }
     }
 }
@@ -257,11 +257,11 @@ pub struct UartPins {
     rx: UART_RX,
 }
 
-impl Into<uart::Pins> for UartPins {
-    fn into(self) -> uart::Pins {
-        uart::Pins {
-            txd: self.tx.degrade(),
-            rxd: self.rx.degrade(),
+impl From<UartPins> for uart::Pins {
+    fn from(pins: UartPins) -> Self {
+        Self {
+            rxd: pins.rx.degrade(),
+            txd: pins.tx.degrade(),
             cts: None,
             rts: None,
         }
