@@ -15,7 +15,15 @@ jobs:
           toolchain: stable
           target: thumbv6m-none-eabi
           override: true
-      - uses: actions-rs/clippy-check@v1
+
+      - name: microbit V1
+        uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          args: --examples -- -D warnings
+          args: --package microbit -- -D warnings
+
+      - name: microbit V2
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --package microbit-v2 -- -D warnings
