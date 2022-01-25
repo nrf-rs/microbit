@@ -322,20 +322,20 @@ pub struct I2CInternalPins {
     sda: INT_SDA,
 }
 
-impl Into<twim::Pins> for I2CInternalPins {
-    fn into(self) -> twim::Pins {
-        twim::Pins {
-            scl: self.scl.degrade(),
-            sda: self.sda.degrade(),
+impl From<I2CInternalPins> for twim::Pins {
+    fn from(pins: I2CInternalPins) -> Self {
+        Self {
+            scl: pins.scl.degrade(),
+            sda: pins.sda.degrade(),
         }
     }
 }
 
-impl Into<twis::Pins> for I2CInternalPins {
-    fn into(self) -> twis::Pins {
-        twis::Pins {
-            scl: self.scl.degrade(),
-            sda: self.sda.degrade(),
+impl From<I2CInternalPins> for twis::Pins {
+    fn from(pins: I2CInternalPins) -> Self {
+        Self {
+            scl: pins.scl.degrade(),
+            sda: pins.sda.degrade(),
         }
     }
 }
@@ -346,20 +346,20 @@ pub struct I2CExternalPins {
     sda: SDA,
 }
 
-impl Into<twim::Pins> for I2CExternalPins {
-    fn into(self) -> twim::Pins {
-        twim::Pins {
-            scl: self.scl.degrade(),
-            sda: self.sda.degrade(),
+impl From<I2CExternalPins> for twim::Pins {
+    fn from(pins: I2CExternalPins) -> Self {
+        Self {
+            scl: pins.scl.degrade(),
+            sda: pins.sda.degrade(),
         }
     }
 }
 
-impl Into<twis::Pins> for I2CExternalPins {
-    fn into(self) -> twis::Pins {
-        twis::Pins {
-            scl: self.scl.degrade(),
-            sda: self.sda.degrade(),
+impl From<I2CExternalPins> for twis::Pins {
+    fn from(pins: I2CExternalPins) -> Self {
+        Self {
+            scl: pins.scl.degrade(),
+            sda: pins.sda.degrade(),
         }
     }
 }
@@ -370,11 +370,11 @@ pub struct UartPins {
     rx: UART_RX,
 }
 
-impl Into<uarte::Pins> for UartPins {
-    fn into(self) -> uarte::Pins {
-        uarte::Pins {
-            txd: self.tx.degrade(),
-            rxd: self.rx.degrade(),
+impl From<UartPins> for uarte::Pins {
+    fn from(pins: UartPins) -> Self {
+        Self {
+            txd: pins.tx.degrade(),
+            rxd: pins.rx.degrade(),
             cts: None,
             rts: None,
         }
