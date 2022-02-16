@@ -19,7 +19,6 @@ use microbit::{
     },
     pac,
 };
-
 use rtic::app;
 
 fn heart_image(inner_brightness: u8) -> GreyscaleImage {
@@ -34,14 +33,22 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
 }
 
 #[app(device = microbit::pac, peripherals = true)]
-const APP: () = {
-    struct Resources {
+mod app {
+    use super::*;
+
+    #[shared]
+    struct Shared {
         display: Display<pac::TIMER1>,
         anim_timer: Rtc<pac::RTC0>,
     }
 
+    #[local]
+    struct Local {
+        step: u8,
+    }
+
     #[init]
-    fn init(cx: init::Context) -> init::LateResources {
+    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
         let board = Board::new(cx.device, cx.core);
 
         // Starting the low-frequency clock (needed for RTC to work)
@@ -56,36 +63,40 @@ const APP: () = {
 
         let display = Display::new(board.TIMER1, board.display_pins);
 
-        init::LateResources {
-            anim_timer: rtc0,
-            display,
-        }
+        (
+            Shared {
+                anim_timer: rtc0,
+                display,
+            },
+            Local { step: 0 },
+            init::Monotonics(),
+        )
     }
 
-    #[task(binds = TIMER1, priority = 2, resources = [display])]
-    fn timer1(cx: timer1::Context) {
-        cx.resources.display.handle_display_event();
+    #[task(binds = TIMER1, priority = 2, shared = [display])]
+    fn timer1(mut cx: timer1::Context) {
+        cx.shared.display.lock(|d| d.handle_display_event());
     }
 
-    #[task(binds = RTC0, priority = 1, resources = [anim_timer, display])]
+    #[task(binds = RTC0, priority = 1, shared = [anim_timer, display], local = [step])]
     fn rtc0(mut cx: rtc0::Context) {
-        static mut STEP: u8 = 0;
+        cx.shared
+            .anim_timer
+            .lock(|t| t.reset_event(RtcInterrupt::Tick));
 
-        cx.resources.anim_timer.reset_event(RtcInterrupt::Tick);
-
-        let inner_brightness = match *STEP {
-            0..=8 => 9 - *STEP,
+        let inner_brightness = match cx.local.step {
+            0..=8 => 9 - *cx.local.step,
             9..=12 => 0,
             _ => unreachable!(),
         };
 
-        cx.resources.display.lock(|display| {
+        cx.shared.display.lock(|display| {
             display.show(&heart_image(inner_brightness));
         });
 
-        *STEP += 1;
-        if *STEP == 13 {
-            *STEP = 0
+        *cx.local.step += 1;
+        if *cx.local.step == 13 {
+            *cx.local.step = 0;
         };
     }
-};
+}
