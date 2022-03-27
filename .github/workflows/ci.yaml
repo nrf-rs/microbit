@@ -17,8 +17,10 @@ jobs:
           - nightly
         include:
           # Minimum supported rust version (MSRV)
+          # Note this needs to be new enough to build the examples as well as
+          # the library itself.
           - name: MSRV
-            rust: 1.53.0
+            rust: 1.57.0
 
     name: "build (${{ matrix.name || matrix.rust }})"
 
