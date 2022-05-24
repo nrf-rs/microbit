@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Drop ble-beacon example (since rubble is now archived as unmaintained)
+- Bump `defmt` versions to 0.3
 - Increase minimum supported Rust version to 1.57
 - Add display-text-rtic example
 - Make `Board::new(p, cp)` public and fix RTIC example
