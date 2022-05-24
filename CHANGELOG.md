@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.13.0] - 2022-05-24
+
 - Drop ble-beacon example (since rubble is now archived as unmaintained)
 - Bump `defmt` versions to 0.3
 - Increase minimum supported Rust version to 1.57
@@ -68,7 +70,8 @@ Republished without changes to fix missing README.md in crates.io.
 - Fix rustdoc warnings
 - Upgrade nrf51-hal to 0.12.1
 
-[Unreleased]: https://github.com/nrf-rs/microbit/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/nrf-rs/microbit/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/nrf-rs/microbit/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/nrf-rs/microbit/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/nrf-rs/microbit/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/nrf-rs/microbit/compare/v0.10.0...v0.10.1
