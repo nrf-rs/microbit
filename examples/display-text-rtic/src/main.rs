@@ -7,32 +7,38 @@
 use defmt_rtt as _;
 use panic_halt as _;
 
-use microbit::{
-    board::Board,
-    display::nonblocking::{Display, Frame, MicrobitFrame},
-    hal::{
-        clocks::Clocks,
-        rtc::{Rtc, RtcInterrupt},
-    },
-    pac,
-};
-use microbit_text::scrolling::Animate;
-use microbit_text::scrolling_text::ScrollingStaticText;
-
 use rtic::app;
 
-const MESSAGE: &[u8] = b"Hello, world!";
-
 #[app(device = microbit::pac, peripherals = true)]
-const APP: () = {
-    struct Resources {
+mod app {
+
+    use microbit::{
+        board::Board,
+        display::nonblocking::{Display, Frame, MicrobitFrame},
+        hal::{
+            clocks::Clocks,
+            rtc::{Rtc, RtcInterrupt},
+        },
+        pac,
+    };
+    use microbit_text::scrolling::Animate;
+    use microbit_text::scrolling_text::ScrollingStaticText;
+
+    const MESSAGE: &[u8] = b"Hello, world!";
+
+    #[shared]
+    struct Shared {
         display: Display<pac::TIMER1>,
+    }
+
+    #[local]
+    struct Local {
         anim_timer: Rtc<pac::RTC0>,
         scroller: ScrollingStaticText,
     }
 
     #[init]
-    fn init(cx: init::Context) -> init::LateResources {
+    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
         let board = Board::new(cx.device, cx.core);
 
         // Starting the low-frequency clock (needed for RTC to work)
@@ -50,29 +56,36 @@ const APP: () = {
         let mut scroller = ScrollingStaticText::default();
         scroller.set_message(MESSAGE);
 
-        init::LateResources {
-            anim_timer: rtc0,
-            display,
-            scroller,
-        }
+        (
+            Shared { display },
+            Local {
+                anim_timer: rtc0,
+                scroller,
+            },
+            init::Monotonics(),
+        )
     }
 
-    #[task(binds = TIMER1, priority = 2, resources = [display])]
-    fn timer1(cx: timer1::Context) {
-        cx.resources.display.handle_display_event();
+    #[task(binds = TIMER1, priority = 2, shared = [display])]
+    fn timer1(mut cx: timer1::Context) {
+        cx.shared
+            .display
+            .lock(|display| display.handle_display_event());
     }
 
-    #[task(binds = RTC0, priority = 1,
-           resources = [anim_timer, display, scroller])]
-    fn rtc0(mut cx: rtc0::Context) {
-        static mut FRAME: MicrobitFrame = MicrobitFrame::default();
-        cx.resources.anim_timer.reset_event(RtcInterrupt::Tick);
-        if !cx.resources.scroller.is_finished() {
-            cx.resources.scroller.tick();
-            FRAME.set(cx.resources.scroller);
-            cx.resources.display.lock(|display| {
-                display.show_frame(FRAME);
+    #[task(binds = RTC0, priority = 1, shared = [display],
+           local = [anim_timer, scroller,
+                    frame: MicrobitFrame = MicrobitFrame::default()])]
+    fn rtc0(cx: rtc0::Context) {
+        let mut shared = cx.shared;
+        let local = cx.local;
+        local.anim_timer.reset_event(RtcInterrupt::Tick);
+        if !local.scroller.is_finished() {
+            local.scroller.tick();
+            local.frame.set(local.scroller);
+            shared.display.lock(|display| {
+                display.show_frame(local.frame);
             });
         }
     }
-};
+}

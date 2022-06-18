@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Update examples to use RTIC 1.0
+
 ## [0.13.0] - 2022-05-24
 
 - Drop ble-beacon example (since rubble is now archived as unmaintained)
