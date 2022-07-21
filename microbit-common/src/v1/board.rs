@@ -68,6 +68,49 @@ pub struct Board {
     pub GPIOTE: pac::GPIOTE,
 
     /// nRF51 peripheral: RADIO
+    /// Can be used with [`Radio::init()`](`crate::hal::ieee802154::Radio::init()`)
+    /// ```no_run
+    /// # use microbit_common as microbit;
+    /// # use microbit::{
+    /// #     Board,
+    /// #     hal::Clocks,
+    /// #     display::blocking::Display,
+    /// # };
+    /// # use embedded_hal::blocking::delay::DelayMs;
+    /// # use std::ops::Deref;
+    /// use microbit::hal::ieee802154;
+    /// // take the board
+    /// let board = Board::take().unwrap();
+    /// // setup a timer for the receiving radio messages within a certain timeframe
+    /// let mut radio_timer = microbit::hal::Timer::new(board.TIMER0);
+    /// // set the clock to a high frequency one
+    /// let clock = Clocks::new(board.CLOCK).enable_ext_hfosc();
+    /// // create the radio instance
+    /// let mut radio = ieee802154::Radio::init(board.RADIO, &clock);
+    ///
+    /// // create an empty message packet
+    /// let mut packet = ieee802154::Packet::new();
+    ///    
+    /// // Wait if a package gets received for 1.000 microseconds
+    /// match radio
+    ///     .recv_timeout(&mut packet, &mut radio_timer, 1000)
+    /// {
+    ///     // Use the received radio packet...    
+    ///     Ok(_) => {        
+    ///         if packet.deref()[0] == 2u8 { /* ... */ }
+    ///     }     
+    ///     // Expected timeout if no message was received in time
+    ///     Err(ieee802154::Error::Timeout) => {}
+    ///     Err(ieee802154::Error::Crc(error_code)) => {/* Handle crc error */}
+    /// }
+    ///
+    /// // fill the packet payload with 2 bytes of 42
+    /// packet.copy_from_slice(&[42u8;2]);
+    /// // send the radio packet
+    /// radio.send(&mut packet);
+    /// # loop {
+    /// # }
+    /// ```
     pub RADIO: pac::RADIO,
 
     /// nRF51 peripheral: RNG
@@ -81,12 +124,15 @@ pub struct Board {
     pub TEMP: pac::TEMP,
 
     /// nRF51 peripheral: TIMER0
+    /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER0: pac::TIMER0,
 
     /// nRF51 peripheral: TIMER1
+    /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER1: pac::TIMER1,
 
     /// nRF51 peripheral: TIMER2
+    /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER2: pac::TIMER2,
 
     /// nRF51 peripheral: TWI0
