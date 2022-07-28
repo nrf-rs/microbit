@@ -36,7 +36,7 @@ fn main() -> ! {
 
         let mut seed: [u8; 16] = [0; 16];
 
-        /* Read 4 bytes of data from hardware RNG */
+        /* Read 16 bytes of data from hardware RNG */
         rng.random(&mut seed);
 
         let rng = Pcg32::from_seed(seed);
