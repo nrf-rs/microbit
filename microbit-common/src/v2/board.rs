@@ -81,19 +81,23 @@ pub struct Board {
     /// nRF52 peripheral: GPIOTE
     pub GPIOTE: pac::GPIOTE,
 
-    /// nRF52 peripheral: PWM0
+    /// nRF52 peripheral: PWM0 <br>
+    /// Can be used with [`Pwm::new()`](`crate::hal::pwm::Pwm::new()`)
     pub PWM0: pac::PWM0,
 
-    /// nRF52 peripheral: PWM1
+    /// nRF52 peripheral: PWM1 <br>
+    /// Can be used with [`Pwm::new()`](`crate::hal::pwm::Pwm::new()`)
     pub PWM1: pac::PWM1,
 
-    /// nRF52 peripheral: PWM2
+    /// nRF52 peripheral: PWM2 <br>
+    /// Can be used with [`Pwm::new()`](`crate::hal::pwm::Pwm::new()`)
     pub PWM2: pac::PWM2,
 
-    /// nRF52 peripheral: PWM3
+    /// nRF52 peripheral: PWM3 <br>
+    /// Can be used with [`Pwm::new()`](`crate::hal::pwm::Pwm::new()`)
     pub PWM3: pac::PWM3,
 
-    /// nRF52 peripheral: RADIO
+    /// nRF52 peripheral: RADIO <br>
     /// Can be used with [`Radio::init()`](`crate::hal::ieee802154::Radio::init()`)
     /// ```no_run
     /// # use microbit_common as microbit;
@@ -103,7 +107,7 @@ pub struct Board {
     /// #     display::blocking::Display,
     /// # };
     /// # use embedded_hal::blocking::delay::DelayMs;
-    /// # use std::ops::Deref;
+    /// # use core::ops::Deref;
     /// use microbit::hal::ieee802154;
     /// // take the board
     /// let board = Board::take().unwrap();
@@ -139,33 +143,53 @@ pub struct Board {
     /// ```
     pub RADIO: pac::RADIO,
 
-    /// nRF52 peripheral: RNG
+    /// nRF52 peripheral: RNG <br>
+    /// Can be used with [`Rng::new()`](`crate::hal::rng::Rng::new()`)
+    /// ```no_run
+    /// # use microbit_common as microbit;
+    /// use microbit::{hal::{clocks, rng}, Board};
+    /// // take the board
+    /// let board = Board::take().unwrap();
+    ///
+    /// // start low frequency clock
+    /// clocks::Clocks::new(board.CLOCK).start_lfclk();
+    ///
+    /// // create a new hardware rng instance
+    /// let mut rng = rng::Rng::new(board.RNG);
+    ///
+    /// // read random u32 directly from hardware rng
+    /// let small_int = rng.random_u32();
+    /// #    loop {}
+    /// ```
     pub RNG: pac::RNG,
 
     /// nRF52 peripheral: RTC0
     pub RTC0: pac::RTC0,
 
+    /// nRF52 peripheral: SAADC
+    pub SAADC: pac::SAADC,
+
     /// nRF52 peripheral: TEMP <br>
     /// Can be used with [`Temp::new()`](`crate::hal::temp::Temp::new()`)
     pub TEMP: pac::TEMP,
 
-    /// nRF52 peripheral: TIMER0
+    /// nRF52 peripheral: TIMER0 <br>
     /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER0: pac::TIMER0,
 
-    /// nRF52 peripheral: TIMER1
+    /// nRF52 peripheral: TIMER1 <br>
     /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER1: pac::TIMER1,
 
-    /// nRF52 peripheral: TIMER2
+    /// nRF52 peripheral: TIMER2 <br>
     /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER2: pac::TIMER2,
 
-    /// nRF52 peripheral: TIMER3
+    /// nRF52 peripheral: TIMER3 <br>
     /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER3: pac::TIMER3,
 
-    /// nRF52 peripheral: TIMER4
+    /// nRF52 peripheral: TIMER4 <br>
     /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER4: pac::TIMER4,
 
@@ -180,9 +204,6 @@ pub struct Board {
 
     /// nRF52 peripheral: UARTE1
     pub UARTE1: pac::UARTE1,
-
-    /// nRF52 peripheral: SAADC
-    pub SAADC: pac::SAADC,
 }
 
 impl Board {
@@ -294,6 +315,7 @@ impl Board {
             RADIO: p.RADIO,
             RNG: p.RNG,
             RTC0: p.RTC0,
+            SAADC: p.SAADC,
             TEMP: p.TEMP,
             TIMER0: p.TIMER0,
             TIMER1: p.TIMER1,
@@ -304,7 +326,6 @@ impl Board {
             TWIS0: p.TWIS0,
             UARTE0: p.UARTE0,
             UARTE1: p.UARTE1,
-            SAADC: p.SAADC,
         }
     }
 }
