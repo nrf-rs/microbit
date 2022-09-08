@@ -67,6 +67,9 @@ pub struct Board {
     /// nRF51 peripheral: GPIOTE
     pub GPIOTE: pac::GPIOTE,
 
+    /// nRF51 peripheral: ADC
+    pub ADC: pac::ADC,
+
     /// nRF51 peripheral: RADIO
     pub RADIO: pac::RADIO,
 
@@ -179,6 +182,7 @@ impl Board {
             CLOCK: p.CLOCK,
             FICR: p.FICR,
             GPIOTE: p.GPIOTE,
+            ADC: p.ADC,
             RADIO: p.RADIO,
             RNG: p.RNG,
             RTC0: p.RTC0,
