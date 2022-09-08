@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 - Update examples to use RTIC 1.0
+- add pac::ADC to Board
 
 ## [0.13.0] - 2022-05-24
 
