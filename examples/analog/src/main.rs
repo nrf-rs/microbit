@@ -18,8 +18,7 @@ fn main() -> ! {
         let mut timer = Timer::new(board.TIMER0);
         let mut display = Display::new(board.display_pins);
         let mut adc: Adc = Adc::new(board.ADC, AdcConfig::default());
-        //let mut anapin = board.adc_pins.adc03;
-        let mut anapin = board.pins.p0_03.into_floating_input();
+        let mut anapin = board.pins.p0_03.into_floating_input(); // PAD1
 
         let numbers = [[
             [0, 0, 1, 0, 0],
@@ -94,9 +93,7 @@ fn main() -> ! {
                 },
                 Err(_e) => display.show(&mut timer, letter_E, 10),
             }
-            //display.clear();
         }
     }
-
     panic!("End");
 }
