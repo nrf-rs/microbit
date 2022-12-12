@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 - Update examples to use RTIC 1.0
+- Add ADC for micro:bit V1
+- Add analog example
 
 ## [0.13.0] - 2022-05-24
 
