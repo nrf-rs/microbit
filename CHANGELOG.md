@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Bump example dependencies to latest versions to fix build
 - Update examples to use RTIC 1.0
 - Increase minimum supported Rust version to 1.57
 
