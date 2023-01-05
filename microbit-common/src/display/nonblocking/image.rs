@@ -103,7 +103,7 @@ impl Render for BitImage {
     fn brightness_at(&self, x: usize, y: usize) -> u8 {
         let rowdata = self.0[y];
         if rowdata & (1 << x) != 0 {
-            MAX_BRIGHTNESS as u8
+            MAX_BRIGHTNESS
         } else {
             0
         }
