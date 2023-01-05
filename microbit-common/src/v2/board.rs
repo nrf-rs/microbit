@@ -9,7 +9,7 @@ use crate::{
     pac,
 };
 
-/// Provides access to the micrbobit
+/// Provides access to the microbit
 #[allow(non_snake_case)]
 pub struct Board {
     /// GPIO pins that are not otherwise used
