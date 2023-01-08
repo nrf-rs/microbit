@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Bump example dependencies to latest versions to fix build
 - Update examples to use RTIC 1.0
 - Increase minimum supported Rust version to 1.57
+- Added support for the real time counters RTC1 and RTC2
 
 ## [0.13.0] - 2022-05-24
 
