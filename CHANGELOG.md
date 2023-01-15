@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Bump example dependencies to latest versions to fix build
 - Update examples to use RTIC 1.0
 - Add ADC for micro:bit V1
 - Add analog example
+- Increase minimum supported Rust version to 1.57
 
 ## [0.13.0] - 2022-05-24
 

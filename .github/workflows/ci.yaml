@@ -20,7 +20,7 @@ jobs:
           # Note this needs to be new enough to build the examples as well as
           # the library itself.
           - name: MSRV
-            rust: 1.57.0
+            rust: 1.61.0
 
     name: "build (${{ matrix.name || matrix.rust }})"
 
