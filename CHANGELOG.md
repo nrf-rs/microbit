@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add ADC for micro:bit V1
 - Add analog example
 - Increase minimum supported Rust version to 1.57
-- Added support for the real time counters RTC1 and RTC2
 
 ## [0.13.0] - 2022-05-24
 
