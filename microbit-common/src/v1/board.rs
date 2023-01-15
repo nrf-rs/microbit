@@ -58,6 +58,9 @@ pub struct Board {
     /// Core peripheral: Trace Port Interface Unit
     pub TPIU: pac::TPIU,
 
+    /// nRF51 peripheral: ADC
+    pub ADC: pac::ADC,
+
     /// nRF51 peripheral: CLOCK
     pub CLOCK: pac::CLOCK,
 
@@ -176,6 +179,7 @@ impl Board {
             TPIU: cp.TPIU,
 
             // nRF51 peripherals
+            ADC: p.ADC,
             CLOCK: p.CLOCK,
             FICR: p.FICR,
             GPIOTE: p.GPIOTE,
