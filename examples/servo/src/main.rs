@@ -25,16 +25,9 @@ fn main() -> ! {
     if let Some(board) = Board::take() {
         let gpiote = Gpiote::new(board.GPIOTE);
         // Servo output pins
-        #[cfg(feature = "v1")]
-        let servopin1 = board.pins.p0_01.into_push_pull_output(Level::Low).degrade(); // PAD3
-        #[cfg(feature = "v1")]
-        let servopin2 = board.pins.p0_02.into_push_pull_output(Level::Low).degrade(); // PAD2
-        
-        #[cfg(feature = "v2")]
-        let servopin1 = board.pins.p0_03.into_push_pull_output(Level::Low).degrade(); // PAD2
-        #[cfg(feature = "v2")]
-        let servopin2 = board.pins.p0_04.into_push_pull_output(Level::Low).degrade(); // PAD3
-        
+        let servopin1 = board.edge.e01.into_push_pull_output(Level::Low).degrade(); // PAD2
+        let servopin2 = board.edge.e02.into_push_pull_output(Level::Low).degrade(); // PAD3
+
         // Output channel for Servo 1
         gpiote
             .channel0()
