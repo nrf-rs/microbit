@@ -18,6 +18,7 @@ pub use nrf52833_hal as hal;
 pub use hal::pac;
 pub use hal::pac::Peripherals;
 
+pub mod adc;
 pub mod board;
 pub mod display;
 pub mod gpio;

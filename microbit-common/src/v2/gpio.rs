@@ -1,6 +1,11 @@
 #![allow(clippy::upper_case_acronyms, missing_docs)]
 use nrf52833_hal::gpio::{p0, p1, Floating, Input, OpenDrain, Output, Pin, PushPull};
 
+/* GPIO pads */
+pub type PAD0<MODE> = p0::P0_02<MODE>;
+pub type PAD1<MODE> = p0::P0_03<MODE>;
+pub type PAD2<MODE> = p0::P0_04<MODE>;
+
 /* LED display */
 pub const NUM_COLS: usize = 5;
 pub type COL1 = p0::P0_28<Output<PushPull>>;
@@ -125,3 +130,30 @@ pub type UART_RX = p1::P1_08<Input<Floating>>;
 
 /* speaker */
 pub type SPEAKER = p0::P0_00<Output<PushPull>>;
+
+/* edge connector */
+pub type EDGE03 = COL3;
+pub type EDGE00<MODE> = PAD0<MODE>; // <- big pad 1
+pub type EDGE04 = COL1;
+pub type EDGE05 = BTN_A;
+pub type EDGE06 = COL4;
+pub type EDGE07 = COL2;
+pub type EDGE01<MODE> = PAD1<MODE>; // <- big pad 2
+pub type EDGE08<MODE> = p0::P0_10<MODE>;
+pub type EDGE09<MODE> = p0::P0_09<MODE>;
+pub type EDGE10 = COL5;
+pub type EDGE11 = BTN_B;
+pub type EDGE12<MODE> = p0::P0_12<MODE>;
+pub type EDGE02<MODE> = PAD2<MODE>; // <- big pad 3
+pub type EDGE13<MODE> = SCK<MODE>;
+pub type EDGE14<MODE> = MISO<MODE>;
+pub type EDGE15<MODE> = MOSI<MODE>;
+pub type EDGE16<MODE> = p1::P1_02<MODE>;
+// EDGE18 -> +V
+// EDGE19 -> +V
+// EDGE20 -> +V
+pub type EDGE19 = SCL;
+pub type EDGE20 = SDA;
+// EDGE23 -> GND
+// EDGE24 -> GND
+// EDGE25 -> GND

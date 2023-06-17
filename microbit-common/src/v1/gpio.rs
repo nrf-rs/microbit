@@ -8,9 +8,9 @@
 use crate::hal::gpio::{p0, Floating, Input, Output, Pin, PushPull};
 
 /* GPIO pads */
-pub type PAD1<MODE> = p0::P0_03<MODE>;
-pub type PAD2<MODE> = p0::P0_02<MODE>;
-pub type PAD3<MODE> = p0::P0_01<MODE>;
+pub type PAD0<MODE> = p0::P0_03<MODE>;
+pub type PAD1<MODE> = p0::P0_02<MODE>;
+pub type PAD2<MODE> = p0::P0_01<MODE>;
 
 /* LED display */
 pub const NUM_COLS: usize = 9;
@@ -136,28 +136,28 @@ pub type UART_TX = p0::P0_24<Output<PushPull>>;
 pub type UART_RX = p0::P0_25<Input<Floating>>;
 
 /* edge connector */
-pub type EDGE01 = COL1;
-pub type EDGE02<MODE> = PAD1<MODE>; // <- big pad 1
-pub type EDGE03 = COL2;
-pub type EDGE04 = BTN_A;
-pub type EDGE05 = COL9;
-pub type EDGE06 = COL8;
-pub type EDGE07<MODE> = PAD2<MODE>; // <- big pad 2
+pub type EDGE03 = COL1;
+pub type EDGE00<MODE> = PAD0<MODE>; // <- big pad 1
+pub type EDGE04 = COL2;
+pub type EDGE05 = BTN_A;
+pub type EDGE06 = COL9;
+pub type EDGE07 = COL8;
+pub type EDGE01<MODE> = PAD1<MODE>; // <- big pad 2
 pub type EDGE08<MODE> = p0::P0_18<MODE>;
 pub type EDGE09 = COL7;
 pub type EDGE10 = COL3;
 pub type EDGE11 = BTN_B;
 pub type EDGE12<MODE> = p0::P0_20<MODE>;
-pub type EDGE13<MODE> = PAD3<MODE>; // <- big pad 3
-pub type EDGE14<MODE> = SCK<MODE>;
-pub type EDGE15<MODE> = MISO<MODE>;
-pub type EDGE16<MODE> = MOSI<MODE>;
-pub type EDGE17<MODE> = p0::P0_16<MODE>;
+pub type EDGE02<MODE> = PAD2<MODE>; // <- big pad 3
+pub type EDGE13<MODE> = SCK<MODE>;
+pub type EDGE14<MODE> = MISO<MODE>;
+pub type EDGE15<MODE> = MOSI<MODE>;
+pub type EDGE16<MODE> = p0::P0_16<MODE>;
 // EDGE18 -> +V
 // EDGE19 -> +V
 // EDGE20 -> +V
-pub type EDGE21 = SCL;
-pub type EDGE22 = SDA;
+pub type EDGE19 = SCL;
+pub type EDGE20 = SDA;
 // EDGE23 -> GND
 // EDGE24 -> GND
 // EDGE25 -> GND
