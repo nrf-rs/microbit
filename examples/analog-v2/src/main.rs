@@ -17,8 +17,8 @@ fn main() -> ! {
     if let Some(board) = Board::take() {
         let mut timer = Timer::new(board.TIMER0);
         let mut display = Display::new(board.display_pins);
-        let mut adc: Saadc = Saadc::new(board.SAADC, SaadcConfig::default());
-        let mut anapin = board.pins.p0_03.into_floating_input(); // PAD1
+        let mut adc: Saadc = Saadc::new(board.ADC, SaadcConfig::default());
+        let mut anapin = board.edge.e00.into_floating_input(); // PAD1
 
         let numbers = [
             [

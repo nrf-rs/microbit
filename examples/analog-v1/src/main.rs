@@ -18,7 +18,7 @@ fn main() -> ! {
         let mut timer = Timer::new(board.TIMER0);
         let mut display = Display::new(board.display_pins);
         let mut adc: Adc = Adc::new(board.ADC, AdcConfig::default());
-        let mut anapin = board.pins.p0_03.into_floating_input(); // PAD1
+        let mut anapin = board.edge.e00.into_floating_input(); // PAD1
 
         let numbers = [
             [
