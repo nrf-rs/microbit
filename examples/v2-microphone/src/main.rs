@@ -25,7 +25,7 @@ fn main() -> ! {
 
         // initialize adc
         let saadc_config = SaadcConfig::default();
-        let mut saadc = Saadc::new(board.SAADC, saadc_config);
+        let mut saadc = Saadc::new(board.ADC, saadc_config);
         let mut mic_in = board.microphone_pins.mic_in.into_floating_input();
 
         // enable microphone
