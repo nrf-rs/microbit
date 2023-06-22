@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add analog example
 - Increase minimum supported Rust version to 1.62
 - Added support for the real time counters RTC1 and RTC2
+- (NFC) GitHub CI changes
 
 ## [0.13.0] - 2022-05-24
 
