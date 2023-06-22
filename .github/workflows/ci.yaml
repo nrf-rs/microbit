@@ -1,11 +1,19 @@
-name: CI
-
 on:
   push:
-    branches: [main, staging, trying]
+    branches: main
   pull_request:
+  merge_group:
 
 jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: always()
+    steps:
+      - name: Done
+        run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
+
   build:
     runs-on: ubuntu-latest
 
@@ -20,7 +28,7 @@ jobs:
           # Note this needs to be new enough to build the examples as well as
           # the library itself.
           - name: MSRV
-            rust: 1.61.0
+            rust: 1.62.0
 
     name: "build (${{ matrix.name || matrix.rust }})"
 
