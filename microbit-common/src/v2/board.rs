@@ -115,6 +115,18 @@ pub struct Board {
     /// nRF52 peripheral: RTC2
     pub RTC2: pac::RTC2,
 
+    /// nRF52 peripheral: SPIM0
+    pub SPIM0: pac::SPIM0,
+
+    /// nRF52 peripheral: SPIM1
+    pub SPIM1: pac::SPIM1,
+
+    /// nRF52 peripheral: SPIM2
+    pub SPIM2: pac::SPIM2,
+
+    /// nRF52 peripheral: SPIM3
+    pub SPIM3: pac::SPIM3,
+
     /// nRF52 peripheral: TEMP <br>
     /// Can be used with [`Temp::new()`](`crate::hal::temp::Temp::new()`)
     pub TEMP: pac::TEMP,
@@ -319,6 +331,10 @@ impl Board {
             RTC0: p.RTC0,
             RTC1: p.RTC1,
             RTC2: p.RTC2,
+            SPIM0: p.SPIM0,
+            SPIM1: p.SPIM1,
+            SPIM2: p.SPIM2,
+            SPIM3: p.SPIM3,
             TEMP: p.TEMP,
             TIMER0: p.TIMER0,
             TIMER1: p.TIMER1,
