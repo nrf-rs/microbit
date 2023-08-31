@@ -99,26 +99,26 @@
 //!
 //! Internally types implementing [`Render`](tiny_led_matrix::Render) aren't used directly with the [`Display`];
 //! instead they're used to update a [`MicrobitFrame`] instance which is in
-//! turn passed to the `tiny_led_matrix::Display`.
+//! turn passed to the [`tiny_led_matrix::Display`].
 //!
-//! A `MicrobitFrame` instance is a 'compiled' representation of a 5×5
+//! A [`MicrobitFrame`] instance is a 'compiled' representation of a 5×5
 //! greyscale image, in a form that's more directly usable by the display
 //! code.
 //!
 //! This is exposed in the public API so that you can construct the
-//! `MicrobitFrame` representation in code running at a low priority. Then
+//! [`MicrobitFrame`] representation in code running at a low priority. Then
 //! only [`Display::show_frame()`] has to be called in code that can't be
 //! interrupted by the display timer.
 //!
 //! ## Timer integration
 //!
 //! The [`Display`] expects to control a single timer. It can use the
-//! micro:bit's `TIMER0`, `TIMER1`, or `TIMER2`.
+//! micro:bit's [`TIMER0`](crate::hal::pac::TIMER0), [`TIMER1`](crate::hal::pac::TIMER1), or [`TIMER2`](crate::hal::pac::TIMER2).
 //!
 //! This uses a 6ms period to light each of the three internal LED rows, so
 //! that the entire display is updated every 18ms.
 //!
-//! When rendering greyscale images, the `Display` requests extra interrupts
+//! When rendering greyscale images, the [`Display`] requests extra interrupts
 //! within each 6ms period. It only requests interrupts for the greyscale
 //! levels which are actually required for what's currently being displayed.
 //!
@@ -129,7 +129,8 @@
 //!
 //! ## Usage
 //!
-//! Choose a timer to drive the display from (`TIMER0`, `TIMER1`, or `TIMER2`).
+//! Choose a timer to drive the display from [`TIMER0`](crate::hal::pac::TIMER0),
+//! [`TIMER1`](crate::hal::pac::TIMER1), or [`TIMER2`](crate::hal::pac::TIMER2).
 //!
 //! When your program starts:
 //! - create a [`Display`] struct passing the timer and
@@ -139,7 +140,7 @@
 //!
 //! To change what's displayed; pass an image ([`GreyscaleImage`] or [`BitImage`]) to [`Display::show`].
 //!
-//! You can call `show()` at any time, so long as you're not interrupting, or interruptable by,
+//! You can call [`show()`](Display::show) at any time, so long as you're not interrupting, or interruptable by,
 //! [`Display::handle_display_event()`].
 //!
 //! See [`display_rtic`](https://github.com/nrf-rs/microbit/blob/master/examples/display_rtic) or

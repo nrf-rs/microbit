@@ -70,10 +70,70 @@ pub struct Board {
     /// nRF51 peripheral: GPIOTE
     pub GPIOTE: pac::GPIOTE,
 
-    /// nRF51 peripheral: RADIO
+    /// nRF51 peripheral: RADIO <br>
+    /// Can be used with [`Radio::init()`](`crate::hal::ieee802154::Radio::init()`)
+    /// ```no_run
+    /// # use microbit_common as microbit;
+    /// # use microbit::{
+    /// #     Board,
+    /// #     hal::Clocks,
+    /// #     display::blocking::Display,
+    /// # };
+    /// # use embedded_hal::blocking::delay::DelayMs;
+    /// # use core::ops::Deref;
+    /// use microbit::hal::ieee802154;
+    /// // take the board
+    /// let board = Board::take().unwrap();
+    /// // setup a timer for the receiving radio messages within a certain timeframe
+    /// let mut radio_timer = microbit::hal::Timer::new(board.TIMER0);
+    /// // set the clock to a high frequency one
+    /// let clock = Clocks::new(board.CLOCK).enable_ext_hfosc();
+    /// // create the radio instance
+    /// let mut radio = ieee802154::Radio::init(board.RADIO, &clock);
+    ///
+    /// // create an empty message packet
+    /// let mut packet = ieee802154::Packet::new();
+    ///    
+    /// // Wait if a package gets received for 1.000 microseconds
+    /// match radio
+    ///     .recv_timeout(&mut packet, &mut radio_timer, 1000)
+    /// {
+    ///     // Use the received radio packet...    
+    ///     Ok(_) => {        
+    ///         if packet.deref()[0] == 2u8 { /* ... */ }
+    ///     }     
+    ///     // Expected timeout if no message was received in time
+    ///     Err(ieee802154::Error::Timeout) => {}
+    ///     Err(ieee802154::Error::Crc(error_code)) => {/* Handle crc error */}
+    /// }
+    ///
+    /// // fill the packet payload with 2 bytes of 42
+    /// packet.copy_from_slice(&[42u8;2]);
+    /// // send the radio packet
+    /// radio.send(&mut packet);
+    /// # loop {
+    /// # }
+    /// ```
     pub RADIO: pac::RADIO,
 
-    /// nRF51 peripheral: RNG
+    /// nRF51 peripheral: RNG <br>
+    /// Can be used with [`Rng::new()`](`crate::hal::rng::Rng::new()`)
+    /// ```no_run
+    /// # use microbit_common as microbit;
+    /// use microbit::{hal::{clocks, rng}, Board};
+    /// // take the board
+    /// let board = Board::take().unwrap();
+    ///
+    /// // start low frequency clock
+    /// clocks::Clocks::new(board.CLOCK).start_lfclk();
+    ///
+    /// // create a new hardware rng instance
+    /// let mut rng = rng::Rng::new(board.RNG);
+    ///
+    /// // read random u32 directly from hardware rng
+    /// let small_int = rng.random_u32();
+    /// #    loop {}
+    /// ```
     pub RNG: pac::RNG,
 
     /// nRF51 peripheral: RTC0
@@ -83,13 +143,16 @@ pub struct Board {
     /// Can be used with [`Temp::new()`](`crate::hal::temp::Temp::new()`)
     pub TEMP: pac::TEMP,
 
-    /// nRF51 peripheral: TIMER0
+    /// nRF51 peripheral: TIMER0 <br>
+    /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER0: pac::TIMER0,
 
-    /// nRF51 peripheral: TIMER1
+    /// nRF51 peripheral: TIMER1 <br>
+    /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER1: pac::TIMER1,
 
-    /// nRF51 peripheral: TIMER2
+    /// nRF51 peripheral: TIMER2 <br>
+    /// Can be used with [`Timer::new()`](`crate::hal::Timer::new()`) or other Timer instances
     pub TIMER2: pac::TIMER2,
 
     /// nRF51 peripheral: TWI0
