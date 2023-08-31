@@ -9,7 +9,7 @@ use crate::{
     pac,
 };
 
-/// Provides access to the micrbobit
+/// Provides access to the microbit
 #[allow(non_snake_case)]
 pub struct Board {
     /// GPIO pins that are not otherwise used
@@ -165,7 +165,13 @@ pub struct Board {
 
     /// nRF52 peripheral: RTC0
     pub RTC0: pac::RTC0,
+  
+    /// nRF52 peripheral: RTC1
+    pub RTC1: pac::RTC1,
 
+    /// nRF52 peripheral: RTC2
+    pub RTC2: pac::RTC2,  
+  
     /// nRF52 peripheral: SAADC
     pub SAADC: pac::SAADC,
 
@@ -315,6 +321,8 @@ impl Board {
             RADIO: p.RADIO,
             RNG: p.RNG,
             RTC0: p.RTC0,
+            RTC1: p.RTC1,
+            RTC2: p.RTC2,          
             SAADC: p.SAADC,
             TEMP: p.TEMP,
             TIMER0: p.TIMER0,
