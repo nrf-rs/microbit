@@ -1,4 +1,7 @@
-use super::gpio::{DisplayPins, BTN_A, BTN_B, SCL, SDA, UART_RX, UART_TX};
+use super::gpio::{
+    DisplayPins, BTN_A, BTN_B, EDGE00, EDGE01, EDGE02, EDGE08, EDGE12, EDGE16, SCL, SDA, UART_RX,
+    UART_TX,
+};
 use crate::{
     hal::{
         gpio::{p0, Disconnected, Level},
@@ -12,6 +15,9 @@ use crate::{
 pub struct Board {
     /// GPIO pins that are not otherwise used
     pub pins: Pins,
+
+    /// Unused GPIO pins on edge connector
+    pub edge: Edge,
 
     /// display pins
     pub display_pins: DisplayPins,
@@ -70,6 +76,9 @@ pub struct Board {
     /// nRF51 peripheral: GPIOTE
     pub GPIOTE: pac::GPIOTE,
 
+    /// nRF51 preipheral: PPI
+    pub PPI: pac::PPI,
+
     /// nRF51 peripheral: RADIO
     pub RADIO: pac::RADIO,
 
@@ -124,19 +133,27 @@ impl Board {
         let p0parts = p0::Parts::new(p.GPIO);
         Self {
             pins: Pins {
-                p0_01: p0parts.p0_01,
-                p0_02: p0parts.p0_02,
-                p0_03: p0parts.p0_03,
-                p0_16: p0parts.p0_16,
-                p0_18: p0parts.p0_18,
+                //p0_01: p0parts.p0_01,
+                //p0_02: p0parts.p0_02,
+                //p0_03: p0parts.p0_03,
+                //p0_16: p0parts.p0_16,
+                //p0_18: p0parts.p0_18,
                 p0_19: p0parts.p0_19,
-                p0_20: p0parts.p0_20,
+                //p0_20: p0parts.p0_20,
                 p0_21: p0parts.p0_21,
                 p0_22: p0parts.p0_22,
                 p0_23: p0parts.p0_23,
                 p0_27: p0parts.p0_27,
                 p0_28: p0parts.p0_28,
                 p0_29: p0parts.p0_29,
+            },
+            edge: Edge {
+                e00: p0parts.p0_03,
+                e01: p0parts.p0_02,
+                e02: p0parts.p0_01,
+                e08: p0parts.p0_18,
+                e12: p0parts.p0_20,
+                e16: p0parts.p0_16,
             },
             display_pins: DisplayPins {
                 row1: p0parts.p0_13.into_push_pull_output(Level::Low),
@@ -183,6 +200,7 @@ impl Board {
             CLOCK: p.CLOCK,
             FICR: p.FICR,
             GPIOTE: p.GPIOTE,
+            PPI: p.PPI,
             RADIO: p.RADIO,
             RNG: p.RNG,
             RTC0: p.RTC0,
@@ -200,9 +218,9 @@ impl Board {
 #[allow(missing_docs)]
 pub struct Pins {
     // pub p0_00: p0::P0_00<Disconnected>, // SCL
-    pub p0_01: p0::P0_01<Disconnected>,
-    pub p0_02: p0::P0_02<Disconnected>,
-    pub p0_03: p0::P0_03<Disconnected>,
+    // pub p0_01: p0::P0_01<Disconnected>, // PAD2, EDGE02
+    // pub p0_02: p0::P0_02<Disconnected>, // PAD1, EDGE01
+    // pub p0_03: p0::P0_03<Disconnected>, // PAD0, EDGE00
     // pub p0_04: p0::P0_04<Disconnected>, // LEDs
     // pub p0_05: p0::P0_05<Disconnected>, // LEDs
     // pub p0_06: p0::P0_06<Disconnected>, // LEDs
@@ -215,11 +233,11 @@ pub struct Pins {
     // pub p0_13: p0::P0_13<Disconnected>, // LEDs
     // pub p0_14: p0::P0_14<Disconnected>, // LEDs
     // pub p0_15: p0::P0_15<Disconnected>, // LEDs
-    pub p0_16: p0::P0_16<Disconnected>,
+    // pub p0_16: p0::P0_16<Disconnected>, // EDGE16
     // pub p0_17: p0::P0_17<Disconnected>, // BTN_A
-    pub p0_18: p0::P0_18<Disconnected>,
+    // pub p0_18: p0::P0_18<Disconnected>, // EDGE08
     pub p0_19: p0::P0_19<Disconnected>,
-    pub p0_20: p0::P0_20<Disconnected>,
+    // pub p0_20: p0::P0_20<Disconnected>, // EDGE12
     pub p0_21: p0::P0_21<Disconnected>,
     pub p0_22: p0::P0_22<Disconnected>,
     pub p0_23: p0::P0_23<Disconnected>,
@@ -230,6 +248,36 @@ pub struct Pins {
     pub p0_28: p0::P0_28<Disconnected>,
     pub p0_29: p0::P0_29<Disconnected>,
     // pub p0_30: p0::P0_30<Disconnected>, // SDA
+}
+
+/// Unused edge connector pins
+#[allow(missing_docs)]
+pub struct Edge {
+    // pub e03: COL1,
+    pub e00: EDGE00<Disconnected>, // <- big pad 1
+    // pub e04: COL2,
+    // pub e05: BTN_A,
+    // pub e06: COL9,
+    // pub e07: COL8,
+    pub e01: EDGE01<Disconnected>, // <- big pad 2
+    pub e08: EDGE08<Disconnected>,
+    // pub e09: COL7,
+    // pub e10: COL3,
+    // pub e11: BTN_B,
+    pub e12: EDGE12<Disconnected>,
+    pub e02: EDGE02<Disconnected>, // <- big pad 3
+    //pub e13<MODE>: SCK<MODE>,
+    //pub e14<MODE>: MISO<MODE>,
+    //pub e15<MODE>: MOSI<MODE>,
+    pub e16: EDGE16<Disconnected>,
+    // +V
+    // +V
+    // +V
+    // pub e19: SCL,
+    // pub e20: SDA,
+    // GND
+    // GND
+    // GND
 }
 
 /// Board buttons

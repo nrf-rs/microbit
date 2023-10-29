@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add analog example
 - Increase minimum supported Rust version to 1.62
 - Added support for the real time counters RTC1 and RTC2
+- Add common types and structs for the edge connector pads and pins
+- Add common ADC types and initialization for ADC and SAADC
+- Common ADC example
+- Add support for PPI
+- Servo example using TIMER, GPIOTE and PPI
 - (NFC) GitHub CI changes
 
 ## [0.13.0] - 2022-05-24
