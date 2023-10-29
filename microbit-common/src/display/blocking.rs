@@ -35,6 +35,24 @@
 //! }
 //! ```
 //!
+//! The coordiante system is oriented so the 'bottom' (x,4) row is the edge with the edge
+//! connector. That means that
+//!
+//! ```no_run
+//! display.show(
+//!    &mut timer,
+//!    [
+//!        [0, 0, 1, 0, 0],
+//!        [0, 1, 1, 1, 0],
+//!        [1, 0, 1, 0, 1],
+//!        [0, 0, 1, 0, 0],
+//!        [0, 0, 1, 0, 0],
+//!    ],
+//!    1000,
+//!);
+//! ```
+//! Will display an arrow pointing towards the boards usb port.
+//!
 //! For a working example [`examples/display-blocking`](https://github.com/nrf-rs/microbit/tree/main/examples/display-blocking)
 use crate::hal::{
     gpio::{Output, Pin, PushPull},
