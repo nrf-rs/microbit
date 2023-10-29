@@ -13,8 +13,6 @@ pub trait Default {
 
 impl Default for AdcConfig {
     fn default_10bit() -> Self {
-        let mut adcconfig: AdcConfig = AdcConfig::default();
-        adcconfig.resolution = hal::saadc::Resolution::_10BIT;
-        adcconfig
+        AdcConfig { resolution: hal::saadc::Resolution::_10BIT, ..AdcConfig::default() }
     }
 }
