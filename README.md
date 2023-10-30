@@ -1,6 +1,6 @@
 # microbit
 
-_microbit_ contains everything required to get started using Rust to create firmwares for the fabulous
+_microbit_ contains everything required getting started using Rust to create firmwares for the fabulous
 [BBC micro:bit](https://microbit.org) microcontroller board. This little board has everything and a kitchen sink built-in,
 even a capable debugging interface.
 
@@ -47,14 +47,14 @@ run one of the commands below.
 > cargo run --release --manifest-path ./examples/display-blocking/Cargo.toml --features v2 --target thumbv7em-none-eabihf
 ```
 
-You should see a lot of build output, the orange LED on the back of the micro:bit should flash quickly and
+You should see a lot of build output, the orange LED on the back of the micro:bit should flash quickly, and
 a message should appear on the LED display.
 
-Congratulations! You've flashed your first rust program onto your micro:bit!
+Congratulations! You've flashed your first Rust program onto your micro:bit!
 
 ## Further reading
 
-A guide to embedded development with Rust on the _microbit_ using this crate can be found in the [MicroRust book](https://droogmic.github.io/microrust/).
+A guide to embedded development with Rust on the _micro:bit_ using this crate can be found in the [MicroRust book](https://droogmic.github.io/microrust/).
 
 Other useful resources:
 - [micro:bit developer community](https://tech.microbit.org)
