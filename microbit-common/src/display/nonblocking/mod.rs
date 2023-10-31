@@ -62,6 +62,8 @@
 //! (0,4) ... (4,4)
 //! ```
 //!
+//! where the 'bottom' (x,4) of the board is the edge connector.
+//!
 //! ## Greyscale model
 //!
 //! LED brightness levels are described using a scale from 0 (off) to 9
