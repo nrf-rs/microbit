@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Update the non-blocking display documentation to better explain when methods
+  should be called from within a critical section
 - Bump example dependencies to latest versions to fix build
 - Update examples to use RTIC 1.0
 - Add ADC for micro:bit V1
