@@ -39,6 +39,15 @@
 //! connector. That means that
 //!
 //! ```no_run
+//! # use microbit_common as microbit;
+//! # use microbit::{
+//! #     Board,
+//! #     hal,
+//! #     display::blocking::Display,
+//! # };
+//! # let board = Board::take().unwrap();
+//! # let mut timer = hal::Timer::new(board.TIMER0);
+//! # let mut display = Display::new(board.display_pins);
 //! display.show(
 //!    &mut timer,
 //!    [

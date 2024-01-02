@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Fix faulty doc test in `blocking.rs`
 - Update the non-blocking display documentation to better explain when methods
   should be called from within a critical section
 - Bump example dependencies to latest versions to fix build
