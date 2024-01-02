@@ -211,7 +211,10 @@ impl<T: Instance> Display<T> {
     /// Call this in an interrupt handler for the timer you're using. This method
     /// takes care of updating the LED display and clearing the timer's event registers
     ///
-    /// This must be called from within a [critical
+    /// This may be called at any time, so long as the code calling it is not interrupting, or
+    /// interruptable by `tiny_led_matrix::Display::handle_event()`. Within safe code, the borrow
+    /// checker ensures that this requirement is fulfilled. When writing unsafe code, this method
+    /// should be called from within a [critical
     /// section](https://docs.rs/cortex-m/0.7.2/cortex_m/interrupt/fn.free.html).
     pub fn handle_display_event(&mut self) {
         self.display
@@ -220,7 +223,10 @@ impl<T: Instance> Display<T> {
 
     /// Show a new image
     ///
-    /// This must be called from within a [critical
+    /// This may be called at any time, so long as the code calling it is not interrupting, or
+    /// interruptable by `tiny_led_matrix::Display::handle_event()`. Within safe code, the borrow
+    /// checker ensures that this requirement is fulfilled. When writing unsafe code, this method
+    /// should be called from within a [critical
     /// section](https://docs.rs/cortex-m/0.7.2/cortex_m/interrupt/fn.free.html).
     ///
     /// ## Example
@@ -241,7 +247,10 @@ impl<T: Instance> Display<T> {
 
     /// Clear the display
     ///
-    /// This must be called from within a [critical
+    /// This may be called at any time, so long as the code calling it is not interrupting, or
+    /// interruptable by `tiny_led_matrix::Display::handle_event()`. Within safe code, the borrow
+    /// checker ensures that this requirement is fulfilled. When writing unsafe code, this method
+    /// should be called from within a [critical
     /// section](https://docs.rs/cortex-m/0.7.2/cortex_m/interrupt/fn.free.html).
     pub fn clear(&mut self) {
         self.display.set_frame(&MicrobitFrame::default());
@@ -253,7 +262,10 @@ impl<T: Instance> Display<T> {
     /// This may be useful if performance is a concern as calling `set` on the frame
     /// can be done outside the critical section.
     ///
-    /// This must be called from within a [critical
+    /// This may be called at any time, so long as the code calling it is not interrupting, or
+    /// interruptable by `tiny_led_matrix::Display::handle_event()`. Within safe code, the borrow
+    /// checker ensures that this requirement is fulfilled. When writing unsafe code, this method
+    /// should be called from within a [critical
     /// section](https://docs.rs/cortex-m/0.7.2/cortex_m/interrupt/fn.free.html).
     ///
     /// ## Example
