@@ -22,7 +22,7 @@
 //!     hal,
 //!     display::nonblocking::{Display, GreyscaleImage},
 //! };
-//! use embedded_hal::blocking::delay::DelayMs;
+//! use embedded_hal::delay::DelayNs;
 //!
 //! let board = Board::take().unwrap();
 //!
@@ -39,10 +39,10 @@
 //!             [0, 7, 0, 7, 0],
 //!             [0, 0, 7, 0, 0],
 //!         ]));
-//!         timer2.delay_ms(1000u32);
+//!         timer2.delay_ms(1000);
 //!
 //!         display.clear();
-//!         timer2.delay_ms(1000u32);
+//!         timer2.delay_ms(1000);
 //!     }
 //! }
 //!

@@ -5,7 +5,7 @@ edition = "2018"
 
 [dependencies]
 cortex-m = { version = "0.7", features = ["critical-section-single-core"]}
-embedded-hal = "0.2.4"
+embedded-hal = "1.0.0"
 cortex-m-rt = "0.7.2"
 panic-halt = "0.2.0"
 defmt-rtt = "0.4"

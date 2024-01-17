@@ -26,7 +26,7 @@ license = "0BSD"
 
 [dependencies]
 tiny-led-matrix = "1.0.1"
-embedded-hal = "0.2.4"
+embedded-hal = "1.0.0"
 
 [dependencies.nrf51-hal]
 optional = true

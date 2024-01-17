@@ -11,7 +11,6 @@ cortex-m-rt = "0.7"
 panic-halt = "0.2.0"
 defmt-rtt = "0.3.2"
 defmt = "0.3.1"
-embedded-hal = "0.2.7"
 
 # NOTE: This currently only works with the microbit v1 due to naming issues!
 # ADC vs SAADC

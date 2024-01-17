@@ -5,7 +5,7 @@ use defmt_rtt as _;
 use panic_halt as _;
 
 use cortex_m_rt::entry;
-use embedded_hal::blocking::delay::DelayMs;
+use embedded_hal::delay::DelayNs;
 use lsm303agr::{
     interface::I2cInterface, mode::MagOneShot, AccelMode, AccelOutputDataRate, Lsm303agr,
 };
