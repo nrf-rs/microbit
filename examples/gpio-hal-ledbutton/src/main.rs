@@ -5,7 +5,8 @@ use defmt_rtt as _;
 use panic_halt as _;
 
 use cortex_m_rt::entry;
-use microbit::{board::Board, hal::prelude::*};
+use embedded_hal::digital::v2::{InputPin, OutputPin};
+use microbit::board::Board;
 
 #[entry]
 fn main() -> ! {

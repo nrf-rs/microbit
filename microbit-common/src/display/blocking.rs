@@ -63,14 +63,9 @@
 //! Will display an arrow pointing towards the boards usb port.
 //!
 //! For a working example [`examples/display-blocking`](https://github.com/nrf-rs/microbit/tree/main/examples/display-blocking)
-use crate::hal::{
-    gpio::{Output, Pin, PushPull},
-    prelude::*,
-};
-
 use crate::gpio::{DisplayPins, NUM_COLS, NUM_ROWS};
-
-use embedded_hal::blocking::delay::DelayUs;
+use crate::hal::gpio::{Output, Pin, PushPull};
+use embedded_hal::{blocking::delay::DelayUs, digital::v2::OutputPin};
 
 #[allow(clippy::upper_case_acronyms)]
 pub(crate) type LED = Pin<Output<PushPull>>;

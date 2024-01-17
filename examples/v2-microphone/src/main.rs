@@ -5,13 +5,12 @@ use defmt_rtt as _;
 use panic_halt as _;
 
 use cortex_m_rt::entry;
-
+use embedded_hal::adc::OneShot;
 use microbit::{
     board::Board,
     display::blocking::Display,
     hal::{
         gpio::{Level, OpenDrainConfig},
-        prelude::*,
         saadc::SaadcConfig,
         Saadc, Timer,
     },

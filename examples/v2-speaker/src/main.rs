@@ -6,14 +6,12 @@ use panic_halt as _;
 
 use core::cell::RefCell;
 use cortex_m::interrupt::Mutex;
-
 use cortex_m_rt::entry;
+use embedded_hal::digital::v2::OutputPin;
 use microbit::{
     hal::{
         clocks::Clocks,
-        gpio,
-        prelude::OutputPin,
-        pwm,
+        gpio, pwm,
         rtc::{Rtc, RtcInterrupt},
         time::Hertz,
     },
