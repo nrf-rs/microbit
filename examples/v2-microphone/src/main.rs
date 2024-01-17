@@ -5,7 +5,6 @@ use defmt_rtt as _;
 use panic_halt as _;
 
 use cortex_m_rt::entry;
-use embedded_hal::adc::OneShot;
 use microbit::{
     board::Board,
     display::blocking::Display,
@@ -38,7 +37,7 @@ fn main() -> ! {
         let mut max_value: u16 = 0;
         loop {
             let mic_value = saadc
-                .read(&mut mic_in)
+                .read_channel(&mut mic_in)
                 .expect("could not read value of microphone") as u16;
 
             // Smoothen the signal as audio comes in waves

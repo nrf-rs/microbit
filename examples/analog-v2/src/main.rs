@@ -5,7 +5,6 @@ use defmt_rtt as _;
 use panic_halt as _;
 
 use cortex_m_rt::entry;
-use embedded_hal::adc::OneShot;
 use microbit::{
     board::Board,
     display::blocking::Display,
@@ -76,7 +75,7 @@ fn main() -> ! {
         ];
 
         loop {
-            let analog = adc.read(&mut anapin);
+            let analog = adc.read_channel(&mut anapin);
             match analog {
                 Ok(v) => {
                     let n_iter = numbers.iter();

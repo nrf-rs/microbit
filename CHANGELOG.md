@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Servo example using TIMER, GPIOTE and PPI
 - (NFC) GitHub CI changes
 - Updated HAL crates to latest versions.
+- Updated to `embedded-hal` 1.0.
 
 ## [0.13.0] - 2022-05-24
 

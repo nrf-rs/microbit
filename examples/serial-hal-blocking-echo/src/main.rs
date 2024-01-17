@@ -4,7 +4,8 @@
 use panic_halt as _;
 
 use core::fmt::Write;
-use embedded_hal::serial::Read;
+use cortex_m_rt::entry;
+use embedded_io::Read;
 
 #[cfg(feature = "v1")]
 use microbit::{
@@ -17,8 +18,6 @@ use microbit::{
     hal::uarte,
     hal::uarte::{Baudrate, Parity},
 };
-
-use cortex_m_rt::entry;
 
 #[cfg(feature = "v2")]
 mod serial_setup;
@@ -52,7 +51,8 @@ fn main() -> ! {
 
     loop {
         write!(serial, "Hello World:\r\n").unwrap();
-        let input = nb::block!(serial.read()).unwrap();
-        write!(serial, "You said: {}\r\n", input as char).unwrap();
+        let mut input = [0];
+        serial.read_exact(&mut input).unwrap();
+        write!(serial, "You said: {}\r\n", input[0] as char).unwrap();
     }
 }

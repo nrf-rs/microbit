@@ -5,7 +5,6 @@ use defmt_rtt as _;
 use panic_halt as _;
 
 use cortex_m_rt::entry;
-use embedded_hal::adc::OneShot;
 use microbit::{
     adc::{Adc, AdcConfig, Default},
     board::Board,
@@ -67,6 +66,7 @@ fn main() -> ! {
             [0, 0, 1, 0, 0],
         ];
 
+        #[cfg(feature = "v2")]
         #[allow(non_snake_case)]
         let letter_E = [
             [0, 1, 1, 1, 0],
@@ -77,23 +77,24 @@ fn main() -> ! {
         ];
 
         loop {
-            let analog = adc.read(&mut anapin);
-            match analog {
-                Ok(v) => {
-                    let n_iter = numbers.iter();
-                    let mut count: usize = 0;
-                    for n_val in n_iter {
-                        if count == usize::from(i16::unsigned_abs(v / 100)) {
-                            display.show(&mut timer, *n_val, 10);
-                            break;
-                        }
-                        count += 1;
-                    }
-                    if count == numbers.len() {
-                        display.show(&mut timer, sign_plus, 10);
-                    }
+            let analog = adc.read_channel(&mut anapin);
+            #[cfg(feature = "v2")]
+            let Ok(analog) = analog
+            else {
+                display.show(&mut timer, letter_E, 10);
+                continue;
+            };
+            let n_iter = numbers.iter();
+            let mut count: usize = 0;
+            for n_val in n_iter {
+                if count == usize::from(i16::unsigned_abs(analog / 100)) {
+                    display.show(&mut timer, *n_val, 10);
+                    break;
                 }
-                Err(_e) => display.show(&mut timer, letter_E, 10),
+                count += 1;
+            }
+            if count == numbers.len() {
+                display.show(&mut timer, sign_plus, 10);
             }
         }
     }
