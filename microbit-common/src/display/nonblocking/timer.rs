@@ -10,8 +10,13 @@ use crate::hal::timer::Instance;
 ///
 /// `MicrobitDisplayTimer` instances implement the [`DisplayTimer`] trait.
 ///
-/// The timer is set to 16-bit mode, using a 62.5kHz clock (16 µs ticks).
+/// The timer is set to 16-bit mode.
+///
+/// For micro:bit v1: uses a 62.5kHz clock clock (16 µs ticks).
 /// The primary cycle takes 6ms.
+///
+/// For micro:bit v2: uses a 135kHz clock (8 µs ticks).
+/// The primary cycle takes 3ms.
 ///
 /// Uses CC0 for the primary cycle and CC1 for the secondary alarm. Uses the
 /// CC0_CLEAR shortcut to implement the primary cycle.
@@ -43,8 +48,13 @@ impl<T: Instance> DisplayTimer for MicrobitDisplayTimer<T> {
         // set as 16 bits
         timer0.bitmode.write(|w| w.bitmode()._16bit());
 
+        #[cfg(feature = "v1")]
         // set frequency to 62500Hz
-        timer0.prescaler.write(|w| unsafe { w.bits(8) });
+        let prescaler = 8;
+        #[cfg(feature = "v2")]
+        // set frequency to 135000Hz
+        let prescaler = 7;
+        timer0.prescaler.write(|w| unsafe { w.bits(prescaler) });
 
         // set compare register
         timer0.cc[0].write(|w| unsafe { w.bits(ticks.into()) });
