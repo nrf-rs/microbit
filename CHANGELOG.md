@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Double the non-blocking display refresh frequency for the micro:bit V2
 - Fix faulty doc test in `blocking.rs`
 - Update the non-blocking display documentation to better explain when methods
   should be called from within a critical section

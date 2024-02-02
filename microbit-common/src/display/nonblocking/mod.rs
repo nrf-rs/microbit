@@ -117,17 +117,21 @@
 //! The [`Display`] expects to control a single timer. It can use the
 //! micro:bit's `TIMER0`, `TIMER1`, or `TIMER2`.
 //!
-//! This uses a 6ms period to light each of the three internal LED rows, so
-//! that the entire display is updated every 18ms.
+//! For the micro:bit v1 this uses a 6ms period to light each of the three
+//! internal LED rows, so that the entire display is updated every 18ms.
+//!
+//! For the micro:bit v2 this uses a 3ms period to light each of the five
+//! internal LED rows, so that the entire display is updated every 15ms.
 //!
 //! When rendering greyscale images, the `Display` requests extra interrupts
-//! within each 6ms period. It only requests interrupts for the greyscale
-//! levels which are actually required for what's currently being displayed.
+//! within each 6ms or 3ms period. It only requests interrupts for the
+//! greyscale levels which are actually required for what's currently being
+//! displayed.
 //!
 //! ### Technical details
 //!
-//! The timer is set to 16-bit mode, using a 62.5kHz clock (16 µs ticks). It
-//! resets every 375 ticks.
+//! The timer is set to 16-bit mode, using a 62.5kHz or 135Khz clock (16 µs or
+//! 8µs ticks). It resets every 375 ticks.
 //!
 //! ## Usage
 //!
@@ -137,7 +141,7 @@
 //! - create a [`Display`] struct passing the timer and
 //! [`gpio::DisplayPins`](crate::gpio::DisplayPins) to [`Display::new()`].
 //!
-//! In an interrupt handler forthe timer call [`.handle_display_event()`](Display::handle_display_event)
+//! In an interrupt handler for the timer call [`.handle_display_event()`](Display::handle_display_event)
 //!
 //! To change what's displayed; pass an image ([`GreyscaleImage`] or [`BitImage`]) to [`Display::show`].
 //!
