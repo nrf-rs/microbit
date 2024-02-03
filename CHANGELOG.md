@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Fix: non-blocking display on micro:bit V2 could spuriously light LEDs briefly
 - Fix the `blocking::Display::set_refresh_rate` calculation for the micro:bit V2
 - Double the non-blocking display refresh frequency for the micro:bit V2
 - Fix faulty doc test in `blocking.rs`
