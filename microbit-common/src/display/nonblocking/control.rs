@@ -128,19 +128,28 @@ impl DisplayControl for MicrobitGpio {
             let rows_to_set = 1 << pins::P0_ROWS[row];
             let rows_to_clear = P0_ROW_BITS ^ rows_to_set;
 
-            let cols_to_clear = column_pins(p0cols, &pins::P0_COLS);
-            let cols_to_set = P0_COL_BITS ^ cols_to_clear;
-
-            p0.outset.write(|w| w.bits(rows_to_set | cols_to_set));
-            p0.outclr.write(|w| w.bits(rows_to_clear | cols_to_clear));
+            #[cfg(feature = "v1")]
+            {
+                let cols_to_clear = column_pins(p0cols, &pins::P0_COLS);
+                let cols_to_set = P0_COL_BITS ^ cols_to_clear;
+                p0.outset.write(|w| w.bits(rows_to_set | cols_to_set));
+                p0.outclr.write(|w| w.bits(rows_to_clear | cols_to_clear));
+            }
 
             #[cfg(feature = "v2")]
             {
                 let p1 = &*P1::ptr();
-                let cols_to_clear = column_pins(p1cols, &pins::P1_COLS);
-                let cols_to_set = P1_COL_BITS ^ cols_to_clear;
-                p1.outset.write(|w| w.bits(cols_to_set));
-                p1.outclr.write(|w| w.bits(cols_to_clear));
+                let p0_cols_to_clear = column_pins(p0cols, &pins::P0_COLS);
+                let p0_cols_to_set = P0_COL_BITS ^ p0_cols_to_clear;
+                let p1_cols_to_clear = column_pins(p1cols, &pins::P1_COLS);
+                let p1_cols_to_set = P1_COL_BITS ^ p1_cols_to_clear;
+                // We do the row-clearing write first and the row-setting write last, so that
+                // intermediate states never light LEDs which aren't lit in either the old or new state.
+                p0.outclr
+                    .write(|w| w.bits(rows_to_clear | p0_cols_to_clear));
+                p1.outset.write(|w| w.bits(p1_cols_to_set));
+                p1.outclr.write(|w| w.bits(p1_cols_to_clear));
+                p0.outset.write(|w| w.bits(rows_to_set | p0_cols_to_set));
             }
         }
     }
