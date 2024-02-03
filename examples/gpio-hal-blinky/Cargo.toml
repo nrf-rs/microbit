@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-embedded-hal = "0.2.4"
+embedded-hal = "1.0.0"
 cortex-m-rt = "0.7"
 panic-halt = "0.2.0"
 defmt-rtt = "0.4"

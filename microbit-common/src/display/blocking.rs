@@ -70,7 +70,7 @@ use crate::hal::{
 
 use crate::gpio::{DisplayPins, NUM_COLS, NUM_ROWS};
 
-use embedded_hal::blocking::delay::DelayUs;
+use embedded_hal::delay::DelayNs;
 
 #[allow(clippy::upper_case_acronyms)]
 pub(crate) type LED = Pin<Output<PushPull>>;
@@ -142,7 +142,7 @@ impl Display {
     }
 
     /// Display 5x5 image for a given duration
-    pub fn show<D: DelayUs<u32>>(
+    pub fn show<D: DelayNs>(
         &mut self,
         delay: &mut D,
         led_display: [[u8; 5]; 5],
@@ -161,7 +161,7 @@ impl Display {
     ///
     /// The pins are represented as a [3x9 matrix on the micro:bit
     /// V1](https://tech.microbit.org/hardware/1-5-revision/#display).
-    fn show_inner<D: DelayUs<u32>>(
+    fn show_inner<D: DelayNs>(
         &mut self,
         delay: &mut D,
         led_matrix: [[u8; NUM_COLS]; NUM_ROWS],
