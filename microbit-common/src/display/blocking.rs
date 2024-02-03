@@ -123,7 +123,7 @@ impl Display {
 
     /// Set refresh rate, time for matrix scan
     pub fn set_refresh_rate(&mut self, freq_hz: u32) {
-        self.delay_ms = 1000 / freq_hz / 3;
+        self.delay_ms = 1000 / freq_hz / (NUM_ROWS as u32);
     }
 
     /// Convert 5x5 image to 3x9 matrix
