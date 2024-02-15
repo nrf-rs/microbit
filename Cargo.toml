@@ -6,3 +6,11 @@ members = [
   "examples/*",
   "xtask",
 ]
+resolver = "2"
+
+[profile.release]
+debug = 2
+
+[patch.crates-io]
+embassy-nrf = { path = "../embassy/embassy-nrf" }
+embassy-time = { path = "../embassy/embassy-time" }

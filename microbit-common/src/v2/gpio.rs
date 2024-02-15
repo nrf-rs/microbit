@@ -1,25 +1,30 @@
 #![allow(clippy::upper_case_acronyms, missing_docs)]
-use nrf52833_hal::gpio::{p0, p1, Floating, Input, OpenDrain, Output, Pin, PushPull};
+use embassy_nrf::gpio::{Level, Output, OutputDrive};
+use embassy_nrf::peripherals::{
+    P0_00, P0_01, P0_02, P0_03, P0_04, P0_05, P0_06, P0_08, P0_09, P0_10, P0_11, P0_12, P0_13,
+    P0_14, P0_15, P0_16, P0_17, P0_19, P0_20, P0_21, P0_22, P0_23, P0_24, P0_26, P0_28, P0_30,
+    P0_31, P1_00, P1_02, P1_05, P1_08,
+};
 
 /* GPIO pads */
-pub type PAD0<MODE> = p0::P0_02<MODE>;
-pub type PAD1<MODE> = p0::P0_03<MODE>;
-pub type PAD2<MODE> = p0::P0_04<MODE>;
+pub type PAD0 = P0_02;
+pub type PAD1 = P0_03;
+pub type PAD2 = P0_04;
 
 /* LED display */
 pub const NUM_COLS: usize = 5;
-pub type COL1 = p0::P0_28<Output<PushPull>>;
-pub type COL2 = p0::P0_11<Output<PushPull>>;
-pub type COL3 = p0::P0_31<Output<PushPull>>;
-pub type COL4 = p1::P1_05<Output<PushPull>>;
-pub type COL5 = p0::P0_30<Output<PushPull>>;
+pub type COL1 = P0_28;
+pub type COL2 = P0_11;
+pub type COL3 = P0_31;
+pub type COL4 = P1_05;
+pub type COL5 = P0_30;
 
 pub const NUM_ROWS: usize = 5;
-pub type ROW1 = p0::P0_21<Output<PushPull>>;
-pub type ROW2 = p0::P0_22<Output<PushPull>>;
-pub type ROW3 = p0::P0_15<Output<PushPull>>;
-pub type ROW4 = p0::P0_24<Output<PushPull>>;
-pub type ROW5 = p0::P0_19<Output<PushPull>>;
+pub type ROW1 = P0_21;
+pub type ROW2 = P0_22;
+pub type ROW3 = P0_15;
+pub type ROW4 = P0_24;
+pub type ROW5 = P0_19;
 
 /// GPIO pins connected to the LED matrix
 ///
@@ -39,28 +44,28 @@ pub struct DisplayPins {
 
 /// GPIO pins connected to the microphone
 pub struct MicrophonePins {
-    pub mic_in: p0::P0_05<Input<Floating>>,
-    pub mic_run: p0::P0_20<Output<OpenDrain>>,
+    pub mic_in: P0_05,
+    pub mic_run: P0_20,
 }
 
-type LED = Pin<Output<PushPull>>;
+type LED = Output<'static>;
 
 impl DisplayPins {
     pub fn degrade(self) -> ([LED; NUM_COLS], [LED; NUM_ROWS]) {
         (
             [
-                self.col1.degrade(),
-                self.col2.degrade(),
-                self.col3.degrade(),
-                self.col4.degrade(),
-                self.col5.degrade(),
+                Output::new(self.col1, Level::High, OutputDrive::Standard),
+                Output::new(self.col2, Level::High, OutputDrive::Standard),
+                Output::new(self.col3, Level::High, OutputDrive::Standard),
+                Output::new(self.col4, Level::High, OutputDrive::Standard),
+                Output::new(self.col5, Level::High, OutputDrive::Standard),
             ],
             [
-                self.row1.degrade(),
-                self.row2.degrade(),
-                self.row3.degrade(),
-                self.row4.degrade(),
-                self.row5.degrade(),
+                Output::new(self.row1, Level::Low, OutputDrive::Standard),
+                Output::new(self.row2, Level::Low, OutputDrive::Standard),
+                Output::new(self.row3, Level::Low, OutputDrive::Standard),
+                Output::new(self.row4, Level::Low, OutputDrive::Standard),
+                Output::new(self.row5, Level::Low, OutputDrive::Standard),
             ],
         )
     }
@@ -108,47 +113,47 @@ macro_rules! display_pins {
 }
 
 /* buttons */
-pub type BTN_A = p0::P0_14<Input<Floating>>;
-pub type BTN_B = p0::P0_23<Input<Floating>>;
+pub type BTN_A = P0_14;
+pub type BTN_B = P0_23;
 
 /* spi */
-pub type MOSI<MODE> = p0::P0_13<MODE>;
-pub type MISO<MODE> = p0::P0_01<MODE>;
-pub type SCK<MODE> = p0::P0_17<MODE>;
+pub type MOSI = P0_13;
+pub type MISO = P0_01;
+pub type SCK = P0_17;
 
 /* i2c - internal */
-pub type INT_SCL = p0::P0_08<Input<Floating>>;
-pub type INT_SDA = p0::P0_16<Input<Floating>>;
+pub type INT_SCL = P0_08;
+pub type INT_SDA = P0_16;
 
 /* i2c - external */
-pub type SCL = p0::P0_26<Input<Floating>>;
-pub type SDA = p1::P1_00<Input<Floating>>;
+pub type SCL = P0_26;
+pub type SDA = P1_00;
 
 /* uart */
-pub type UART_TX = p0::P0_06<Output<PushPull>>;
-pub type UART_RX = p1::P1_08<Input<Floating>>;
+pub type UART_TX = P0_06;
+pub type UART_RX = P1_08;
 
 /* speaker */
-pub type SPEAKER = p0::P0_00<Output<PushPull>>;
+pub type SPEAKER = P0_00;
 
 /* edge connector */
 pub type EDGE03 = COL3;
-pub type EDGE00<MODE> = PAD0<MODE>; // <- big pad 1
+pub type EDGE00 = PAD0; // <- big pad 1
 pub type EDGE04 = COL1;
 pub type EDGE05 = BTN_A;
 pub type EDGE06 = COL4;
 pub type EDGE07 = COL2;
-pub type EDGE01<MODE> = PAD1<MODE>; // <- big pad 2
-pub type EDGE08<MODE> = p0::P0_10<MODE>;
-pub type EDGE09<MODE> = p0::P0_09<MODE>;
+pub type EDGE01 = PAD1; // <- big pad 2
+pub type EDGE08 = P0_10;
+pub type EDGE09 = P0_09;
 pub type EDGE10 = COL5;
 pub type EDGE11 = BTN_B;
-pub type EDGE12<MODE> = p0::P0_12<MODE>;
-pub type EDGE02<MODE> = PAD2<MODE>; // <- big pad 3
-pub type EDGE13<MODE> = SCK<MODE>;
-pub type EDGE14<MODE> = MISO<MODE>;
-pub type EDGE15<MODE> = MOSI<MODE>;
-pub type EDGE16<MODE> = p1::P1_02<MODE>;
+pub type EDGE12 = P0_12;
+pub type EDGE02 = PAD2; // <- big pad 3
+pub type EDGE13 = SCK;
+pub type EDGE14 = MISO;
+pub type EDGE15 = MOSI;
+pub type EDGE16 = P1_02;
 // EDGE18 -> +V
 // EDGE19 -> +V
 // EDGE20 -> +V

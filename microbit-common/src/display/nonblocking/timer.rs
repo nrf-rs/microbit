@@ -35,7 +35,7 @@ impl<T: Instance> MicrobitDisplayTimer<T> {
 
 impl<T: Instance> DisplayTimer for MicrobitDisplayTimer<T> {
     fn initialise_cycle(&mut self, ticks: u16) {
-        let timer0 = self.0.as_timer0();
+        let timer0 = T::regs();
         // stop and reset timer
         timer0.tasks_stop.write(|w| unsafe { w.bits(1) });
         timer0.tasks_clear.write(|w| unsafe { w.bits(1) });
@@ -62,26 +62,27 @@ impl<T: Instance> DisplayTimer for MicrobitDisplayTimer<T> {
     }
 
     fn enable_secondary(&mut self) {
-        self.0.as_timer0().intenset.write(|w| w.compare1().set());
+        let timer0 = T::regs();
+        timer0.intenset.write(|w| w.compare1().set());
     }
 
     fn disable_secondary(&mut self) {
-        self.0
-            .as_timer0()
-            .intenclr
-            .write(|w| w.compare1().set_bit());
+        let timer0 = T::regs();
+        timer0.intenclr.write(|w| w.compare1().set_bit());
     }
 
     fn program_secondary(&mut self, ticks: u16) {
+        let timer0 = T::regs();
         #[cfg(feature = "v1")]
-        self.0.as_timer0().cc[1].write(|w| unsafe { w.bits(ticks.into()) });
+        timer0.cc[1].write(|w| unsafe { w.bits(ticks.into()) });
         #[cfg(feature = "v2")]
-        self.0.as_timer0().cc[1].write(|w| unsafe { w.cc().bits(ticks.into()) });
+        timer0.cc[1].write(|w| unsafe { w.cc().bits(ticks.into()) });
     }
 
     fn check_primary(&mut self) -> bool {
+        let timer0 = T::regs();
         // poll compare event
-        let reg = &self.0.as_timer0().events_compare[0];
+        let reg = &timer0.events_compare[0];
         let fired = reg.read().bits() != 0;
         if fired {
             reg.reset();
@@ -90,8 +91,9 @@ impl<T: Instance> DisplayTimer for MicrobitDisplayTimer<T> {
     }
 
     fn check_secondary(&mut self) -> bool {
+        let timer0 = T::regs();
         // poll compare event
-        let reg = &self.0.as_timer0().events_compare[1];
+        let reg = &timer0.events_compare[1];
         let fired = reg.read().bits() != 0;
         if fired {
             reg.reset();

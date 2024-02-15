@@ -2,6 +2,7 @@
 #![no_std]
 
 use panic_halt as _;
+use defmt_rtt as _;
 
 use cortex_m_rt::entry;
 

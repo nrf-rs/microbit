@@ -12,12 +12,12 @@
 //! #     Board,
 //! #     hal,
 //! #     display::blocking::Display,
+//! #     time::Delay,
 //! # };
-//! # use embedded_hal::blocking::delay::DelayMs;
 //! // take the board
-//! let board = Board::take().unwrap();
+//! let board = Board::default();
 //! // make a timer
-//! let mut timer = hal::Timer::new(board.TIMER0);
+//! let mut timer = Delay;
 //! // create the Display
 //! let mut display = Display::new(board.display_pins);
 //! // and light up some LEDs
@@ -63,17 +63,14 @@
 //! Will display an arrow pointing towards the boards usb port.
 //!
 //! For a working example [`examples/display-blocking`](https://github.com/nrf-rs/microbit/tree/main/examples/display-blocking)
-use crate::hal::{
-    gpio::{Output, Pin, PushPull},
-    prelude::*,
-};
+use crate::hal::gpio::Output;
 
 use crate::gpio::{DisplayPins, NUM_COLS, NUM_ROWS};
 
-use embedded_hal::blocking::delay::DelayUs;
+use embedded_hal::delay::DelayNs;
 
 #[allow(clippy::upper_case_acronyms)]
-pub(crate) type LED = Pin<Output<PushPull>>;
+pub(crate) type LED = Output<'static>;
 
 const DEFAULT_DELAY_MS: u32 = 2;
 #[cfg(feature = "v1")]
@@ -109,10 +106,10 @@ impl Display {
     /// Clear the display
     pub fn clear(&mut self) {
         for row in &mut self.rows {
-            row.set_low().ok();
+            row.set_low();
         }
         for col in &mut self.cols {
-            col.set_high().ok();
+            col.set_high();
         }
     }
 
@@ -142,12 +139,7 @@ impl Display {
     }
 
     /// Display 5x5 image for a given duration
-    pub fn show<D: DelayUs<u32>>(
-        &mut self,
-        delay: &mut D,
-        led_display: [[u8; 5]; 5],
-        duration_ms: u32,
-    ) {
+    pub fn show<D: DelayNs>(&mut self, delay: &mut D, led_display: [[u8; 5]; 5], duration_ms: u32) {
         #[cfg(feature = "v1")]
         {
             let led_matrix = Display::image2matrix(led_display);
@@ -161,7 +153,7 @@ impl Display {
     ///
     /// The pins are represented as a [3x9 matrix on the micro:bit
     /// V1](https://tech.microbit.org/hardware/1-5-revision/#display).
-    fn show_inner<D: DelayUs<u32>>(
+    fn show_inner<D: DelayNs>(
         &mut self,
         delay: &mut D,
         led_matrix: [[u8; NUM_COLS]; NUM_ROWS],
@@ -171,18 +163,18 @@ impl Display {
         let loops = duration_ms / (self.rows.len() as u32 * self.delay_ms);
         for _ in 0..loops {
             for (row_line, led_matrix_row) in self.rows.iter_mut().zip(led_matrix.iter()) {
-                row_line.set_high().ok();
+                row_line.set_high();
                 for (col_line, led_matrix_val) in self.cols.iter_mut().zip(led_matrix_row.iter()) {
                     // TODO : use value to set brightness
                     if *led_matrix_val > 0 {
-                        col_line.set_low().ok();
+                        col_line.set_low();
                     }
                 }
                 delay.delay_us(self.delay_ms * 1000);
                 for col_line in &mut self.cols {
-                    col_line.set_high().ok();
+                    col_line.set_high();
                 }
-                row_line.set_low().ok();
+                row_line.set_low();
             }
         }
     }
