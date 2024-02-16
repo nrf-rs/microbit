@@ -8,7 +8,7 @@ use tiny_led_matrix::DisplayControl;
 
 use crate::{
     gpio::{NUM_COLS, NUM_ROWS},
-    pac,
+    hal::pac,
 };
 
 const fn pin_bits(pins: &[usize]) -> u32 {

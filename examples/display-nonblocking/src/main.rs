@@ -6,17 +6,13 @@ use panic_halt as _;
 
 use core::cell::RefCell;
 use cortex_m::interrupt::Mutex;
-use cortex_m::peripheral::Peripherals;
 use cortex_m_rt::entry;
 
 use microbit::{
     board::Board,
     display::nonblocking::{Display, GreyscaleImage},
-    hal::{
-        clocks::Clocks,
-        rtc::{Rtc, RtcInterrupt},
-    },
-    pac::{self, interrupt, RTC0, TIMER1},
+    hal::{interrupt, interrupt::InterruptExt, interrupt::Priority, peripherals::TIMER1},
+    time::{Duration, Ticker},
 };
 
 fn heart_image(inner_brightness: u8) -> GreyscaleImage {
@@ -30,42 +26,43 @@ fn heart_image(inner_brightness: u8) -> GreyscaleImage {
     ])
 }
 
-// We use TIMER1 to drive the display, and RTC0 to update the animation.
-// We set the TIMER1 interrupt to a higher priority than RTC0.
+// We use TIMER1 to drive the display, and RTC ticker to update the animation.
+// We set the TIMER1 interrupt to a higher priority than thread mode.
 
 static DISPLAY: Mutex<RefCell<Option<Display<TIMER1>>>> = Mutex::new(RefCell::new(None));
-static ANIM_TIMER: Mutex<RefCell<Option<Rtc<RTC0>>>> = Mutex::new(RefCell::new(None));
 
 #[entry]
 fn main() -> ! {
-    if let Some(mut board) = Board::take() {
-        // Starting the low-frequency clock (needed for RTC to work)
-        Clocks::new(board.CLOCK).start_lfclk();
+    let board = Board::default();
 
-        // RTC at 16Hz (32_768 / (2047 + 1))
-        // 62.5ms period
-        let mut rtc0 = Rtc::new(board.RTC0, 2047).unwrap();
-        rtc0.enable_event(RtcInterrupt::Tick);
-        rtc0.enable_interrupt(RtcInterrupt::Tick, None);
-        rtc0.enable_counter();
+    // Create display
+    let display = Display::new(board.TIMER1, board.display_pins);
 
-        // Create display
-        let display = Display::new(board.TIMER1, board.display_pins);
+    cortex_m::interrupt::free(move |cs| {
+        *DISPLAY.borrow(cs).borrow_mut() = Some(display);
+    });
+    interrupt::TIMER1.set_priority(Priority::P0);
 
-        cortex_m::interrupt::free(move |cs| {
-            *DISPLAY.borrow(cs).borrow_mut() = Some(display);
-            *ANIM_TIMER.borrow(cs).borrow_mut() = Some(rtc0);
-        });
-        unsafe {
-            board.NVIC.set_priority(pac::Interrupt::RTC0, 64);
-            board.NVIC.set_priority(pac::Interrupt::TIMER1, 128);
-            pac::NVIC::unmask(pac::Interrupt::RTC0);
-            pac::NVIC::unmask(pac::Interrupt::TIMER1);
-        }
-    }
-
+    let mut ticker = Ticker::every(Duration::from_micros(65000));
+    let mut step: u8 = 0;
     loop {
-        continue;
+        ticker.next_blocking();
+        let inner_brightness = match step {
+            0..=8 => 9 - step,
+            9..=12 => 0,
+            _ => unreachable!(),
+        };
+
+        cortex_m::interrupt::free(|cs| {
+            if let Some(display) = DISPLAY.borrow(cs).borrow_mut().as_mut() {
+                display.show(&heart_image(inner_brightness));
+            }
+        });
+
+        step += 1;
+        if step == 13 {
+            step = 0
+        };
     }
 }
 
@@ -76,32 +73,4 @@ fn TIMER1() {
             display.handle_display_event();
         }
     });
-}
-
-#[interrupt]
-unsafe fn RTC0() {
-    static mut STEP: u8 = 0;
-
-    cortex_m::interrupt::free(|cs| {
-        if let Some(rtc) = ANIM_TIMER.borrow(cs).borrow_mut().as_mut() {
-            rtc.reset_event(RtcInterrupt::Tick);
-        }
-    });
-
-    let inner_brightness = match *STEP {
-        0..=8 => 9 - *STEP,
-        9..=12 => 0,
-        _ => unreachable!(),
-    };
-
-    cortex_m::interrupt::free(|cs| {
-        if let Some(display) = DISPLAY.borrow(cs).borrow_mut().as_mut() {
-            display.show(&heart_image(inner_brightness));
-        }
-    });
-
-    *STEP += 1;
-    if *STEP == 13 {
-        *STEP = 0
-    };
 }

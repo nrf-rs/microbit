@@ -20,15 +20,3 @@ optional = true
 [features]
 v1 = ["microbit"]
 v2 = ["microbit-v2"]
-
-default = [
-  "defmt-default",
-]
-
-# do NOT modify these features
-defmt-default = []
-defmt-trace = []
-defmt-debug = []
-defmt-info = []
-defmt-warn = []
-defmt-error = []
