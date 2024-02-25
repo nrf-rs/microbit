@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add support for PPI
 - Servo example using TIMER, GPIOTE and PPI
 - (NFC) GitHub CI changes
+- Feature: Exposed all remaining peripherals for both boards.
 
 ## [0.13.0] - 2022-05-24
 
