@@ -148,6 +148,54 @@ pub struct Board {
 
     /// nRF52 peripheral: SAADC
     pub ADC: pac::SAADC,
+
+    /// nRF52 peripheral: POWER
+    pub POWER: pac::POWER,
+
+    /// nRF52 peripheral: SPI0
+    pub SPI0: pac::SPI0,
+
+    /// nRF52 peripheral: SPI1
+    pub SPI1: pac::SPI1,
+
+    /// nRF52 peripheral: SPI2
+    pub SPI2: pac::SPI2,
+
+    /// nRF52 peripheral: UART0
+    pub UART0: pac::UART0,
+
+    /// nRF52 peripheral: TWI0
+    pub TWI0: pac::TWI0,
+
+    /// nRF52 peripheral: TWI1
+    pub TWI1: pac::TWI1,
+
+    /// nRF52 peripheral: SPIS1
+    pub SPIS1: pac::SPIS1,
+
+    /// nRF52 peripheral: ECB
+    pub ECB: pac::ECB,
+
+    /// nRF52 peripheral: AAR
+    pub AAR: pac::AAR,
+
+    /// nRF52 peripheral: CCM
+    pub CCM: pac::CCM,
+
+    /// nRF52 peripheral: WDT
+    pub WDT: pac::WDT,
+
+    /// nRF52 peripheral: QDEC
+    pub QDEC: pac::QDEC,
+
+    /// nRF52 peripheral: LPCOMP
+    pub LPCOMP: pac::LPCOMP,
+
+    /// nRF52 peripheral: NVMC
+    pub NVMC: pac::NVMC,
+
+    /// nRF52 peripheral: UICR
+    pub UICR: pac::UICR,
 }
 
 impl Board {
@@ -282,6 +330,22 @@ impl Board {
             UARTE0: p.UARTE0,
             UARTE1: p.UARTE1,
             ADC: p.SAADC,
+            SPI0: p.SPI0,
+            SPI1: p.SPI1,
+            SPI2: p.SPI2,
+            POWER: p.POWER,
+            UART0: p.UART0,
+            TWI0: p.TWI0,
+            TWI1: p.TWI1,
+            SPIS1: p.SPIS1,
+            ECB: p.ECB,
+            AAR: p.AAR,
+            CCM: p.CCM,
+            WDT: p.WDT,
+            QDEC: p.QDEC,
+            LPCOMP: p.LPCOMP,
+            NVMC: p.NVMC,
+            UICR: p.UICR,
         }
     }
 }
