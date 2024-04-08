@@ -39,7 +39,7 @@ pub fn bump_versions(new_version: &str, dry_run: bool) {
         );
 
         // Prepend empty "[Unreleased]" section, promote the current one.
-        let today = Local::today().format("%Y-%m-%d").to_string();
+        let today = Local::now().date_naive().format("%Y-%m-%d").to_string();
         let from = String::from("## [Unreleased]");
         let to = format!(
             "## [Unreleased]\n\n(no changes)\n\n## [{}] - {}",
