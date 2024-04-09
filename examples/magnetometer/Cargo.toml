@@ -15,10 +15,12 @@ lsm303agr = "0.2.0"
 [dependencies.microbit]
 path = "../../microbit"
 optional = true
+features = ["embedded-hal-02"]
 
 [dependencies.microbit-v2]
 path = "../../microbit-v2"
 optional = true
+features = ["embedded-hal-02"]
 
 [features]
 v1 = ["microbit"]
