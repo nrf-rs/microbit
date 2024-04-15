@@ -13,7 +13,7 @@
 //! #     hal,
 //! #     display::blocking::Display,
 //! # };
-//! # use embedded_hal::blocking::delay::DelayMs;
+//! # use embedded_hal::delay::DelayNs;
 //! // take the board
 //! let board = Board::take().unwrap();
 //! // make a timer
@@ -31,7 +31,7 @@
 //! loop {
 //!     display.show(&mut timer, heart, 1000);
 //!     display.clear();
-//!     timer.delay_ms(250u32);
+//!     timer.delay_ms(250);
 //! }
 //! ```
 //!
@@ -65,7 +65,7 @@
 //! For a working example [`examples/display-blocking`](https://github.com/nrf-rs/microbit/tree/main/examples/display-blocking)
 use crate::gpio::{DisplayPins, NUM_COLS, NUM_ROWS};
 use crate::hal::gpio::{Output, Pin, PushPull};
-use embedded_hal::{blocking::delay::DelayUs, digital::v2::OutputPin};
+use embedded_hal::{delay::DelayNs, digital::OutputPin};
 
 #[allow(clippy::upper_case_acronyms)]
 pub(crate) type LED = Pin<Output<PushPull>>;
@@ -137,12 +137,7 @@ impl Display {
     }
 
     /// Display 5x5 image for a given duration
-    pub fn show<D: DelayUs<u32>>(
-        &mut self,
-        delay: &mut D,
-        led_display: [[u8; 5]; 5],
-        duration_ms: u32,
-    ) {
+    pub fn show<D: DelayNs>(&mut self, delay: &mut D, led_display: [[u8; 5]; 5], duration_ms: u32) {
         #[cfg(feature = "v1")]
         {
             let led_matrix = Display::image2matrix(led_display);
@@ -156,7 +151,7 @@ impl Display {
     ///
     /// The pins are represented as a [3x9 matrix on the micro:bit
     /// V1](https://tech.microbit.org/hardware/1-5-revision/#display).
-    fn show_inner<D: DelayUs<u32>>(
+    fn show_inner<D: DelayNs>(
         &mut self,
         delay: &mut D,
         led_matrix: [[u8; NUM_COLS]; NUM_ROWS],

@@ -26,17 +26,22 @@ license = "0BSD"
 
 [dependencies]
 tiny-led-matrix = "1.0.1"
-embedded-hal = "0.2.4"
+embedded-hal = "1.0.0"
 
 [dependencies.nrf51-hal]
 optional = true
 version = "0.17.0"
+default-features = false
+features = ["rt", "xxAB-package"]
 
 [dependencies.nrf52833-hal]
 optional = true
 version = "0.17.0"
+default-features = false
+features = ["rt"]
 
 [features]
 doc = []
 v1 = ["nrf51-hal"]
 v2 = ["nrf52833-hal"]
+embedded-hal-02 = ["nrf51-hal?/embedded-hal-02", "nrf52833-hal?/embedded-hal-02"]

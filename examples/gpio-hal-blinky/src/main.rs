@@ -4,7 +4,7 @@
 use panic_halt as _;
 
 use cortex_m_rt::entry;
-use embedded_hal::{blocking::delay::DelayMs, digital::v2::OutputPin};
+use embedded_hal::{delay::DelayNs, digital::OutputPin};
 use microbit::{board::Board, hal::timer::Timer};
 
 #[entry]
@@ -18,8 +18,8 @@ fn main() -> ! {
 
     loop {
         let _ = row1.set_low();
-        timer.delay_ms(1_000_u16);
+        timer.delay_ms(1_000);
         let _ = row1.set_high();
-        timer.delay_ms(1_000_u16);
+        timer.delay_ms(1_000);
     }
 }

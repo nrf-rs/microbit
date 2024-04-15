@@ -30,3 +30,6 @@ license = "0BSD"
 path = "../microbit-common"
 features = ["v1"]
 version = "=0.13.0"
+
+[features]
+embedded-hal-02 = ["microbit-common/embedded-hal-02"]
