@@ -6,7 +6,6 @@ use panic_halt as _;
 
 use core::cell::RefCell;
 use cortex_m::interrupt::Mutex;
-use cortex_m::peripheral::Peripherals;
 use cortex_m_rt::entry;
 
 use microbit::{

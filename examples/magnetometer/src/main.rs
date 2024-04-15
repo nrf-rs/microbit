@@ -5,8 +5,11 @@ use defmt_rtt as _;
 use panic_halt as _;
 
 use cortex_m_rt::entry;
-
-use microbit::hal::{prelude::*, Timer};
+use embedded_hal::blocking::delay::DelayMs;
+use lsm303agr::{
+    interface::I2cInterface, mode::MagOneShot, AccelMode, AccelOutputDataRate, Lsm303agr,
+};
+use microbit::hal::Timer;
 
 #[cfg(feature = "v1")]
 use microbit::{
@@ -17,10 +20,6 @@ use microbit::{
 use microbit::{
     hal::twim,
     pac::{twim0::frequency::FREQUENCY_A, TWIM0},
-};
-
-use lsm303agr::{
-    interface::I2cInterface, mode::MagOneShot, AccelMode, AccelOutputDataRate, Lsm303agr,
 };
 
 #[entry]

@@ -4,17 +4,16 @@
 use panic_halt as _;
 
 use core::fmt::Write;
+use embedded_hal::serial::Read;
 
 #[cfg(feature = "v1")]
 use microbit::{
-    hal::prelude::*,
     hal::uart,
     hal::uart::{Baudrate, Parity},
 };
 
 #[cfg(feature = "v2")]
 use microbit::{
-    hal::prelude::*,
     hal::uarte,
     hal::uarte::{Baudrate, Parity},
 };
