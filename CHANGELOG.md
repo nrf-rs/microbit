@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Feature: Exposed all remaining peripherals for both boards.
 - Updated HAL crates to latest versions.
 - Updated to `embedded-hal` 1.0.
+- Updated magnetometer example to use `lsm303agr` 0.3.
 - Update debug tooling from probe-run to probe-rs
 
 ## [0.13.0] - 2022-05-24
