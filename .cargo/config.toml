@@ -4,7 +4,7 @@ xtask = "run --package xtask --"
 # For micro:bit v1.x
 
 [target.thumbv6m-none-eabi]
-runner = 'probe-run --chip nRF51822_xxAA'
+runner = 'probe-rs run --chip nRF51822_xxAA --protocol swd'
 rustflags = [
   "-C", "linker=flip-link",
   "-C", "link-arg=-Tlink.x",
@@ -14,7 +14,7 @@ rustflags = [
 # For micro:bit v2
 
 [target.thumbv7em-none-eabi]
-runner = "probe-run --chip nRF52833_xxAA"
+runner = "probe-rs run --chip nRF52833_xxAA --protocol swd"
 rustflags = [
   "-C", "linker=flip-link",
   "-C", "link-arg=-Tlink.x",
@@ -22,9 +22,13 @@ rustflags = [
 ]
 
 [target.thumbv7em-none-eabihf]
-runner = "probe-run --chip nRF52833_xxAA"
+runner = "probe-rs run --chip nRF52833_xxAA --protocol swd"
 rustflags = [
   "-C", "linker=flip-link",
   "-C", "link-arg=-Tlink.x",
   "-C", "link-arg=-Tdefmt.x",
 ]
+
+# Enable printing of defmt debug, info and warning messages by default
+[env]
+DEFMT_LOG="debug"
