@@ -24,12 +24,12 @@ which crate you need to use.
 
 ### Install dependencies
 
-The examples make use of some of the fantastic tooling from the [knurling](https://knurling.ferrous-systems.com/) project.
-In order to run the examples you need to install [`probe-run`](https://github.com/knurling-rs/probe-run#installation)
+The examples make use of some of the fantastic tooling from the [knurling](https://knurling.ferrous-systems.com/) and [probe-rs](https://probe.rs/) projects.
+In order to run the examples you need to install [`probe-rs`](https://probe.rs/docs/getting-started/installation)
 and [`flip-link`](https://github.com/knurling-rs/flip-link#installation).
 
 ```bash
-> cargo install probe-run flip-link
+> cargo install probe-rs flip-link
 ```
 
 ### Run an example
