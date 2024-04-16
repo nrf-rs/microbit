@@ -7,3 +7,13 @@ members = [
   "examples/*",
   "xtask",
 ]
+
+# Modify default build profiles to make debugging easier
+[profile.release]
+debug = 2
+lto = "off"
+
+[profile.dev]
+debug = 2
+opt-level = 1
+lto = "off"
