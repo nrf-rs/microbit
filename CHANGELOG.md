@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Update examples to use RTIC 1.0
 - Add ADC for micro:bit V1
 - Add analog example
-- Increase minimum supported Rust version to 1.71
+- Increase minimum supported Rust version to 1.73
 - Added support for the real time counters RTC1 and RTC2
 - Add common types and structs for the edge connector pads and pins
 - Add common ADC types and initialization for ADC and SAADC

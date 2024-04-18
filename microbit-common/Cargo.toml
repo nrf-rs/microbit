@@ -4,6 +4,7 @@ version = "0.13.0"
 description = "Implementation details for the BBC Micro:bit board support crates"
 edition = "2018"
 readme = "../README.md"
+rust-version = "1.73.0"
 
 repository = "https://github.com/nrf-rs/microbit"
 authors = [
