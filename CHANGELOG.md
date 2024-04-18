@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Update examples to use RTIC 1.0
 - Add ADC for micro:bit V1
 - Add analog example
-- Increase minimum supported Rust version to 1.71
+- Increase minimum supported Rust version to 1.73
 - Added support for the real time counters RTC1 and RTC2
 - Add common types and structs for the edge connector pads and pins
 - Add common ADC types and initialization for ADC and SAADC
@@ -26,9 +26,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Servo example using TIMER, GPIOTE and PPI
 - (NFC) GitHub CI changes
 - Feature: Exposed all remaining peripherals for both boards.
-- Updated HAL crates to latest versions.
-- Updated to `embedded-hal` 1.0.
-- Updated magnetometer example to use `lsm303agr` 0.3.
+- Update HAL crates to 0.17.1.
+- Update to `embedded-hal` 1.0.
+- Update magnetometer example to use `lsm303agr` 1.0.
 - Update debug tooling from probe-run to probe-rs
 
 ## [0.13.0] - 2022-05-24

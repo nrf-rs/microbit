@@ -4,6 +4,7 @@ version = "0.13.0"
 description = "Implementation details for the BBC Micro:bit board support crates"
 edition = "2018"
 readme = "../README.md"
+rust-version = "1.73.0"
 
 repository = "https://github.com/nrf-rs/microbit"
 authors = [
@@ -30,13 +31,13 @@ embedded-hal = "1.0.0"
 
 [dependencies.nrf51-hal]
 optional = true
-version = "0.17.0"
+version = "0.17.1"
 default-features = false
 features = ["rt", "xxAB-package"]
 
 [dependencies.nrf52833-hal]
 optional = true
-version = "0.17.0"
+version = "0.17.1"
 default-features = false
 features = ["rt"]
 
