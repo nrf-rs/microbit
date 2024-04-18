@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+(no changes)
+
+## [0.14.0] - 2024-04-18
+
 - Fix: non-blocking display on micro:bit V2 could spuriously light LEDs briefly
 - Fix the `blocking::Display::set_refresh_rate` calculation for the micro:bit V2
 - Double the non-blocking display refresh frequency for the micro:bit V2
@@ -94,7 +98,8 @@ Republished without changes to fix missing README.md in crates.io.
 - Fix rustdoc warnings
 - Upgrade nrf51-hal to 0.12.1
 
-[Unreleased]: https://github.com/nrf-rs/microbit/compare/v0.13.0...HEAD
+[Unreleased]: https://github.com/nrf-rs/microbit/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/nrf-rs/microbit/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/nrf-rs/microbit/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/nrf-rs/microbit/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/nrf-rs/microbit/compare/v0.10.1...v0.11.0

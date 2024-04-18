@@ -1,6 +1,6 @@
 [package]
 name = "microbit"
-version = "0.13.0"
+version = "0.14.0"
 description = "Board support crate for the BBC Micro:bit V1"
 edition = "2018"
 readme = "../README.md"
@@ -29,7 +29,7 @@ license = "0BSD"
 [dependencies.microbit-common]
 path = "../microbit-common"
 features = ["v1"]
-version = "=0.13.0"
+version = "=0.14.0"
 
 [features]
 embedded-hal-02 = ["microbit-common/embedded-hal-02"]
