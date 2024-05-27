@@ -31,7 +31,7 @@ embedded-hal = "1.0.0"
 
 [dependencies.nrf51-hal]
 optional = true
-version = "0.17.1"
+version = "0.18.0"
 default-features = false
 features = ["rt", "xxAB-package"]
 
