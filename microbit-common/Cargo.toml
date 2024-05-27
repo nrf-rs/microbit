@@ -37,7 +37,7 @@ features = ["rt", "xxAB-package"]
 
 [dependencies.nrf52833-hal]
 optional = true
-version = "0.17.1"
+version = "0.18.0"
 default-features = false
 features = ["rt"]
 
