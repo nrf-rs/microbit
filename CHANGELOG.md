@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-(no changes)
+- Update HAL crates to 0.18.0.
 
 ## [0.14.0] - 2024-04-18
 
