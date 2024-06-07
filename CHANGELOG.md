@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 - Update HAL crates to 0.18.0.
+* Update installation instructions for `probe-rs`
 
 ## [0.14.0] - 2024-04-18
 
