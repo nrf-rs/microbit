@@ -29,7 +29,7 @@ In order to run the examples you need to install [`probe-rs`](https://probe.rs/d
 and [`flip-link`](https://github.com/knurling-rs/flip-link#installation).
 
 ```bash
-> cargo install probe-rs flip-link
+> cargo install probe-rs-tools flip-link
 ```
 
 ### Run an example
