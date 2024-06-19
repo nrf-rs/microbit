@@ -1,6 +1,6 @@
 [package]
 name = "microbit-common"
-version = "0.14.0"
+version = "0.15.0"
 description = "Implementation details for the BBC Micro:bit board support crates"
 edition = "2018"
 readme = "../README.md"

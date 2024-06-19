@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+(no changes)
+
+## [0.15.0] - 2024-06-19
+
 - Update HAL crates to 0.18.0.
 * Update installation instructions for `probe-rs`
 
@@ -99,7 +103,8 @@ Republished without changes to fix missing README.md in crates.io.
 - Fix rustdoc warnings
 - Upgrade nrf51-hal to 0.12.1
 
-[Unreleased]: https://github.com/nrf-rs/microbit/compare/v0.14.0...HEAD
+[Unreleased]: https://github.com/nrf-rs/microbit/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/nrf-rs/microbit/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/nrf-rs/microbit/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/nrf-rs/microbit/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/nrf-rs/microbit/compare/v0.11.0...v0.12.0
