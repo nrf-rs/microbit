@@ -5,10 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.15.1] - 2024-07-30
 
 - Set MSRV for `microbit` and `microbit-v2` crates.
 - Bumped MSRV to 1.79.0.
+- Make various `I2C` `Pin` fields `pub`
 
 ## [0.15.0] - 2024-06-19
 

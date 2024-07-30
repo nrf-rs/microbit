@@ -350,8 +350,10 @@ pub struct Buttons {
 
 /// I2C shared internal and external bus pins
 pub struct I2CPins {
-    scl: SCL,
-    sda: SDA,
+    /// I2C control pin
+    pub scl: SCL,
+    /// I2C data pin
+    pub sda: SDA,
 }
 
 impl From<I2CPins> for twi::Pins {
