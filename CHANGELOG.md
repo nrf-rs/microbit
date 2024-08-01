@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 - Set MSRV for `microbit` and `microbit-v2` crates.
+- Bumped MSRV to 1.79.0.
 
 ## [0.15.0] - 2024-06-19
 
