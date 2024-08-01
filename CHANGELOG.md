@@ -7,12 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-(no changes)
+- Set MSRV for `microbit` and `microbit-v2` crates.
 
 ## [0.15.0] - 2024-06-19
 
 - Update HAL crates to 0.18.0.
-* Update installation instructions for `probe-rs`
+- Update installation instructions for `probe-rs`
 
 ## [0.14.0] - 2024-04-18
 
