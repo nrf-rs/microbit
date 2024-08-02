@@ -438,8 +438,10 @@ pub struct Buttons {
 
 /// I2C internal bus pins
 pub struct I2CInternalPins {
-    scl: INT_SCL,
-    sda: INT_SDA,
+    /// Internal I2C clock pin
+    pub scl: INT_SCL,
+    /// Internal I2C data pin
+    pub sda: INT_SDA,
 }
 
 impl From<I2CInternalPins> for twim::Pins {
@@ -462,8 +464,10 @@ impl From<I2CInternalPins> for twis::Pins {
 
 /// I2C external bus pins
 pub struct I2CExternalPins {
-    scl: SCL,
-    sda: SDA,
+    /// External I2C clock pin
+    pub scl: SCL,
+    /// External I2C data pin
+    pub sda: SDA,
 }
 
 impl From<I2CExternalPins> for twim::Pins {
