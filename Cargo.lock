@@ -635,14 +635,14 @@ checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 
 [[package]]
 name = "microbit"
-version = "0.15.0"
+version = "0.15.1"
 dependencies = [
  "microbit-common",
 ]
 
 [[package]]
 name = "microbit-common"
-version = "0.15.0"
+version = "0.15.1"
 dependencies = [
  "embedded-hal 1.0.0",
  "nrf51-hal",
@@ -661,7 +661,7 @@ dependencies = [
 
 [[package]]
 name = "microbit-v2"
-version = "0.15.0"
+version = "0.15.1"
 dependencies = [
  "microbit-common",
 ]
