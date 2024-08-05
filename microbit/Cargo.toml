@@ -21,7 +21,7 @@ license = "0BSD"
 [dependencies.microbit-common]
 path = "../microbit-common"
 features = ["v1"]
-version = "=0.15.0"
+version = "=0.15.1"
 
 [features]
 embedded-hal-02 = ["microbit-common/embedded-hal-02"]

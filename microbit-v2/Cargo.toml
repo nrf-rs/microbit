@@ -25,7 +25,7 @@ path = "src/lib.rs"
 [dependencies.microbit-common]
 path = "../microbit-common"
 features = ["v2"]
-version = "=0.15.0"
+version = "=0.15.1"
 
 [features]
 embedded-hal-02 = ["microbit-common/embedded-hal-02"]
