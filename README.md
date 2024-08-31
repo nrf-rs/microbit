@@ -9,7 +9,7 @@ even a capable debugging interface.
 All you need to start programming this device is:
 
 * A BBC micro:bit board
-* A computer (macOS and Linux work perfectly, [Windows tested as well](http://flames-of-code.netlify.com/blog/rust-microbit-windows/))
+* A computer (known to work with macOS, Linux and Windows)
 * A bit of open source software
 
 ### Know your version
