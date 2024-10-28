@@ -5,7 +5,7 @@ edition = "2018"
 
 [dependencies]
 cortex-m-rt = "0.7"
-panic-halt = "0.2.0"
+panic-halt = "1.0.0"
 defmt-rtt = "0.4"
 nb = "1.0.0"
 embedded-hal = "1.0.0"
