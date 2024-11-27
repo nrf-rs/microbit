@@ -9,7 +9,7 @@ cortex-m-rt = "0.7.5"
 embedded-hal = "1.0.0"
 panic-halt = "1.0.0"
 defmt-rtt = "0.4.0"
-defmt = "0.3.6"
+defmt = "0.3.9"
 lsm303agr = "1.0.0"
 
 [dependencies.microbit]
