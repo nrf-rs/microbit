@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 - Remove dead link to microbit Rust on Windows blog post in README.
+- Add metadata for docs.rs
 
 ## [0.15.1] - 2024-08-05
 

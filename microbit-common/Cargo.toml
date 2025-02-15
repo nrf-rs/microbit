@@ -40,3 +40,7 @@ embedded-hal-02 = [
   "nrf51-hal?/embedded-hal-02",
   "nrf52833-hal?/embedded-hal-02",
 ]
+
+[package.metadata.docs.rs]
+features = ["v2"]
+default-target = "thumbv7em-none-eabihf"
