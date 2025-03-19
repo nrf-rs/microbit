@@ -80,7 +80,7 @@ impl BitImage {
     pub const fn new(im: &[[u8; 5]; 5]) -> BitImage {
         // FIXME: can we reject values other than 0 or 1?
         const fn row_byte(row: [u8; 5]) -> u8 {
-            row[0] | row[1] << 1 | row[2] << 2 | row[3] << 3 | row[4] << 4
+            row[0] | (row[1] << 1) | (row[2] << 2) | (row[3] << 3) | (row[4] << 4)
         }
         BitImage([
             row_byte(im[0]),
