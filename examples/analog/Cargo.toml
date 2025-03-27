@@ -9,7 +9,7 @@ edition = "2018"
 cortex-m = { version = "0.7.7", features = ["critical-section-single-core"] }
 cortex-m-rt = "0.7.5"
 panic-halt = "1.0.0"
-defmt-rtt = "0.4.0"
+defmt-rtt = "0.4.2"
 defmt = "0.3.10"
 
 [dependencies.microbit]
