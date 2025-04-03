@@ -8,7 +8,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "microbit",
  "microbit-v2",
@@ -21,7 +21,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "microbit",
  "panic-halt",
@@ -33,7 +33,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "microbit-v2",
  "panic-halt",
@@ -249,15 +249,6 @@ checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 
 [[package]]
 name = "defmt"
-version = "0.3.100"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0963443817029b2024136fc4dd07a5107eb8f977eaf18fcd1fdeb11306b64ad"
-dependencies = [
- "defmt 1.0.1",
-]
-
-[[package]]
-name = "defmt"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "548d977b6da32fa1d1fda2876453da1e7df63ad0304c8b3dae4dbe7b96f39b78"
@@ -290,12 +281,12 @@ dependencies = [
 
 [[package]]
 name = "defmt-rtt"
-version = "0.4.2"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c6eca0aae8aa2cf8333200ecbd236274697bc0a394765c858b3d9372eb1abcfa"
+checksum = "b2cac3b8a5644a9e02b75085ebad3b6deafdbdbdec04bb25086523828aa4dfd1"
 dependencies = [
  "critical-section",
- "defmt 0.3.100",
+ "defmt",
 ]
 
 [[package]]
@@ -304,7 +295,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "embedded-hal 1.0.0",
  "microbit",
@@ -318,7 +309,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "microbit",
  "microbit-v2",
@@ -331,7 +322,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rtic",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "microbit",
  "microbit-v2",
@@ -344,7 +335,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rtic",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "microbit",
  "microbit-text",
@@ -413,7 +404,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "microbit",
  "microbit-v2",
  "panic-halt",
@@ -424,7 +415,7 @@ name = "gpio-hal-blinky"
 version = "0.1.0"
 dependencies = [
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "embedded-hal 1.0.0",
  "microbit",
@@ -438,7 +429,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "embedded-hal 1.0.0",
  "microbit",
@@ -452,7 +443,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "microbit",
  "microbit-v2",
@@ -614,7 +605,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "embedded-hal 1.0.0",
  "lsm303agr",
@@ -899,7 +890,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "microbit",
  "microbit-v2",
@@ -912,7 +903,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "microbit",
  "microbit-v2",
@@ -1059,7 +1050,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "microbit",
  "microbit-v2",
@@ -1200,7 +1191,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "embedded-hal 1.0.0",
  "microbit-v2",
@@ -1213,7 +1204,7 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "cortex-m-rt",
- "defmt 1.0.1",
+ "defmt",
  "defmt-rtt",
  "embedded-hal 1.0.0",
  "microbit-v2",
