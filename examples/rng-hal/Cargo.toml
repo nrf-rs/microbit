@@ -12,7 +12,7 @@ defmt = "1.0.1"
 
 [dependencies.rand]
 default-features = false
-version = "0.8.5"
+version = "0.9.2"
 
 [dependencies.rand_pcg]
 default-features = false
