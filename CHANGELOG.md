@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove dead link to microbit Rust on Windows blog post in README.
 - Bumped MSRV to 1.81.0.
 - Add metadata for docs.rs
+- Bumped dependencies in `examples/` to latest versions.
 
 ## [0.15.1] - 2024-08-05
 
