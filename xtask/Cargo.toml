@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-cargo_toml = "0.22.1"
+cargo_toml = "0.22.3"
 chrono = "0.4.41"
