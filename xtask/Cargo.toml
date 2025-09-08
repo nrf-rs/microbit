@@ -5,4 +5,4 @@ edition = "2018"
 
 [dependencies]
 cargo_toml = "0.22.3"
-chrono = "0.4.41"
+chrono = "0.4.42"
