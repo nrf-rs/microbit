@@ -9,7 +9,7 @@ panic-halt = "1.0.0"
 defmt-rtt = "1.1"
 nb = "1.1.0"
 embedded-hal = "1.0.0"
-embedded-io = "0.6.1"
+embedded-io = "0.7.1"
 
 [dependencies.microbit]
 path = "../../microbit"
