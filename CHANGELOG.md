@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Bumped MSRV to 1.81.0.
 - Add metadata for docs.rs
 - Bumped dependencies in `examples/` to latest versions.
+- Update HAL crates to 0.19.0.
 
 ## [0.15.1] - 2024-08-05
 
