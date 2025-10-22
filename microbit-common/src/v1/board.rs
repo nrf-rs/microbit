@@ -76,7 +76,7 @@ pub struct Board {
     /// nRF51 peripheral: GPIOTE
     pub GPIOTE: pac::GPIOTE,
 
-    /// nRF51 preipheral: PPI
+    /// nRF51 peripheral: PPI
     pub PPI: pac::PPI,
 
     /// nRF51 peripheral: RADIO
