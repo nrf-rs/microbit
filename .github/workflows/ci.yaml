@@ -33,7 +33,7 @@ jobs:
     name: "build (${{ matrix.name || matrix.rust }})"
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install Rust
         uses: actions-rs/toolchain@v1
