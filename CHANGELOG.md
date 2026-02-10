@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-(no changes)
+- Bumped MSRV to 1.85.0.
+- Updated `examples/hal-rng/` to use latest `rand_pcg`,
+  removing `rand` dependency and bumping to Rust 2024.
 
 ## [0.16.0] - 2025-10-11
 
