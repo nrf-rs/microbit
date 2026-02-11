@@ -14,8 +14,10 @@ use microbit::{
     pac::{self, interrupt},
 };
 
-use rand::{RngCore, SeedableRng};
-use rand_pcg::Pcg32;
+use rand_pcg::{
+    Pcg32,
+    rand_core::{Rng, SeedableRng},
+};
 
 static RTC: Mutex<RefCell<Option<rtc::Rtc<pac::RTC0>>>> = Mutex::new(RefCell::new(None));
 static RNG: Mutex<RefCell<Option<Pcg32>>> = Mutex::new(RefCell::new(None));
