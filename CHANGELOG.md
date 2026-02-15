@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-- Bumped MSRV to 1.85.0.
+- Bumped MSRV to 1.85.0
 - Updated `examples/hal-rng/` to use latest `rand_pcg`,
-  removing `rand` dependency and bumping to Rust 2024.
+  removing `rand` dependency and bumping to Rust 2024
+- Added SPIM peripherals to Board struct
 
 ## [0.16.0] - 2025-10-11
 
