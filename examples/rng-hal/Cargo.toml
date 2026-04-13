@@ -12,7 +12,7 @@ defmt = "1.0.1"
 
 [dependencies.rand_pcg]
 default-features = false
-version = "0.10.1"
+version = "0.10.2"
 
 [dependencies.microbit]
 path = "../../microbit"
