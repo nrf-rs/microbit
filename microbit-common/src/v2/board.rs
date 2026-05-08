@@ -85,7 +85,7 @@ pub struct Board {
     /// nRF52 peripheral: GPIOTE
     pub GPIOTE: pac::GPIOTE,
 
-    /// nRF52 preipheral: PPI
+    /// nRF52 peripheral: PPI
     pub PPI: pac::PPI,
 
     /// nRF52 peripheral: PWM0
