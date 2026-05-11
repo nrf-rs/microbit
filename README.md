@@ -54,11 +54,12 @@ Congratulations! You've flashed your first Rust program onto your micro:bit!
 
 ## Further reading
 
-A guide to embedded development with Rust on the _micro:bit_ using this crate can be found in the [MicroRust book](https://droogmic.github.io/microrust/).
+A guide to embedded development with Rust on the _micro:bit_ using this crate can be found in the [Discovery Book](https://github.com/rust-embedded/discovery/).
 
 Other useful resources:
 - [micro:bit developer community](https://tech.microbit.org)
 - [micro:bit hardware overview](https://tech.microbit.org/hardware/)
+- The [awesome micro:bit](https://github.com/carlosperate/awesome-microbit#-rust) list of resources, including its Rust-specific sections.
 - [nrf-hal](https://github.com/nrf-rs/nrf-hal#readme) the hardware abstraction layer (HAL) this repository is based on
 
 ## License
