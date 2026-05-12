@@ -8,7 +8,7 @@ embedded-hal = "1.0.0"
 cortex-m-rt = "0.7.5"
 panic-halt = "1.0.0"
 defmt-rtt = "1.2.0"
-defmt = "1.0.1"
+defmt = "1.1.0"
 
 [dependencies.microbit]
 path = "../../microbit"
