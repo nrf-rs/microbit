@@ -274,9 +274,9 @@ dependencies = [
 
 [[package]]
 name = "defmt-rtt"
-version = "1.1.0"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93d5a25c99d89c40f5676bec8cefe0614f17f0f40e916f98e345dae941807f9e"
+checksum = "c0f73a4a4a91609e977ae3b7bd831ffa292edfd42ad140a3244a61d805b0e05e"
 dependencies = [
  "critical-section",
  "defmt",
