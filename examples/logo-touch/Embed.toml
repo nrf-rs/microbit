@@ -1,0 +1,5 @@
+[default.rtt]
+enabled = true
+
+[default.gdb]
+enabled = false

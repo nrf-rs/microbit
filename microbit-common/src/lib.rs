@@ -30,3 +30,6 @@ mod v1;
 
 #[cfg(feature = "v2")]
 mod v2;
+
+#[cfg(feature = "v2")]
+pub mod logo;
