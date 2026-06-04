@@ -11,16 +11,11 @@ defmt = "1.1.0"
 defmt-rtt = "1.2.0"
 embedded-hal = "1.0.0"
 
-[dependencies.microbit]
-path = "../../microbit"
-optional = true
-
 [dependencies.microbit-v2]
 path = "../../microbit-v2"
 optional = true
 
 [features]
-v1 = ["microbit"]
 v2 = ["microbit-v2"]
 
 default = [
