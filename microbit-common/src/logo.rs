@@ -27,6 +27,7 @@
 //! # Example
 //!
 //! ```no_run
+//! # use microbit_common as microbit;
 //! use microbit::Board;
 //! use microbit::hal::Timer;
 //!
@@ -104,11 +105,14 @@ impl Logo {
     /// # Examples
     ///
     /// ```no_run
-    /// # use microbit::Board;
-    /// # use microbit::hal::Timer;
-    /// # let board = Board::take().unwrap();
-    /// # let mut timer = Timer::new(board.TIMER0);
-    /// let mut logo = microbit::logo::Logo::new(board.pins.p1_04);
+    /// # use microbit_common as microbit;
+    /// use microbit::Board;
+    /// use microbit::hal::Timer;
+    /// use microbit::logo::Logo;
+    ///
+    /// let board = Board::take().unwrap();
+    /// let mut timer = Timer::new(board.TIMER0);
+    /// let mut logo = Logo::new(board.pins.p1_04);
     /// if logo.is_touched(&mut timer) {
     ///     // react to the touch
     /// }
