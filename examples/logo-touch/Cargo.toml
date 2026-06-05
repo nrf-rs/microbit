@@ -1,0 +1,31 @@
+[package]
+name = "logo-touch"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cortex-m = { version = "0.7.7", features = ["critical-section-single-core"] }
+cortex-m-rt = "0.7.5"
+panic-halt = "1.0.0"
+defmt = "1.1.0"
+defmt-rtt = "1.2.0"
+embedded-hal = "1.0.0"
+
+[dependencies.microbit-v2]
+path = "../../microbit-v2"
+optional = true
+
+[features]
+v2 = ["microbit-v2"]
+
+default = [
+  "defmt-default",
+]
+
+# do NOT modify these features
+defmt-default = []
+defmt-trace = []
+defmt-debug = []
+defmt-info = []
+defmt-warn = []
+defmt-error = []

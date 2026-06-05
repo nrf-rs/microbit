@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Updated `examples/hal-rng/` to use latest `rand_pcg`,
   removing `rand` dependency and bumping to Rust 2024
 - Added SPIM peripherals to Board struct
+- Added capacitive touch support for the micro:bit v2 logo (`microbit::logo::Logo`)
 
 ## [0.16.0] - 2025-10-11
 
