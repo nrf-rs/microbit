@@ -148,8 +148,8 @@
 //! You can call `show()` at any time, so long as you're not interrupting, or interruptable by,
 //! [`Display::handle_display_event()`].
 //!
-//! See [`display_rtic`](https://github.com/nrf-rs/microbit/blob/master/examples/display_rtic) or
-//! [`display_nonblocking`](https://github.com/nrf-rs/microbit/blob/master/examples/display_nonblocking)
+//! See [`display_rtic`](https://github.com/nrf-rs/microbit/blob/main/examples/display-rtic) or
+//! [`display_nonblocking`](https://github.com/nrf-rs/microbit/blob/main/examples/display-nonblocking)
 //! example for a complete working example.
 //!
 //! [dal]: https://lancaster-university.github.io/microbit-docs/
