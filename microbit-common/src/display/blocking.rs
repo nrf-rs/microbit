@@ -29,13 +29,14 @@
 //!     [0, 0, 1, 0, 0],
 //! ];
 //! loop {
+//!     // block this loop and show the image for 1000 milliseconds
 //!     display.show(&mut timer, heart, 1000);
 //!     display.clear();
 //!     timer.delay_ms(250);
 //! }
 //! ```
 //!
-//! The coordiante system is oriented so the 'bottom' (x,4) row is the edge with the edge
+//! The coordinate system is oriented so the 'bottom' (x,4) row is the edge with the edge
 //! connector. That means that
 //!
 //! ```no_run
